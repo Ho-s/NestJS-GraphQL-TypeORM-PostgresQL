@@ -1,0 +1,115 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateUserInput {
+  nickname: String!
+  profileImage: String
+  provider: String!
+  role: String!
+  username: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input GetManyInput {
+  """count or data or all, default = data"""
+  dataType: String
+
+  """{[key of entity]: "ASC or DESC"}"""
+  order: JSON
+  pagination: IPagination
+  relations: [String!]
+  where: JSON
+}
+
+input GetOneInput {
+  relations: [String!]
+  where: JSON
+}
+
+type GetPlaceType {
+  count: Float
+  data: [Place!]
+}
+
+type GetUserType {
+  count: Float
+  data: [User!]
+}
+
+input IPagination {
+  """Started from 0"""
+  page: Int!
+
+  """Size of page"""
+  size: Int!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type JwtWithUser {
+  createdAt: DateTime!
+  id: ID!
+  jwt: String!
+  nickname: String!
+  place: [Place!]
+  profileImage: String
+  provider: String!
+  role: String!
+  updatedAt: DateTime!
+  username: String!
+}
+
+type Mutation {
+  createManyUsers(input: [CreateUserInput!]!): [User!]!
+  createUser(input: CreateUserInput!): User!
+  deleteFiles(keys: [String!]!): Boolean!
+  deleteUser(id: String!): JSON!
+  kakaoLogin(accessToken: String!): JwtWithUser!
+  updateUser(id: String!, input: UpdateUserInput!): User!
+  uploadFile(file: Upload!): String!
+  uploadFiles(files: [Upload!]!): [String!]!
+}
+
+type Place {
+  address: String!
+  id: ID!
+  name: String!
+  user: User
+}
+
+type Query {
+  getManyPlaces(input: GetManyInput): GetPlaceType!
+  getManyUsers(input: GetManyInput): GetUserType!
+  getMe: User!
+  getOneUser(input: GetOneInput): User!
+}
+
+input UpdateUserInput {
+  nickname: String
+  profileImage: String
+  provider: String
+  username: String
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+type User {
+  createdAt: DateTime!
+  id: ID!
+  nickname: String!
+  place: [Place!]
+  profileImage: String
+  provider: String!
+  role: String!
+  updatedAt: DateTime!
+  username: String!
+}

@@ -1,0 +1,6 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "importOrder": ["^@nestjs/(.*)$", "^@dms/(.*)$", "^[./]"],
+  "importOrderParserPlugins" : ["typescript", "[\"decorators-legacy\", {\"decoratorsBeforeExport\": true}]"]
+}
