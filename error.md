@@ -10,8 +10,8 @@
         "response": {
           "statusCode": 400,
           "message": [
-            "email should not be empty",
-            "이메일 그거 맞음??"
+            "Email should not be empty",
+            "Eamil is invalid"
           ],
           "error": "Bad Request"
         }
