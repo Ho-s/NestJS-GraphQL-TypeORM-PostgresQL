@@ -188,7 +188,7 @@ export function processWhere<T>(
     const thisKey = Object.keys(filters)[0];
     const nextObject = filters[Object.keys(filters)[0]];
     // In case use null as value
-    if (!nextObject) {
+    if (nextObject === null) {
       return { [thisKey]: IsNull() };
     }
     const valueOfNextObjet = Object.values(nextObject)[0];
