@@ -1,5 +1,5 @@
 import { BadRequestException, Module } from '@nestjs/common';
-import { pick } from 'lodash';
+import { isEmpty } from 'lodash';
 import { IWhere, processWhere } from '../util/processWhere';
 import {
   FindManyOptions,
@@ -134,7 +134,7 @@ export class DeclareModule {
         ...(relations && {
           relations: relations as unknown as FindOptionsRelations<T>,
         }),
-        ...(where && { where: processWhere(where) }),
+        ...(where && !isEmpty(where) && { where: processWhere(where) }),
         ...(order && { order: order as FindOptionsOrder<T> }),
         ...(pagination && {
           skip: pagination.page * pagination.size,
