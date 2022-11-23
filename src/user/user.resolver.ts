@@ -18,7 +18,7 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => GetUserType)
-  // @UseGuards(new GraphqlPassportAuthGuard('admin'))
+  @UseGuards(new GraphqlPassportAuthGuard('admin'))
   getManyUsers(
     @Args({ name: 'input', nullable: true })
     qs: GetManyInput<User>,
