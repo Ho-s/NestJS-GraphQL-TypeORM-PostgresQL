@@ -3,7 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -51,7 +51,9 @@ export class User {
   updatedAt: Date;
 
   @Field(() => [Place], { nullable: true })
-  @ManyToMany(() => Place, (place) => place.user, { nullable: true })
+  @OneToMany(() => Place, (place) => place.user, {
+    nullable: true,
+  })
   place: Place[];
 }
 
