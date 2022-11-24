@@ -70,7 +70,7 @@ You can solve them with Sending JWT token in `Http Header` with the `Authorizati
 
 MIT
 
-## Cusotm CRUD
+## Custom CRUD
 
 To make most of GraphQL's advantage, We created its own api, such as GetMany or GetOne.
 We tried to make it as comfortable as possible, but if you find any mistakes or improvements, please point them out or promote them.
