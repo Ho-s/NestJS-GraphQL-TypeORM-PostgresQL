@@ -1,4 +1,5 @@
-import { isPlainObject, isArray } from 'lodash';
+import { BadRequestException } from '@nestjs/common';
+import { isPlainObject, isArray, omit, merge } from 'lodash';
 import { set } from 'lodash';
 import {
   Between,
@@ -140,6 +141,7 @@ function processOperator<T>(prevKey: string, nextObject: OperatorType<T>) {
   const key = Object.keys(nextObject)[0];
   const value = nextObject[key];
   const operatorObject = {
+    $eq: { [prevKey]: value },
     $ne: { [prevKey]: Not(value) },
     $lt: { [prevKey]: LessThan(value) },
     $lte: { [prevKey]: LessThanOrEqual(value) },
@@ -154,12 +156,13 @@ function processOperator<T>(prevKey: string, nextObject: OperatorType<T>) {
     $null: { [prevKey]: IsNull() },
     $nNull: { [prevKey]: Not(IsNull()) },
     $between: { [prevKey]: Between(value[0], value[1]) },
-    default: { [prevKey]: nextObject },
   };
 
-  return key in operatorObject
-    ? operatorObject[key]
-    : operatorObject['default'];
+  if (!(key in operatorObject)) {
+    throw new BadRequestException(`Invalid operator ${key} for ${prevKey}`);
+  }
+
+  return operatorObject[key];
 }
 
 export function processWhere<T>(
@@ -170,36 +173,49 @@ export function processWhere<T>(
     keyStore: string[] = [],
     _original: IWhere<T>,
   ) {
-    // Check if and
+    // Check if "and" expression
     if (isPlainObject(filters) && Object.keys(filters).length > 1) {
-      const array = Object.entries(filters).map(([key, value]) => {
-        return goDeep({ [key]: value } as any, keyStore, _original);
-      });
+      const array = Object.entries(filters).map(([key, value]) =>
+        goDeep(
+          { [key]: value } as any,
+          keyStore,
+          omit(_original, key) as IWhere<T>,
+        ),
+      );
 
       return array.reduce(
-        (acc: Record<string, any>, cur: Record<string, any>) => {
-          return { ...acc, ...cur };
+        (prev: Record<string, unknown>, next: Record<string, unknown>) => {
+          return merge(prev, next);
         },
         {},
       );
     }
 
     const thisKey = Object.keys(filters)[0];
-    const nextObject = filters[Object.keys(filters)[0]];
-    // In case use null as value
-    if (nextObject === null) {
-      return { [thisKey]: IsNull() };
+    let nextObject = filters[Object.keys(filters)[0]];
+
+    // Check if this item is on bottom
+    if (!isPlainObject(nextObject)) {
+      // In case use null as value
+      if (nextObject === null) {
+        return { [thisKey]: IsNull() };
+      }
+
+      nextObject = { $eq: nextObject };
     }
     const valueOfNextObjet = Object.values(nextObject)[0];
 
     // Check if next item is on bottom
-    if (!isPlainObject(valueOfNextObjet)) {
+    if (
+      !isPlainObject(valueOfNextObjet) &&
+      !(Object.keys(nextObject).length > 1)
+    ) {
       const value = processOperator(thisKey, nextObject);
 
       if (keyStore.length) {
         set(_original, keyStore.join('.'), value);
         keyStore = [];
-        return;
+        return _original;
       }
       return { ..._original, ...value };
     }
@@ -209,7 +225,7 @@ export function processWhere<T>(
     return goDeep(nextObject, keyStore, _original);
   }
 
-  // Check if or
+  // Check if "or" expression
   if (isArray(original)) {
     return original.map((where, i) => goDeep(where, [], original[i]));
   }
