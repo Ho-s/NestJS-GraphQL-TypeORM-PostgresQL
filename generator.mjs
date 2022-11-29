@@ -77,7 +77,9 @@ const createEntityFileText = (
 
 const createInputText = (name, coulumn, type, check) => {
   return [
-    `import { IsNotEmpty, IsOptional } from 'class-validator'`,
+    `import ${
+      check === 'optional' ? '{ IsOptional }' : '{ IsNotEmpty, IsOptional }'
+    } from 'class-validator'`,
     `import { Field, InputType } from '@nestjs/graphql'`,
     ``,
     `@InputType()`,
