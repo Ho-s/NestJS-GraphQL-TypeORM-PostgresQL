@@ -131,7 +131,7 @@ Before you start, make sure you have a recent version of [NodeJS](http://nodejs.
 The first thing you will need is to install NestJS CLI.
 
 ```bash
-yarn -g @nestjs/cli
+$ yarn -g @nestjs/cli
 ```
 
 And do install the dependencies
