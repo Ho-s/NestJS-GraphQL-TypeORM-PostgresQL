@@ -1,6 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { isPlainObject, isArray, omit, merge } from 'lodash';
-import { set } from 'lodash';
+import { isPlainObject, isArray, omit, merge, set } from 'lodash';
 import {
   Between,
   In,
