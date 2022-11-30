@@ -14,6 +14,8 @@ import { DeclareModule } from './declare/declare.module';
 import { getEnvPath } from './modules/helper/env.helper';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { GraphQLFormattedError } from 'graphql';
+import { CronModule } from './cron/cron.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -84,11 +86,13 @@ import { GraphQLFormattedError } from 'graphql';
         // logging:true
       }),
     }),
+    ScheduleModule.forRoot(),
     UserModule,
     AuthModule,
     PlaceModule,
     UploadModule,
     DeclareModule,
+    CronModule,
   ],
 })
 export class AppModule {}
