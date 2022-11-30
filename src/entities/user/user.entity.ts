@@ -22,6 +22,9 @@ export class User {
   @Column()
   username: string;
 
+  @Column({ nullable: true })
+  password: string;
+
   @Field(() => String)
   @Column()
   nickname: string;
@@ -29,14 +32,6 @@ export class User {
   @Field(() => String)
   @Column()
   role: 'admin' | 'user';
-
-  @Field(() => String)
-  @Column()
-  provider: string;
-
-  @Field(() => String, { nullable: true })
-  @Column({ nullable: true })
-  profileImage: string;
 
   @Field(() => Date)
   @CreateDateColumn({

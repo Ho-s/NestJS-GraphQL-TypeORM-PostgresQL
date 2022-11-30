@@ -9,7 +9,7 @@ export class CreateUserInput {
 
   @Field(() => String)
   @IsNotEmpty()
-  provider: string;
+  password: string;
 
   @Field(() => String)
   @IsNotEmpty()
@@ -18,10 +18,6 @@ export class CreateUserInput {
   @Field(() => String)
   @IsNotEmpty()
   role: 'admin' | 'user';
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  profileImage?: string;
 }
 
 @InputType()
@@ -32,13 +28,13 @@ export class UpdateUserInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  nickname: string;
+  password?: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  provider?: string;
+  nickname?: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  profileImage?: string;
+  role?: 'admin' | 'user';
 }

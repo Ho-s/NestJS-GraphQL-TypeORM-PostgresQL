@@ -1,54 +1,55 @@
-import { firstValueFrom } from 'rxjs';
 import { JwtWithUser } from '../entities/auth';
 import { UserService } from '../user/user.service';
 import { generateJWT } from '../util/generateJWT';
-import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { SignInInput, SignUpInput } from 'src/entities/auth/auth.input';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly userService: UserService,
-    private readonly httpService: HttpService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
-  async kakaoLogin(accessToken: string): Promise<JwtWithUser> {
-    const requestUrl = 'https://kapi.kakao.com/v2/user/me';
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-    };
-    const params = {
-      secure_resource: true,
-    };
-    const { data } = await firstValueFrom(
-      this.httpService.get(requestUrl, {
-        headers,
-        params,
-      }),
-    );
-    const kakaoAccount = data.kakao_account.profile;
-    const { id } = data;
-    const {
-      nickname,
-      profile_image_url: profileImage,
-      email: username,
-    } = kakaoAccount;
-    const provider = `kakao_${id}`;
+  async signUp(input: SignUpInput): Promise<JwtWithUser> {
+    const doesExistId = await this.userService.getOne({
+      where: { username: input.username },
+    });
 
-    let user = await this.userService.getOne({ where: { provider } });
+    if (doesExistId) {
+      throw new BadRequestException('Username already exists');
+    }
 
+    const user = await this.userService.create({
+      role: 'user',
+      ...input,
+    });
+
+    const jwt = generateJWT(user);
+
+    return { jwt, ...user };
+  }
+
+  async signIn(input: SignInInput) {
+    const { username, password } = input;
+
+    if (!username || !password) {
+      throw new BadRequestException(
+        'Username and password are required to sign in',
+      );
+    }
+
+    const user = await this.userService.getOne({ where: { username } });
     if (!user) {
-      user = await this.userService.create({
-        username,
-        nickname,
-        provider,
-        profileImage,
-        role: 'user',
-      });
+      throw new BadRequestException('Username does not exist');
+    }
+
+    const isValid: boolean = await bcrypt.compare(password, user.password);
+
+    if (!isValid) {
+      throw new BadRequestException('Password is incorrect');
     }
 
     const jwt = generateJWT(user);
+
     return { jwt, ...user };
   }
 }
