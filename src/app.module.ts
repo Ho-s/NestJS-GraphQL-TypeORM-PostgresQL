@@ -83,7 +83,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         timezone: '+09:00',
         synchronize: true,
         autoLoadEntities: true,
-        // logging:true
+        logging: false, // if you want to see the query log, change to true
       }),
     }),
     ScheduleModule.forRoot(),
