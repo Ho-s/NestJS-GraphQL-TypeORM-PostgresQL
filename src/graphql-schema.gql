@@ -4,8 +4,7 @@
 
 input CreateUserInput {
   nickname: String!
-  profileImage: String
-  provider: String!
+  password: String!
   role: String!
   username: String!
 }
@@ -60,8 +59,6 @@ type JwtWithUser {
   jwt: String!
   nickname: String!
   place: [Place!]
-  profileImage: String
-  provider: String!
   role: String!
   updatedAt: DateTime!
   username: String!
@@ -72,7 +69,12 @@ type Mutation {
   createUser(input: CreateUserInput!): User!
   deleteFiles(keys: [String!]!): Boolean!
   deleteUser(id: String!): JSON!
-  kakaoLogin(accessToken: String!): JwtWithUser!
+  signIn(input: SignInInput!): JwtWithUser!
+
+  """
+  Before you start to sign up, you have to set private key and public key in ./util/jwt.util.ts
+  """
+  signUp(input: SignUpInput!): JwtWithUser!
   updateUser(id: String!, input: UpdateUserInput!): User!
   uploadFile(file: Upload!): String!
   uploadFiles(files: [Upload!]!): [String!]!
@@ -92,10 +94,21 @@ type Query {
   getOneUser(input: GetOneInput): User!
 }
 
+input SignInInput {
+  password: String!
+  username: String!
+}
+
+input SignUpInput {
+  nickname: String!
+  password: String!
+  username: String!
+}
+
 input UpdateUserInput {
   nickname: String
-  profileImage: String
-  provider: String
+  password: String
+  role: String
   username: String
 }
 
@@ -107,8 +120,6 @@ type User {
   id: ID!
   nickname: String!
   place: [Place!]
-  profileImage: String
-  provider: String!
   role: String!
   updatedAt: DateTime!
   username: String!

@@ -2,6 +2,8 @@ import { User, CreateUserInput, UpdateUserInput } from '../entities';
 import { OneRepoQuery, RepoQuery } from '../declare/declare.module';
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
+import { SignUpInput } from 'src/entities/auth/auth.input';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -15,7 +17,10 @@ export class UserService {
     return this.userRepository.getMany(qs || {});
   }
 
-  create(input: CreateUserInput): Promise<User> {
+  async create(input: CreateUserInput | SignUpInput): Promise<User> {
+    if (input.password) {
+      input.password = await bcrypt.hash(input.password, 10);
+    }
     return this.userRepository.save(input);
   }
 
