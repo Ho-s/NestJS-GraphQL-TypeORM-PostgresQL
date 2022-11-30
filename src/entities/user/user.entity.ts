@@ -30,10 +30,6 @@ export class User {
   @Column()
   role: 'admin' | 'user';
 
-  @Field(() => String)
-  @Column()
-  provider: string;
-
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   profileImage: string;
