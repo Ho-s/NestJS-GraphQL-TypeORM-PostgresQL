@@ -1,6 +1,6 @@
 import { JwtWithUser } from '../entities/auth';
 import { UserService } from '../user/user.service';
-import { generateJWT } from '../util/generateJWT';
+import { generateJWT } from './util/generateJWT';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SignInInput, SignUpInput } from 'src/entities/auth/auth.input';
 import * as bcrypt from 'bcrypt';
