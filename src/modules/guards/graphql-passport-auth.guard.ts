@@ -1,5 +1,3 @@
-import { decode } from '../../auth/util/jwt.util';
-import { User } from '../../entities';
 import { Injectable, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
@@ -16,18 +14,12 @@ export class GraphqlPassportAuthGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = this.getRequest(context);
-    const { authorization } = req.headers;
-    const user = decode(authorization);
-    if (!user) {
-      return false;
-    }
+    await super.canActivate(context);
+    const ctx = GqlExecutionContext.create(context);
+    const req = ctx.getContext().req;
+    const { role } = req.user;
 
-    req.user = user;
-    const { role } = user as User;
-    const ADMIN = 'admin';
-
-    if (role === ADMIN) {
+    if (role === 'admin') {
       return true;
     }
 
@@ -36,7 +28,8 @@ export class GraphqlPassportAuthGuard extends AuthGuard('jwt') {
 
   getRequest(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context);
-    return ctx.getContext().req;
+    const req = ctx.getContext().req;
+    return req;
   }
 
   private hasAccess(role: string, requiredRoles: string[]): boolean {
