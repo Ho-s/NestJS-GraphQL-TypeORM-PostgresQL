@@ -329,13 +329,14 @@ $ yarn install # or npm install
 for development
 
 ```bash
-$ yarn dev # or npm dev
+$ yarn dev # or npm run dev
 ```
 
 for production
 
 ```bash
-$ yarn start # or npm start
+$ yarn build # or npm run build
+$ yarn start # or npm run start
 ```
 
 ## Todo
