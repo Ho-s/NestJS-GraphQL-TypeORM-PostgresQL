@@ -13,9 +13,9 @@ import { UserModule } from './user/user.module';
 import { DeclareModule } from './declare/declare.module';
 import { getEnvPath } from './modules/helper/env.helper';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
-import { GraphQLFormattedError } from 'graphql';
 import { CronModule } from './cron/cron.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { formatError } from './modules/format/graphql-error.format';
 
 @Module({
   imports: [
@@ -42,31 +42,7 @@ import { ScheduleModule } from '@nestjs/schedule';
           Credential: true,
         },
         cache: 'bounded',
-        formatError: (error) => {
-          const extensions: any = error.extensions;
-          const standardError: GraphQLFormattedError = {
-            message: error.extensions?.message || error.message,
-            ...error,
-            extensions: {
-              __orginal: {
-                ...extensions,
-              },
-              code: error.extensions?.code || 'UNKNOWN ERROR',
-              message: error.extensions?.message || error.message,
-            },
-          };
-          // HTTP Exception
-          if (extensions?.exception) {
-            standardError.extensions.message = extensions.exception.message;
-            standardError.extensions.status = extensions.exception.status;
-          }
-          // Class vaildation Exception
-          if (extensions?.response) {
-            standardError.extensions.message = extensions.response.message;
-            standardError.extensions.status = extensions.response.statusCode;
-          }
-          return standardError;
-        },
+        formatError,
       }),
     }),
     TypeOrmModule.forRootAsync({
