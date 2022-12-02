@@ -120,7 +120,7 @@ export class DeclareModule {
                 `Order must be ${Object.keys(directionObj).join(' or ')}`,
               );
             }
-            if (!checkObject[_key].includes(_value as any)) {
+            if (!checkObject[_key].includes(_value as unknown)) {
               throw new BadRequestException(
                 `Order ${_key} must be ${checkObject[_key].join(' or ')}`,
               );

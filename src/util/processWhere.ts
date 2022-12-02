@@ -20,7 +20,7 @@ import {
 // Not equal
 //where:{user:{id:{$ne:3}}}
 type TNe = {
-  $ne: any;
+  $ne: unknown;
 };
 
 // Less than
@@ -56,7 +56,7 @@ type TIn<T> = {
 // Not in
 //where:{user:{id:{$nIn:[1,2,3]}}}
 type TNotIn = {
-  $nIn: any[];
+  $nIn: unknown[];
 };
 
 // Contains(Case-sensitive)
@@ -68,7 +68,7 @@ type TContains = {
 // Not contains(Case-sensitive)
 //where:{user:{id:{$nContains:"3"}}}
 type TNotContains = {
-  $nContains: any;
+  $nContains: unknown;
 };
 
 // Contains(Case-insensitive)
@@ -80,7 +80,7 @@ type TIContains = {
 // Not contains(Case-insensitive)
 //where:{user:{id:{$icontains:"3"}}}
 type TNotIContains = {
-  $nIContains: any;
+  $nIContains: unknown;
 };
 
 // Is null

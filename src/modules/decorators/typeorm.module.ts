@@ -4,7 +4,7 @@ import { getDataSourceToken } from '@nestjs/typeorm';
 import { TYPEORM_CUSTOM_REPOSITORY } from './typeorm.decorator';
 
 export class TypeOrmExModule {
-  public static forCustomRepository<T extends new (...args: any[]) => any>(
+  public static forCustomRepository<T extends new (...args: unknown[]) => any>(
     repositories: T[],
   ): DynamicModule {
     const providers: Provider[] = [];
@@ -20,7 +20,7 @@ export class TypeOrmExModule {
         inject: [getDataSourceToken()],
         provide: repository,
         useFactory: (dataSource: DataSource): typeof repository => {
-          const baseRepository = dataSource.getRepository<any>(entity);
+          const baseRepository = dataSource.getRepository<unknown>(entity);
           return new repository(
             baseRepository.target,
             baseRepository.manager,
