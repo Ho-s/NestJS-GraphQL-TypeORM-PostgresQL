@@ -157,7 +157,7 @@ function processOperator<T>(prevKey: string, nextObject: OperatorType<T>) {
     $between: { [prevKey]: Between(value[0], value[1]) },
   };
 
-  if (!(key in operatorObject)) {
+  if (key.includes('$') && !(key in operatorObject)) {
     throw new BadRequestException(`Invalid operator ${key} for ${prevKey}`);
   }
 
