@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RepoQuery } from 'src/declare/declare.module';
+import { RepoQuery } from 'src/declare/types';
 import { Place } from 'src/entities';
 import { PlaceRepository } from './place.repositoy';
 

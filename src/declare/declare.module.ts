@@ -1,6 +1,6 @@
 import { BadRequestException, Module } from '@nestjs/common';
 import { isEmpty } from 'lodash';
-import { IWhere, processWhere } from '../util/processWhere';
+import { processWhere } from '../util/processWhere';
 import {
   FindManyOptions,
   FindOneOptions,
@@ -9,59 +9,16 @@ import {
 } from 'typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import { isObject } from 'src/util/isObject';
-import { IPagination } from 'src/entities';
-
-const valueObj = {
-  ASC: 'ASC',
-  DESC: 'DESC',
-  asc: 'asc',
-  desc: 'desc',
-  1: 1,
-  '-1': -1,
-} as const;
-
-const direction = ['ASC', 'DESC', 'asc', 'desc'] as const;
-type DirectionUnion = typeof direction[number];
-
-const nulls = ['first', 'last', 'FIRST', 'LAST'] as const;
-type NullsUnion = typeof nulls[number];
-
-const checkObject = {
-  direction,
-  nulls,
-};
-
-const directionObj = {
-  direction: 'direction',
-  nulls: 'nulls',
-} as const;
-
-type IDirectionWitnNulls = {
-  [directionObj.direction]?: DirectionUnion;
-  [directionObj.nulls]?: NullsUnion;
-};
-
-type IDriection = typeof valueObj[keyof typeof valueObj];
-type ISort = IDriection | IDirectionWitnNulls;
-
-export type IDataType = 'count' | 'data' | 'all';
-
-export type IRelation<T> = (keyof T)[];
-
-export interface RepoQuery<T> {
-  pagination?: IPagination;
-  where?: IWhere<T>;
-  order?: FindOptionsOrder<T>;
-  relations?: IRelation<T>;
-  dataType?: IDataType;
-}
-
-export interface IGetData<T> {
-  data?: T[];
-  count?: number;
-}
-
-export type OneRepoQuery<T> = Pick<RepoQuery<T>, 'where' | 'relations'>;
+import {
+  checkObject,
+  directionObj,
+  IDriection,
+  IGetData,
+  ISort,
+  OneRepoQuery,
+  RepoQuery,
+  valueObj,
+} from './types';
 
 declare module 'typeorm/repository/Repository' {
   interface Repository<Entity> {
