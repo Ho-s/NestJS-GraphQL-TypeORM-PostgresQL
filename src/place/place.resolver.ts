@@ -1,5 +1,6 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
-import { GetManyInput, GetPlaceType, Place } from 'src/entities';
+import { GetManyInput } from 'src/declare/input/custom.input';
+import { GetPlaceType, Place } from 'src/entities';
 import { PlaceService } from './place.service';
 
 @Resolver()

@@ -1,6 +1,6 @@
 import { BadRequestException, Module } from '@nestjs/common';
 import { isEmpty } from 'lodash';
-import { IWhere, processWhere } from '../util/processWhere';
+import { processWhere } from './utils/processWhere';
 import {
   FindManyOptions,
   FindOneOptions,
@@ -8,75 +8,17 @@ import {
   FindOptionsRelations,
 } from 'typeorm';
 import { Repository } from 'typeorm/repository/Repository';
-import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsNotEmpty } from 'class-validator';
 import { isObject } from 'src/util/isObject';
-
-const valueObj = {
-  ASC: 'ASC',
-  DESC: 'DESC',
-  asc: 'asc',
-  desc: 'desc',
-  1: 1,
-  '-1': -1,
-} as const;
-
-const direction = ['ASC', 'DESC', 'asc', 'desc'] as const;
-type DirectionUnion = typeof direction[number];
-
-const nulls = ['first', 'last', 'FIRST', 'LAST'] as const;
-type NullsUnion = typeof nulls[number];
-
-const checkObject = {
-  direction,
-  nulls,
-};
-
-const directionObj = {
-  direction: 'direction',
-  nulls: 'nulls',
-} as const;
-
-type IDirectionWitnNulls = {
-  [directionObj.direction]?: DirectionUnion;
-  [directionObj.nulls]?: NullsUnion;
-};
-
-type IDriection = typeof valueObj[keyof typeof valueObj];
-type ISort = IDriection | IDirectionWitnNulls;
-
-export type IOrder<T> = {
-  [key in keyof T]?: ISort;
-};
-
-export type IDataType = 'count' | 'data' | 'all';
-
-export type IRelation<T> = (keyof T)[];
-@InputType()
-export class IPagination {
-  @Field(() => Int, { description: 'Started from 0' })
-  @IsNotEmpty()
-  page: number;
-
-  @Field(() => Int, { description: 'Size of page' })
-  @IsNotEmpty()
-  size: number;
-}
-
-export interface RepoQuery<T> {
-  pagination?: IPagination;
-  where?: IWhere<T>;
-  order?: IOrder<T>;
-  relations?: IRelation<T>;
-  dataType?: IDataType;
-}
-
-export interface IGetData<T> {
-  data?: T[];
-  count?: number;
-}
-
-export type OneRepoQuery<T> = Pick<RepoQuery<T>, 'where' | 'relations'>;
+import {
+  checkObject,
+  directionObj,
+  IDriection,
+  IGetData,
+  ISort,
+  OneRepoQuery,
+  RepoQuery,
+  valueObj,
+} from './types';
 
 declare module 'typeorm/repository/Repository' {
   interface Repository<Entity> {
@@ -86,6 +28,37 @@ declare module 'typeorm/repository/Repository' {
     ): Promise<IGetData<Entity>>;
     getOne(this: Repository<Entity>, qs: OneRepoQuery<Entity>): Promise<Entity>;
   }
+}
+
+function filterOrder<T>(order: FindOptionsOrder<T>) {
+  Object.entries(order).forEach(([key, value]: [string, ISort]) => {
+    if (!(key in this.metadata.propertiesMap)) {
+      throw new BadRequestException(
+        `Order key ${key} is not in ${this.metadata.name}`,
+      );
+    }
+
+    if (isObject(value)) {
+      Object.entries(value).forEach(([_key, _value]) => {
+        if (!directionObj[_key]) {
+          throw new BadRequestException(
+            `Order must be ${Object.keys(directionObj).join(' or ')}`,
+          );
+        }
+        if (!checkObject[_key].includes(_value as unknown)) {
+          throw new BadRequestException(
+            `Order ${_key} must be ${checkObject[_key].join(' or ')}`,
+          );
+        }
+      });
+    } else {
+      if (!valueObj[value as IDriection]) {
+        throw new BadRequestException(
+          `Order must be ${Object.keys(valueObj).join(' or ')}`,
+        );
+      }
+    }
+  });
 }
 
 @Module({})
@@ -98,44 +71,17 @@ export class DeclareModule {
       this: Repository<T>,
       { pagination, where, order, relations, dataType = 'all' }: RepoQuery<T>,
     ): Promise<IGetData<T>> {
-      // You can remark this lines(between START and END) if you don't want to use strict order roles
-      // START
+      // You can remark these lines(if order {}) if you don't want to use strict order roles
       if (order) {
-        Object.entries(order).forEach(([key, value]: [string, ISort]) => {
-          if (!(key in this.metadata.propertiesMap)) {
-            throw new BadRequestException(
-              `Order key ${key} is not in ${this.metadata.name}`,
-            );
-          }
-
-          if (!valueObj[value as IDriection] && !isObject(value)) {
-            throw new BadRequestException(
-              `Order must be ${Object.keys(valueObj).join(' or ')}`,
-            );
-          }
-
-          Object.entries(value).forEach(([_key, _value]) => {
-            if (!directionObj[_key]) {
-              throw new BadRequestException(
-                `Order must be ${Object.keys(directionObj).join(' or ')}`,
-              );
-            }
-            if (!checkObject[_key].includes(_value as unknown)) {
-              throw new BadRequestException(
-                `Order ${_key} must be ${checkObject[_key].join(' or ')}`,
-              );
-            }
-          });
-        });
+        filterOrder.call(this, order);
       }
-      // END
 
       const condition: FindManyOptions<T> = {
         ...(relations && {
           relations: relations as unknown as FindOptionsRelations<T>,
         }),
         ...(where && !isEmpty(where) && { where: processWhere(where) }),
-        ...(order && { order: order as FindOptionsOrder<T> }),
+        ...(order && { order }),
         ...(pagination && {
           skip: pagination.page * pagination.size,
           take: pagination.size,

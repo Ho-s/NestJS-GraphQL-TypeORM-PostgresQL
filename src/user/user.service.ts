@@ -1,9 +1,9 @@
 import { User, CreateUserInput, UpdateUserInput } from '../entities';
-import { OneRepoQuery, RepoQuery } from '../declare/declare.module';
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { SignUpInput } from 'src/entities/auth/auth.input';
 import * as bcrypt from 'bcrypt';
+import { OneRepoQuery, RepoQuery } from 'src/declare/types';
 
 @Injectable()
 export class UserService {
