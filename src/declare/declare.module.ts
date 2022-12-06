@@ -8,9 +8,8 @@ import {
   FindOptionsRelations,
 } from 'typeorm';
 import { Repository } from 'typeorm/repository/Repository';
-import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsNotEmpty } from 'class-validator';
 import { isObject } from 'src/util/isObject';
+import { IPagination } from 'src/entities';
 
 const valueObj = {
   ASC: 'ASC',
@@ -48,17 +47,6 @@ type ISort = IDriection | IDirectionWitnNulls;
 export type IDataType = 'count' | 'data' | 'all';
 
 export type IRelation<T> = (keyof T)[];
-
-@InputType()
-export class IPagination {
-  @Field(() => Int, { description: 'Started from 0' })
-  @IsNotEmpty()
-  page: number;
-
-  @Field(() => Int, { description: 'Size of page' })
-  @IsNotEmpty()
-  size: number;
-}
 
 export interface RepoQuery<T> {
   pagination?: IPagination;

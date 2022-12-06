@@ -1,13 +1,20 @@
-import { IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import GraphQLJSON from 'graphql-type-json';
-import { Field, InputType } from '@nestjs/graphql';
-import {
-  IDataType,
-  IRelation,
-  IPagination,
-} from '../../declare/declare.module';
+import { Field, InputType, Int } from '@nestjs/graphql';
+import { IDataType, IRelation } from '../../declare/declare.module';
 import { IWhere } from 'src/util/processWhere';
 import { FindOptionsOrder } from 'typeorm';
+
+@InputType()
+export class IPagination {
+  @Field(() => Int, { description: 'Started from 0' })
+  @IsNotEmpty()
+  page: number;
+
+  @Field(() => Int, { description: 'Size of page' })
+  @IsNotEmpty()
+  size: number;
+}
 
 @InputType()
 export class GetOneInput<T> {
