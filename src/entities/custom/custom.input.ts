@@ -35,7 +35,8 @@ export class GetManyInput<T> extends GetOneInput<T> {
 
   @Field(() => GraphQLJSON, {
     nullable: true,
-    description: '{[key of entity]: "ASC or DESC"}',
+    description:
+      '{key: "ASC" or "DESC" or "asc" or "desc" or 1 or -1} or {key: {direction: "ASC" or "DESC" or "asc" or "desc", nulls: "first" or "last" or "FIRST" or "LAST"}}}',
   })
   @IsOptional()
   order?: FindOptionsOrder<T>;
