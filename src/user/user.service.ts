@@ -1,8 +1,9 @@
-import { User, CreateUserInput, UpdateUserInput } from '../entities';
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { SignUpInput } from 'src/entities/auth/auth.input';
+import { SignUpInput } from 'src/auth/inputs/auth.input';
 import { OneRepoQuery, RepoQuery } from 'src/declare/types';
+import { User } from './entities/user.entity';
+import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 
 @Injectable()
 export class UserService {

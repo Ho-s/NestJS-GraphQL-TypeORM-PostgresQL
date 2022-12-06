@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { User, UserIdInput } from '..';
+import { UserIdInput } from 'src/user/inputs/user.input';
 
 @InputType()
 export class CreatePlaceInput {
@@ -14,7 +14,7 @@ export class CreatePlaceInput {
 
   @Field(() => UserIdInput)
   @IsNotEmpty()
-  user: Partial<User>;
+  user: UserIdInput;
 }
 
 @InputType()

@@ -1,6 +1,5 @@
 import { IsEmail } from 'class-validator';
 import {
-  AfterLoad,
   BeforeInsert,
   Column,
   CreateDateColumn,
@@ -10,8 +9,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Place } from '../place';
 import * as bcrypt from 'bcrypt';
+import { Place } from 'src/place/entities/place.entity';
 
 const BCRYPT_HASH_ROUNDS = 10;
 

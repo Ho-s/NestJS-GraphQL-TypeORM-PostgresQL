@@ -1,7 +1,7 @@
-import { JwtWithUser } from '../entities/auth/auth.entity';
+import { JwtWithUser } from './entities/auth._entity';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { SignInInput, SignUpInput } from 'src/entities/auth/auth.input';
+import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
 
 @Resolver()
 export class AuthResolver {
