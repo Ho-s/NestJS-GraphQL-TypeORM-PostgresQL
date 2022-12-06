@@ -1,7 +1,7 @@
+import { FindOptionsWhereProperty } from 'typeorm';
+
 // equal
 // where:{user:{id:3}}
-
-import { FindOptionsWhere } from 'typeorm';
 
 // Not equal
 //where:{user:{id:{$ne:3}}}
@@ -109,15 +109,16 @@ export type OperatorType<T> =
   | TIContains
   | TNotIContains;
 
-type FindOptionWhereExtendedByOperatorType<T> =
-  | FindOptionsWhere<T>
-  | {
-      [key in keyof T]?:
-        | FindOptionWhereExtendedByOperatorType<T>
-        | OperatorType<T>
-        | T[key];
-    };
+type ExtendedFindOptionsWhere<Entity> = {
+  [P in keyof Entity]?: P extends 'toString'
+    ? unknown
+    :
+        | FindOptionsWhereProperty<NonNullable<Entity[P]>>
+        | OperatorType<Entity>
+        | Entity[P]
+        | ExtendedFindOptionsWhere<Entity>;
+};
 
 export type IWhere<T> =
-  | FindOptionWhereExtendedByOperatorType<T>[]
-  | FindOptionWhereExtendedByOperatorType<T>;
+  | ExtendedFindOptionsWhere<T>
+  | ExtendedFindOptionsWhere<T>[];
