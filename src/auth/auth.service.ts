@@ -27,14 +27,11 @@ export class AuthService {
       throw new BadRequestException('Username already exists');
     }
 
-    const user = await this.userService.create({
-      role: 'user',
-      ...input,
-    });
+    const user = await this.userService.create(input);
 
     const jwt = this.signJWT(user);
 
-    return { jwt, ...user };
+    return { jwt, user };
   }
 
   async signIn(input: SignInInput) {
@@ -59,6 +56,6 @@ export class AuthService {
 
     const jwt = this.signJWT(user);
 
-    return { jwt, ...user };
+    return { jwt, user };
   }
 }
