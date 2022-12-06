@@ -1,6 +1,6 @@
-import { IPagination } from 'src/entities';
-import { IWhere } from 'src/util/processWhere';
+import { IWhere } from 'src/declare/utils/processWhere';
 import { FindOptionsOrder } from 'typeorm';
+import { IPagination } from './input/custom.input';
 
 export const valueObj = {
   ASC: 'ASC',

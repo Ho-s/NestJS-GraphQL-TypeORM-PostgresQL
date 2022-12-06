@@ -1,6 +1,6 @@
 import { BadRequestException, Module } from '@nestjs/common';
 import { isEmpty } from 'lodash';
-import { processWhere } from '../util/processWhere';
+import { processWhere } from './utils/processWhere';
 import {
   FindManyOptions,
   FindOneOptions,

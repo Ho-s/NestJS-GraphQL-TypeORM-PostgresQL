@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import GraphQLJSON from 'graphql-type-json';
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { IWhere } from 'src/util/processWhere';
+import { IWhere } from 'src/declare/utils/processWhere';
 import { FindOptionsOrder } from 'typeorm';
 import { IDataType, IRelation } from 'src/declare/types';
 
