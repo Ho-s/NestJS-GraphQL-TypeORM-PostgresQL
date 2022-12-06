@@ -6,7 +6,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { Place, User } from './entities';
 import { PlaceModule } from './place/place.module';
 import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
@@ -55,7 +54,7 @@ import { formatError } from './modules/format/graphql-error.format';
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Place],
+        entities: ['dist/**/*.entity{.ts,.js}'],
         timezone: '+09:00',
         synchronize: true,
         autoLoadEntities: true,

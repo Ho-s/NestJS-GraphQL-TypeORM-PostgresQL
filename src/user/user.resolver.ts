@@ -1,16 +1,12 @@
-import {
-  GetUserType,
-  User,
-  CreateUserInput,
-  UpdateUserInput,
-} from '../entities';
 import { CurrentUser } from '../modules/decorators/user.decorator';
 import { GraphqlPassportAuthGuard } from '../modules/guards/graphql-passport-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import GraphQLJSON from 'graphql-type-json';
-import { GetManyInput, GetOneInput } from 'src/declare/input/custom.input';
+import { GetManyInput, GetOneInput } from 'src/declare/inputs/custom.input';
+import { GetUserType, User } from './entities/user.entity';
+import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 
 @Resolver()
 export class UserResolver {

@@ -1,5 +1,6 @@
 import { IsEmail } from 'class-validator';
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -8,7 +9,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Place } from '../place';
+import * as bcrypt from 'bcrypt';
+import { Place } from 'src/place/entities/place.entity';
+
+const BCRYPT_HASH_ROUNDS = 10;
 
 @ObjectType()
 @Entity()
@@ -50,6 +54,17 @@ export class User {
     nullable: true,
   })
   place: Place[];
+
+  @BeforeInsert()
+  async beforeInsert() {
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, BCRYPT_HASH_ROUNDS);
+    }
+
+    if (!this.role) {
+      this.role = 'user';
+    }
+  }
 }
 
 @ObjectType()

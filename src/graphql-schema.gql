@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreatePlaceInput {
+  address: String!
+  name: String!
+  user: UserIdInput!
+}
+
 input CreateUserInput {
   nickname: String!
   password: String!
@@ -56,20 +62,17 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 scalar JSON
 
 type JwtWithUser {
-  createdAt: DateTime!
-  id: ID!
   jwt: String!
-  nickname: String!
-  place: [Place!]
-  role: String!
-  updatedAt: DateTime!
-  username: String!
+  user: User!
 }
 
 type Mutation {
+  createManyPlaces(input: [CreatePlaceInput!]!): [Place!]!
   createManyUsers(input: [CreateUserInput!]!): [User!]!
+  createPlace(input: CreatePlaceInput!): Place!
   createUser(input: CreateUserInput!): User!
   deleteFiles(keys: [String!]!): Boolean!
+  deletePlace(id: Float!): JSON!
   deleteUser(id: String!): JSON!
   signIn(input: SignInInput!): JwtWithUser!
 
@@ -77,6 +80,7 @@ type Mutation {
   Before you start to sign up, you have to set private key and public key in ./util/jwt.util.ts
   """
   signUp(input: SignUpInput!): JwtWithUser!
+  updatePlace(id: Float!, input: UpdatePlaceInput!): Place!
   updateUser(id: String!, input: UpdateUserInput!): User!
   uploadFile(file: Upload!): String!
   uploadFiles(files: [Upload!]!): [String!]!
@@ -93,6 +97,7 @@ type Query {
   getManyPlaces(input: GetManyInput): GetPlaceType!
   getManyUsers(input: GetManyInput): GetUserType!
   getMe: User!
+  getOnePlace(input: GetOneInput): Place!
   getOneUser(input: GetOneInput): User!
 }
 
@@ -105,6 +110,11 @@ input SignUpInput {
   nickname: String!
   password: String!
   username: String!
+}
+
+input UpdatePlaceInput {
+  address: String
+  name: String
 }
 
 input UpdateUserInput {
@@ -125,4 +135,8 @@ type User {
   role: String!
   updatedAt: DateTime!
   username: String!
+}
+
+input UserIdInput {
+  id: String!
 }

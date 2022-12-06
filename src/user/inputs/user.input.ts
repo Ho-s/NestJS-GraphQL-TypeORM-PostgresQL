@@ -38,3 +38,10 @@ export class UpdateUserInput {
   @IsOptional()
   role?: 'admin' | 'user';
 }
+
+@InputType()
+export class UserIdInput {
+  @Field(() => String)
+  @IsNotEmpty()
+  id: string;
+}
