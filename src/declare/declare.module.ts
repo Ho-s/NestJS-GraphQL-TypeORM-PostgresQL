@@ -45,13 +45,10 @@ type IDirectionWitnNulls = {
 type IDriection = typeof valueObj[keyof typeof valueObj];
 type ISort = IDriection | IDirectionWitnNulls;
 
-export type IOrder<T> = {
-  [key in keyof T]?: ISort;
-};
-
 export type IDataType = 'count' | 'data' | 'all';
 
 export type IRelation<T> = (keyof T)[];
+
 @InputType()
 export class IPagination {
   @Field(() => Int, { description: 'Started from 0' })
@@ -66,7 +63,7 @@ export class IPagination {
 export interface RepoQuery<T> {
   pagination?: IPagination;
   where?: IWhere<T>;
-  order?: IOrder<T>;
+  order?: FindOptionsOrder<T>;
   relations?: IRelation<T>;
   dataType?: IDataType;
 }
@@ -88,6 +85,37 @@ declare module 'typeorm/repository/Repository' {
   }
 }
 
+function filterOrder<T>(order: FindOptionsOrder<T>) {
+  Object.entries(order).forEach(([key, value]: [string, ISort]) => {
+    if (!(key in this.metadata.propertiesMap)) {
+      throw new BadRequestException(
+        `Order key ${key} is not in ${this.metadata.name}`,
+      );
+    }
+
+    if (isObject(value)) {
+      Object.entries(value).forEach(([_key, _value]) => {
+        if (!directionObj[_key]) {
+          throw new BadRequestException(
+            `Order must be ${Object.keys(directionObj).join(' or ')}`,
+          );
+        }
+        if (!checkObject[_key].includes(_value as unknown)) {
+          throw new BadRequestException(
+            `Order ${_key} must be ${checkObject[_key].join(' or ')}`,
+          );
+        }
+      });
+    } else {
+      if (!valueObj[value as IDriection]) {
+        throw new BadRequestException(
+          `Order must be ${Object.keys(valueObj).join(' or ')}`,
+        );
+      }
+    }
+  });
+}
+
 @Module({})
 export class DeclareModule {
   constructor() {
@@ -98,44 +126,17 @@ export class DeclareModule {
       this: Repository<T>,
       { pagination, where, order, relations, dataType = 'all' }: RepoQuery<T>,
     ): Promise<IGetData<T>> {
-      // You can remark this lines(between START and END) if you don't want to use strict order roles
-      // START
+      // You can remark these lines(if order {}) if you don't want to use strict order roles
       if (order) {
-        Object.entries(order).forEach(([key, value]: [string, ISort]) => {
-          if (!(key in this.metadata.propertiesMap)) {
-            throw new BadRequestException(
-              `Order key ${key} is not in ${this.metadata.name}`,
-            );
-          }
-
-          if (!valueObj[value as IDriection] && !isObject(value)) {
-            throw new BadRequestException(
-              `Order must be ${Object.keys(valueObj).join(' or ')}`,
-            );
-          }
-
-          Object.entries(value).forEach(([_key, _value]) => {
-            if (!directionObj[_key]) {
-              throw new BadRequestException(
-                `Order must be ${Object.keys(directionObj).join(' or ')}`,
-              );
-            }
-            if (!checkObject[_key].includes(_value as unknown)) {
-              throw new BadRequestException(
-                `Order ${_key} must be ${checkObject[_key].join(' or ')}`,
-              );
-            }
-          });
-        });
+        filterOrder.call(this, order);
       }
-      // END
 
       const condition: FindManyOptions<T> = {
         ...(relations && {
           relations: relations as unknown as FindOptionsRelations<T>,
         }),
         ...(where && !isEmpty(where) && { where: processWhere(where) }),
-        ...(order && { order: order as FindOptionsOrder<T> }),
+        ...(order && { order }),
         ...(pagination && {
           skip: pagination.page * pagination.size,
           take: pagination.size,

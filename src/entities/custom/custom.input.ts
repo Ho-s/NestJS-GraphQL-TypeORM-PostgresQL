@@ -5,9 +5,9 @@ import {
   IDataType,
   IRelation,
   IPagination,
-  IOrder,
 } from '../../declare/declare.module';
 import { IWhere } from 'src/util/processWhere';
+import { FindOptionsOrder } from 'typeorm';
 
 @InputType()
 export class GetOneInput<T> {
@@ -31,7 +31,7 @@ export class GetManyInput<T> extends GetOneInput<T> {
     description: '{[key of entity]: "ASC or DESC"}',
   })
   @IsOptional()
-  order?: IOrder<T>;
+  order?: FindOptionsOrder<T>;
 
   @Field(() => String, {
     nullable: true,
