@@ -5,8 +5,6 @@ import { exec } from 'child_process';
 import util from 'util';
 import ora from 'ora';
 
-const ENTITY_DIR = './src/entities';
-
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 const createEntityFileText = (
@@ -21,10 +19,10 @@ const createEntityFileText = (
   return [
     `import {`,
     `  Column,`,
-    `  CreateDateColumn,`,
+    `${createdAt ? 'CreateDateColumn,' : ''}`,
     `  Entity,`,
     `  PrimaryGeneratedColumn,`,
-    `  UpdateDateColumn`,
+    `${updatedAt ? 'UpdateDateColumn,' : ''}`,
     `} from 'typeorm'`,
     `import { Field, ID, ObjectType } from '@nestjs/graphql'`,
     ``,
@@ -103,14 +101,6 @@ const createInputText = (name, coulumn, type, check) => {
   ].join('\n');
 };
 
-const createIndexText = (name) => {
-  return [
-    `export * from './${name}.entity';`,
-    `export * from './${name}.input';`,
-    ``,
-  ].join('\n');
-};
-
 const createModuleText = (name) => {
   return [
     `import { Module } from '@nestjs/common';`,
@@ -137,15 +127,13 @@ const createResolverModuleText = (name, typeOfId) => {
     `import { UseGuards } from '@nestjs/common'`,
     `import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'`,
     `import { ${capitalize(name)}Service } from './${name}.service'`,
-    `import {`,
-    `  GetManyInput,`,
-    `  Get${capitalize(name)}Type,`,
-    `  ${capitalize(name)},`,
-    `  Update${capitalize(name)}Input,`,
-    `  Create${capitalize(name)}Input,`,
-    `  GetOneInput,`,
-    `} from '../entities'`,
-    ``,
+    `import { GetManyInput, GetOneInput } from 'src/declare/inputs/custom.input';`,
+    `import { Get${capitalize(name)}Type, ${capitalize(
+      name,
+    )} } from './entities/${name}.entity';`,
+    `import { Create${capitalize(name)}Input, Update${capitalize(
+      name,
+    )}Input } from './inputs/${name}.input';`,
     `@Resolver()`,
     `export class ${capitalize(name)}Resolver {`,
     `constructor(private readonly ${name}Service: ${capitalize(
@@ -212,11 +200,12 @@ const createResolverModuleText = (name, typeOfId) => {
 const createServiceText = (name, typeOfId) => {
   return [
     `import { Injectable } from '@nestjs/common'`,
-    `import { OneRepoQuery, RepoQuery } from '../declare/declare.module'`,
+    `import { OneRepoQuery, RepoQuery } from 'src/declare/types';`,
     `import { ${capitalize(name)}Repository } from './${name}.repository'`,
-    `import { ${capitalize(name)}, Create${capitalize(
+    `import { ${capitalize(name)} } from './entities/${name}.entity';`,
+    `import { Create${capitalize(name)}Input, Update${capitalize(
       name,
-    )}Input, Update${capitalize(name)}Input } from '../entities'`,
+    )}Input } from './inputs/${name}.input';`,
     ``,
     `@Injectable()`,
     `export class ${capitalize(name)}Service {`,
@@ -263,7 +252,7 @@ const createServiceText = (name, typeOfId) => {
 
 const createRepositoryText = (name) => {
   return [
-    `import { ${capitalize(name)} } from '../entities'`,
+    `import { ${capitalize(name)} } from './entities/${name}.entity'`,
     `import { CustomRepository } from '../modules/decorators/typeorm.decorator'`,
     `import { Repository } from 'typeorm/repository/Repository'`,
     ``,
@@ -315,12 +304,6 @@ const changeAppMpdule = async (name) => {
     `import { ${capitalize(name)}Module } from './${name}/${name}.module';`,
   );
   for await (let line of rl) {
-    if (line.includes("from './entities'")) {
-      line = line.replace('}', `, ${capitalize(name)}}`);
-    }
-    if (line.includes('entities:')) {
-      line = line.replace('[', `[${capitalize(name)},`);
-    }
     array.push(line);
   }
 
@@ -339,9 +322,9 @@ const addEntity = async (
   type,
   check,
 ) => {
-  fs.mkdirSync(dir);
+  await fs.promises.mkdir(`${dir}/entities`, { recursive: true });
   fs.writeFileSync(
-    `${dir}/${name}.entity.ts`,
+    `${dir}/entities/${name}.entity.ts`,
     createEntityFileText(
       name,
       createdAt,
@@ -352,16 +335,11 @@ const addEntity = async (
       check,
     ),
   );
+  await fs.promises.mkdir(`${dir}/inputs`, { recursive: true });
   fs.writeFileSync(
-    `${dir}/${name}.input.ts`,
+    `${dir}/inputs/${name}.input.ts`,
     createInputText(name, coulumn, type, check),
   );
-  fs.writeFileSync(`${dir}/index.ts`, createIndexText(name));
-
-  const indexContent =
-    fs.readFileSync(`${ENTITY_DIR}/index.ts`, 'utf8') +
-    `export * from './${name}';`;
-  fs.writeFileSync(`${ENTITY_DIR}/index.ts`, indexContent);
 };
 
 const addSource = async (name, test, typeOfId) => {
@@ -397,8 +375,8 @@ const start = async () => {
           if (fs.existsSync(pageDir)) {
             return `🚫 [${input}] already exists`;
           }
-          entityDir = `${ENTITY_DIR}/${input}`;
-          if (fs.existsSync(entityDir)) {
+          entityDir = `./src/${input}`;
+          if (fs.existsSync(`${entityDir}/entities`)) {
             return `🚫 [${input}] already exists in entities folder`;
           }
           return String(input).trim().length > 0 || `table is required`;
