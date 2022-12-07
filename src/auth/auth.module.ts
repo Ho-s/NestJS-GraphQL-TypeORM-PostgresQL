@@ -14,9 +14,14 @@ import { PassportModule } from '@nestjs/passport';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
+        privateKey: configService.get('JWT_PRIVATE_KEY'),
+        publicKey: configService.get('JWT_PUBLIC_KEY'),
         signOptions: {
+          algorithm: 'RS256',
           expiresIn: '1d',
+        },
+        verifyOptions: {
+          algorithms: ['RS256'],
         },
       }),
     }),
