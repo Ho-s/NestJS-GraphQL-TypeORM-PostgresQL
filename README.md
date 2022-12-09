@@ -154,12 +154,43 @@ $ yarn build # or npm run build
 $ yarn start # or npm run start
 ```
 
+## Docker
+
+### Docker installation
+
+Download docker from Official website
+
+- Mac <https://docs.docker.com/docker-for-mac/install/>
+- Windows <https://docs.docker.com/docker-for-windows/install/>
+- Ubuntu <https://docs.docker.com/install/linux/docker-ce/ubuntu/>
+
+### Docker-compose installation
+
+Download docker from [Official website](https://docs.docker.com/compose/install)
+
+### Run
+
+Open terminal and navigate to project directory and run the following command.
+
+```bash
+# Only for development
+$ docker-compose --env-file ./development.env up --build
+```
+
+### Note
+
+If you want to user docker, You have to get DB_HOST in development.env to be `postgres`
+
 ## Todo
 
 - [ ] Strict typescript
 - [ ] Get Jest(e2e or unit test) to be work
 - [ ] Add Many OAUths (Both of front and back end)
+
   - [ ] Kakao
   - [ ] Google
   - [ ] Apple
   - [ ] Naver
+
+- [ ] Healthcheck
+- [ ] Divide usefactory
