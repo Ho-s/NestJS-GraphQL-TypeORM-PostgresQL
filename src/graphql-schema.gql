@@ -77,7 +77,7 @@ type Mutation {
   signIn(input: SignInInput!): JwtWithUser!
 
   """
-  Before you start to sign up, you have to set private key and public key in ./util/jwt.util.ts
+  Before you start to sign up, you have to set private key and public key in .env
   """
   signUp(input: SignUpInput!): JwtWithUser!
   updatePlace(id: Float!, input: UpdatePlaceInput!): Place!
