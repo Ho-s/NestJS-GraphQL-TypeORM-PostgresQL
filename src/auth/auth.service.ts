@@ -14,7 +14,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  signJWT(user: User) {
+  private signJWT(user: User) {
     return this.jwtService.sign(pick(user, ['id', 'role']));
   }
 
@@ -29,33 +29,28 @@ export class AuthService {
 
     const user = await this.userService.create(input);
 
+    return this.signIn(user);
+  }
+
+  signIn(user: User) {
     const jwt = this.signJWT(user);
 
     return { jwt, user };
   }
 
-  async signIn(input: SignInInput) {
+  async validateUser(input: SignInInput) {
     const { username, password } = input;
-
-    if (!username || !password) {
-      throw new BadRequestException(
-        'Username and password are required to sign in',
-      );
-    }
 
     const user = await this.userService.getOne({ where: { username } });
     if (!user) {
-      throw new BadRequestException('Username does not exist');
+      return null;
     }
-
     const isValid: boolean = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-      throw new BadRequestException('Password is incorrect');
+      return null;
     }
 
-    const jwt = this.signJWT(user);
-
-    return { jwt, user };
+    return user;
   }
 }
