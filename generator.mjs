@@ -43,7 +43,7 @@ const createEntityFileText = (
       ? [
           `  @Field()`,
           `  @CreateDateColumn({`,
-          `    type: 'timestamp',`,
+          `    type: 'timestamp with time zone',`,
           `  })`,
           `  createdAt: Date;`,
           ``,
@@ -53,7 +53,7 @@ const createEntityFileText = (
       ? [
           `  @Field()`,
           `  @UpdateDateColumn({`,
-          `    type: 'timestamp',`,
+          `    type: 'timestamp with time zone',`,
           `  })`,
           `  updatedAt: Date;`,
           ``,
