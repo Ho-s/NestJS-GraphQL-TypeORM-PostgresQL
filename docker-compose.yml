@@ -5,7 +5,7 @@ services:
     restart: always
     build: .
     ports:
-      - '${PORT}:80'
+      - '${PORT}:${PORT}'
     depends_on:
       - postgres
   postgres:
