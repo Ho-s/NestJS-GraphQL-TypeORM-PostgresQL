@@ -147,6 +147,12 @@ for development
 $ yarn dev # or npm run dev
 ```
 
+or run with docker
+
+```bash
+$ docker-compose --env-file ./.development.env up --build
+```
+
 for production
 
 ```bash
@@ -174,12 +180,12 @@ Open terminal and navigate to project directory and run the following command.
 
 ```bash
 # Only for development
-$ docker-compose --env-file ./development.env up --build
+$ docker-compose --env-file ./.development.env up --build
 ```
 
 ### Note
 
-If you want to user docker, You have to get DB_HOST in development.env to be `postgres`
+If you want to user docker, You have to get DB_HOST in .development.env to be `postgres`
 
 ## Todo
 
