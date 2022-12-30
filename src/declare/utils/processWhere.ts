@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { isPlainObject, isArray, omit, merge, set } from 'lodash';
+import { isPlainObject, isArray, merge, set } from 'lodash';
 import {
   Between,
   In,
@@ -40,7 +40,11 @@ function processOperator<T>(prevKey: string, nextObject: OperatorType<T>) {
     throw new BadRequestException(`Invalid operator ${key} for ${prevKey}`);
   }
 
-  return operatorObject[key];
+  if (key in operatorObject) {
+    return operatorObject[key];
+  }
+
+  return { [prevKey]: nextObject };
 }
 
 function goDeep<T>(
@@ -50,13 +54,9 @@ function goDeep<T>(
 ) {
   // Check if "and" expression
   if (isPlainObject(filters) && Object.keys(filters).length > 1) {
-    const array = Object.entries(filters).map(([key, value]) =>
-      goDeep(
-        { [key]: value } as any,
-        keyStore,
-        omit(_original, key) as IWhere<T>,
-      ),
-    );
+    const array = Object.entries(filters).map(([key, value]) => {
+      return goDeep({ [key]: value } as any, keyStore, {});
+    });
 
     return array.reduce(
       (prev: Record<string, unknown>, next: Record<string, unknown>) => {
@@ -94,10 +94,9 @@ function goDeep<T>(
     }
     return { ..._original, ...value };
   }
-  keyStore.push(thisKey);
 
   // In case object is plain and need to go deep
-  return goDeep(nextObject, keyStore, _original);
+  return goDeep(nextObject, [...keyStore, thisKey], _original);
 }
 
 export function processWhere<T>(
