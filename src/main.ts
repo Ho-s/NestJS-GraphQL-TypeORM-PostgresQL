@@ -5,6 +5,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { LoggingInterceptor } from './modules/interceptors/logging.interceptor';
 import { TimeoutInterceptor } from './modules/interceptors/timeout.interceptor';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -27,7 +28,8 @@ async function bootstrap() {
   );
 
   app.enableCors();
+  const configService = app.select(AppModule).get(ConfigService);
 
-  await app.listen(8000);
+  await app.listen(configService.get('PORT'));
 }
 bootstrap();

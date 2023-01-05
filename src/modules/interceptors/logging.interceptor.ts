@@ -11,9 +11,14 @@ import {
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const date = new Date().toISOString();
-    console.time(`Request-Response time ${date}}`);
+    const { fieldName } = context.getArgs()[3];
+    console.time(`Request-Response time ${date} for ${fieldName}`);
     return next
       .handle()
-      .pipe(tap(() => console.timeEnd(`Request-Response time ${date}}`)));
+      .pipe(
+        tap(() =>
+          console.timeEnd(`Request-Response time ${date} for ${fieldName}`),
+        ),
+      );
   }
 }

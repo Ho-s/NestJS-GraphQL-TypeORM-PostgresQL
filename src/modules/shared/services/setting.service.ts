@@ -83,10 +83,10 @@ export class SettingService {
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_NAME'),
       entities: ['dist/**/*.entity{.ts,.js}'],
-      timezone: '+09:00',
       synchronize: true,
       autoLoadEntities: true,
       logging: false, // if you want to see the query log, change to true
+      // timezone: '+09:00', // if you want to use timezone, change to your timezone
     };
   }
 }

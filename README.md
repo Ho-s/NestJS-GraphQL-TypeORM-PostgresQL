@@ -147,6 +147,12 @@ for development
 $ yarn dev # or npm run dev
 ```
 
+or run with docker
+
+```bash
+$ docker-compose --env-file ./.development.env up --build
+```
+
 for production
 
 ```bash
@@ -154,12 +160,52 @@ $ yarn build # or npm run build
 $ yarn start # or npm run start
 ```
 
+## Docker
+
+### Docker installation
+
+Download docker from Official website
+
+- Mac <https://docs.docker.com/docker-for-mac/install/>
+- Windows <https://docs.docker.com/docker-for-windows/install/>
+- Ubuntu <https://docs.docker.com/install/linux/docker-ce/ubuntu/>
+
+### Docker-compose installation
+
+Download docker from [Official website](https://docs.docker.com/compose/install)
+
+### Run
+
+Open terminal and navigate to project directory and run the following command.
+
+```bash
+# Only for development
+$ yarn start:docker
+```
+
+### After installing new dependency
+
+If you installed new dependency, you need to restart docker to recreate docker image.
+
+```bash
+$ yarn start:docker
+```
+
+### Note
+
+If you want to use docker, you have to set DB_HOST in .development.env to be `postgres`.
+The default set is `postgres`
+
 ## Todo
 
 - [ ] Strict typescript
 - [ ] Get Jest(e2e or unit test) to be work
 - [ ] Add Many OAUths (Both of front and back end)
+
   - [ ] Kakao
   - [ ] Google
   - [ ] Apple
   - [ ] Naver
+
+- [ ] Healthcheck
+- [ ] Divide usefactory
