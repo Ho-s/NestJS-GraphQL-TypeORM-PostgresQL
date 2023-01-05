@@ -185,7 +185,7 @@ $ docker-compose --env-file ./.development.env up --build
 
 ### Note
 
-If you want to user docker, You have to get DB_HOST in .development.env to be `postgres`
+If you want to use docker, you have to set DB_HOST in .development.env to be `postgres`.
 
 ## Todo
 
