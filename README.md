@@ -180,12 +180,13 @@ Open terminal and navigate to project directory and run the following command.
 
 ```bash
 # Only for development
-$ docker-compose --env-file ./.development.env up --build
+$ yarn start:docker
 ```
 
 ### Note
 
 If you want to use docker, you have to set DB_HOST in .development.env to be `postgres`.
+The default set is `postgres`
 
 ## Todo
 

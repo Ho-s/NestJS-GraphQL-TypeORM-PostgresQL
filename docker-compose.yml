@@ -8,6 +8,11 @@ services:
       - '${PORT}:${PORT}'
     depends_on:
       - postgres
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    command: yarn dev
+
   postgres:
     image: postgres
     container_name: postgres
@@ -22,4 +27,8 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./data.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  node_modules:
+  postgres_data:

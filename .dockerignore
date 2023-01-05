@@ -1,4 +1,12 @@
-.git
-dist
-node_modules
-.vscode
+# Ignore all files in the node_modules directory
+node_modules/
+
+# Ignore the .git directory and all files in it
+.git/
+
+# Ignore all files in the dist directory
+dist/
+
+# Ignore all files with the .log or .md extension
+*.log
+*.md
