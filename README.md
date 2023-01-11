@@ -162,14 +162,6 @@ $ yarn start # or npm run start
 
 ## Docker
 
-### Docker installation
-
-Download docker from Official website
-
-- Mac <https://docs.docker.com/docker-for-mac/install/>
-- Windows <https://docs.docker.com/docker-for-windows/install/>
-- Ubuntu <https://docs.docker.com/install/linux/docker-ce/ubuntu/>
-
 ### Docker-compose installation
 
 Download docker from [Official website](https://docs.docker.com/compose/install)
