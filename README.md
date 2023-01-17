@@ -200,4 +200,4 @@ The default set is `postgres`
   - [ ] Naver
 
 - [ ] Healthcheck
-- [ ] Divide usefactory
+- [x] Divide usefactory
