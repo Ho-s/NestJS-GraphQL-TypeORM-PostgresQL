@@ -199,5 +199,6 @@ The default set is `postgres`
   - [ ] Apple
   - [ ] Naver
 
+- [ ] GraphQL Upload
 - [ ] Healthcheck
 - [x] Divide usefactory
