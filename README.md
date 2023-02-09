@@ -147,18 +147,14 @@ for development
 $ yarn dev # or npm run dev
 ```
 
-or run with docker
-
-```bash
-$ docker-compose --env-file ./.development.env up --build
-```
-
 for production
 
 ```bash
 $ yarn build # or npm run build
 $ yarn start # or npm run start
 ```
+
+or run with docker following below
 
 ## Docker
 
@@ -171,21 +167,13 @@ Download docker from [Official website](https://docs.docker.com/compose/install)
 Open terminal and navigate to project directory and run the following command.
 
 ```bash
-# Only for development
-$ yarn start:docker
-```
-
-### After installing new dependency
-
-If you installed new dependency, you need to restart docker to recreate docker image.
-
-```bash
+# Only for prduction
 $ yarn start:docker
 ```
 
 ### Note
 
-If you want to use docker, you have to set DB_HOST in .development.env to be `postgres`.
+If you want to use docker, you have to set DB_HOST in .production.env to be `postgres`.
 The default set is `postgres`
 
 ## Todo
