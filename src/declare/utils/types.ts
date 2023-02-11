@@ -84,7 +84,7 @@ type TNotNull = {
 // Is between
 //where:{user:{id:{$between:[1,3]}}}
 type TBetween = {
-  $between: [number, number] | [Date, Date];
+  $between: [number, number] | [Date, Date] | [string, string];
 };
 
 // Joins the filters in an "or" expression
