@@ -24,14 +24,14 @@ import { SettingService } from './modules/shared/services/setting.service';
       driver: ApolloDriver,
       imports: [SharedModule],
       inject: [SettingService],
-      useFactory: (SettingService: SettingService) =>
-        SettingService.graphqlUseFactory,
+      useFactory: (settingService: SettingService) =>
+        settingService.graphqlUseFactory,
     }),
     TypeOrmModule.forRootAsync({
       imports: [SharedModule],
       inject: [SettingService],
       useFactory: (settingService: SettingService) =>
-        settingService.TypeOrmUseFactory,
+        settingService.typeOrmUseFactory,
     }),
     ScheduleModule.forRoot(),
     UserModule,

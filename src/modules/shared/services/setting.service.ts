@@ -72,7 +72,7 @@ export class SettingService {
     };
   }
 
-  get TypeOrmUseFactory():
+  get typeOrmUseFactory():
     | TypeOrmModuleOptions
     | Promise<TypeOrmModuleOptions> {
     return {
