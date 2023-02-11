@@ -176,6 +176,14 @@ $ yarn start:docker
 If you want to use docker, you have to set DB_HOST in .production.env to be `postgres`.
 The default set is `postgres`
 
+### Only database
+
+You can just create postgresql by below code, sync with .development.env
+
+```bash
+$ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=1q2w3e4r -d postgres
+```
+
 ## Todo
 
 - [ ] Strict typescript
