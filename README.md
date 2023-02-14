@@ -168,7 +168,7 @@ Open terminal and navigate to project directory and run the following command.
 
 ```bash
 # Only for prduction
-$ yarn start:docker
+$ docker-compose --env-file ./.production.env up
 ```
 
 ### Note
