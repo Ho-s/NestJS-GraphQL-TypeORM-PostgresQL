@@ -18,30 +18,31 @@ import { IWhere, OperatorType } from './types';
 function processOperator<T>(prevKey: string, nextObject: OperatorType<T>) {
   const key = Object.keys(nextObject)[0];
   const value = nextObject[key];
-  const operatorObject = {
-    $eq: { [prevKey]: value },
-    $ne: { [prevKey]: Not(value) },
-    $lt: { [prevKey]: LessThan(value) },
-    $lte: { [prevKey]: LessThanOrEqual(value) },
-    $gt: { [prevKey]: MoreThan(value) },
-    $gte: { [prevKey]: MoreThanOrEqual(value) },
-    $in: { [prevKey]: In(value) },
-    $nIn: { [prevKey]: Not(In(value)) },
-    $contains: { [prevKey]: Like(`%${value}%`) },
-    $nContains: { [prevKey]: Not(Like(`%${value}%`)) },
-    $iContains: { [prevKey]: ILike(`%${value}%`) },
-    $nIContains: { [prevKey]: Not(ILike(`%${value}%`)) },
-    $null: { [prevKey]: IsNull() },
-    $nNull: { [prevKey]: Not(IsNull()) },
-    $between: { [prevKey]: Between(value[0], value[1]) },
-  };
 
-  if (key.includes('$') && !(key in operatorObject)) {
+  const operatorMap = new Map<string, Record<string, unknown>>([
+    ['$eq', { [prevKey]: value }],
+    ['$ne', { [prevKey]: Not(value) }],
+    ['$lt', { [prevKey]: LessThan(value) }],
+    ['$lte', { [prevKey]: LessThanOrEqual(value) }],
+    ['$gt', { [prevKey]: MoreThan(value) }],
+    ['$gte', { [prevKey]: MoreThanOrEqual(value) }],
+    ['$in', { [prevKey]: In(value) }],
+    ['$nIn', { [prevKey]: Not(In(value)) }],
+    ['$contains', { [prevKey]: Like(`%${value}%`) }],
+    ['$nContains', { [prevKey]: Not(Like(`%${value}%`)) }],
+    ['$iContains', { [prevKey]: ILike(`%${value}%`) }],
+    ['$nIContains', { [prevKey]: Not(ILike(`%${value}%`)) }],
+    ['$null', { [prevKey]: IsNull() }],
+    ['$nNull', { [prevKey]: Not(IsNull()) }],
+    ['$between', { [prevKey]: Between(value[0], value[1]) }],
+  ]);
+
+  if (key.includes('$') && !operatorMap.has(key)) {
     throw new BadRequestException(`Invalid operator ${key} for ${prevKey}`);
   }
 
-  if (key in operatorObject) {
-    return operatorObject[key];
+  if (operatorMap.has(key)) {
+    return operatorMap.get(key);
   }
 
   return { [prevKey]: nextObject };
