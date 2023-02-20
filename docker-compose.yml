@@ -26,9 +26,6 @@ services:
       PGTZ: 'UTC'
     ports:
       - '5432:5432'
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   node_modules:
-  postgres_data:
