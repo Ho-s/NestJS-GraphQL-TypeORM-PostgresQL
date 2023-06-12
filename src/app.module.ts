@@ -13,6 +13,7 @@ import { CronModule } from './cron/cron.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SharedModule } from './modules/shared/shared.module';
 import { SettingService } from './modules/shared/services/setting.service';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { SettingService } from './modules/shared/services/setting.service';
     UploadModule,
     DeclareModule,
     CronModule,
+    HealthModule,
   ],
 })
 export class AppModule {}
