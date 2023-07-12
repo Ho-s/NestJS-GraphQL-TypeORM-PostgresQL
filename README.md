@@ -1,6 +1,6 @@
 # NestJS/TypeORM/GraphQL/PostgresQL
 
-NestJS boilerplate with TypeORM, GraphQL and PostgreslQL
+NestJS boilerplate with TypeORM, GraphQL and PostgreSQL
 
 ## Open for Contribution
 
