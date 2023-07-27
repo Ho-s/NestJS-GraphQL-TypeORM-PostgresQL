@@ -7,6 +7,7 @@ import { GraphqlPassportAuthGuard } from 'src/modules/guards/graphql-passport-au
 import { GetPlaceType, Place } from './entities/place.entity';
 import { CreatePlaceInput, UpdatePlaceInput } from './inputs/place.input';
 import { PlaceService } from './place.service';
+import { CurrentQuery } from 'src/modules/decorators/query.decorator';
 
 @Resolver()
 export class PlaceResolver {
@@ -17,8 +18,9 @@ export class PlaceResolver {
   getManyPlaces(
     @Args({ name: 'input', nullable: true })
     qs: GetManyInput<Place>,
+    @CurrentQuery() query: string,
   ) {
-    return this.placeService.getMany(qs);
+    return this.placeService.getMany(qs, query);
   }
 
   @Query(() => Place)
@@ -26,8 +28,9 @@ export class PlaceResolver {
   getOnePlace(
     @Args({ name: 'input', nullable: true })
     qs: GetOneInput<Place>,
+    @CurrentQuery() query: string,
   ) {
-    return this.placeService.getOne(qs);
+    return this.placeService.getOne(qs, query);
   }
 
   @Mutation(() => Place)

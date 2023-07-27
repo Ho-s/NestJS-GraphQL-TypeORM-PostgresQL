@@ -2,7 +2,7 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 import GraphQLJSON from 'graphql-type-json';
 import { Field, InputType, Int } from '@nestjs/graphql';
 import { FindOptionsOrder } from 'typeorm';
-import { IDataType, IRelation } from 'src/declare/types';
+import { IDataType } from 'src/declare/types';
 import { IWhere } from '../utils/types';
 
 @InputType()
@@ -21,10 +21,6 @@ export class GetOneInput<T> {
   @Field(() => GraphQLJSON, { nullable: true })
   @IsOptional()
   where?: IWhere<T>;
-
-  @Field(() => [String], { nullable: true })
-  @IsOptional()
-  relations?: IRelation<T>;
 }
 
 @InputType()

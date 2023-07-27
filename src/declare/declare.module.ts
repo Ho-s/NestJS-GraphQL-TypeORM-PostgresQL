@@ -1,12 +1,7 @@
 import { BadRequestException, Module } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 import { processWhere } from './utils/processWhere';
-import {
-  FindManyOptions,
-  FindOneOptions,
-  FindOptionsOrder,
-  FindOptionsRelations,
-} from 'typeorm';
+import { FindManyOptions, FindOneOptions, FindOptionsOrder } from 'typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import { isObject } from 'src/util/isObject';
 import {
@@ -19,14 +14,20 @@ import {
   RepoQuery,
   valueObj,
 } from './types';
+import { getInfoFromQuery } from './utils/getConditionFromQuery';
 
 declare module 'typeorm/repository/Repository' {
   interface Repository<Entity> {
     getMany(
       this: Repository<Entity>,
       qs: RepoQuery<Entity>,
+      query: string,
     ): Promise<IGetData<Entity>>;
-    getOne(this: Repository<Entity>, qs: OneRepoQuery<Entity>): Promise<Entity>;
+    getOne(
+      this: Repository<Entity>,
+      qs: OneRepoQuery<Entity>,
+      query: string,
+    ): Promise<Entity>;
   }
 }
 
@@ -69,17 +70,19 @@ export class DeclareModule {
   call() {
     Repository.prototype.getMany = async function <T>(
       this: Repository<T>,
-      { pagination, where, order, relations, dataType = 'all' }: RepoQuery<T>,
+      { pagination, where, order, dataType = 'all' }: RepoQuery<T>,
+      query: string,
     ): Promise<IGetData<T>> {
       // You can remark these lines(if order {}) if you don't want to use strict order roles
       if (order) {
         filterOrder.call(this, order);
       }
 
+      const { relations, select } = getInfoFromQuery<T>(query, true);
+
       const condition: FindManyOptions<T> = {
-        ...(relations && {
-          relations: relations as unknown as FindOptionsRelations<T>,
-        }),
+        relations,
+        select,
         ...(where && !isEmpty(where) && { where: processWhere(where) }),
         ...(order && { order }),
         ...(pagination && {
@@ -102,12 +105,14 @@ export class DeclareModule {
 
     Repository.prototype.getOne = async function <T>(
       this: Repository<T>,
-      { where, relations }: OneRepoQuery<T>,
+      { where }: OneRepoQuery<T>,
+      query: string,
     ): Promise<T> {
+      const { relations, select } = getInfoFromQuery<T>(query);
+
       const condition: FindOneOptions<T> = {
-        ...(relations && {
-          relations: relations as unknown as FindOptionsRelations<T>,
-        }),
+        relations,
+        select,
         ...(where && { where: processWhere(where) }),
       };
 

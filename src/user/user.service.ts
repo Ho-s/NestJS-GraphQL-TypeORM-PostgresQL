@@ -9,12 +9,12 @@ import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  getOne(qs?: OneRepoQuery<User>) {
-    return this.userRepository.getOne(qs || {});
+  getOne(qs?: OneRepoQuery<User>, query?: string) {
+    return this.userRepository.getOne(qs || {}, query);
   }
 
-  getMany(qs?: RepoQuery<User>) {
-    return this.userRepository.getMany(qs || {});
+  getMany(qs?: RepoQuery<User>, query?: string) {
+    return this.userRepository.getMany(qs || {}, query);
   }
 
   async create(input: CreateUserInput | SignUpInput): Promise<User> {

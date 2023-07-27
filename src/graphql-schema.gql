@@ -29,12 +29,10 @@ input GetManyInput {
   """
   order: JSON
   pagination: IPagination
-  relations: [String!]
   where: JSON
 }
 
 input GetOneInput {
-  relations: [String!]
   where: JSON
 }
 

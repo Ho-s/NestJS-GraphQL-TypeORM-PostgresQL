@@ -37,8 +37,6 @@ export type ISort = IDriection | IDirectionWitnNulls;
 
 export type IDataType = 'count' | 'data' | 'all';
 
-export type IRelation<T> = (keyof T)[];
-
 export interface IGetData<T> {
   data?: T[];
   count?: number;
@@ -48,8 +46,7 @@ export interface RepoQuery<T> {
   pagination?: IPagination;
   where?: IWhere<T>;
   order?: FindOptionsOrder<T>;
-  relations?: IRelation<T>;
   dataType?: IDataType;
 }
 
-export type OneRepoQuery<T> = Pick<RepoQuery<T>, 'where' | 'relations'>;
+export type OneRepoQuery<T> = Pick<RepoQuery<T>, 'where'>;
