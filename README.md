@@ -99,7 +99,6 @@ query($input:GetManyInput) {
       page: 0, // Started from 0
     },
     order: { id: 'DESC' },
-    relations: ['place'],
     dataType: 'data', //all or count or data - default: all
     where: {
       id: 3,
