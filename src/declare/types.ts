@@ -49,4 +49,4 @@ export interface RepoQuery<T> {
   dataType?: IDataType;
 }
 
-export type OneRepoQuery<T> = Pick<RepoQuery<T>, 'where'>;
+export type OneRepoQuery<T> = Pick<Required<RepoQuery<T>>, 'where'>;

@@ -26,7 +26,7 @@ export class PlaceResolver {
   @Query(() => Place)
   @UseGuards(new GraphqlPassportAuthGuard('admin'))
   getOnePlace(
-    @Args({ name: 'input', nullable: true })
+    @Args({ name: 'input' })
     qs: GetOneInput<Place>,
     @CurrentQuery() query: string,
   ) {

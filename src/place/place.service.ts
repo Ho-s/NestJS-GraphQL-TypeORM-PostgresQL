@@ -8,8 +8,8 @@ import { PlaceRepository } from './place.repositoy';
 @Injectable()
 export class PlaceService {
   constructor(private readonly placeRepository: PlaceRepository) {}
-  getOne(qs?: OneRepoQuery<Place>, query?: string) {
-    return this.placeRepository.getOne(qs || {}, query);
+  getOne(qs: OneRepoQuery<Place>, query?: string) {
+    return this.placeRepository.getOne(qs, query);
   }
 
   getMany(qs?: RepoQuery<Place>, query?: string) {

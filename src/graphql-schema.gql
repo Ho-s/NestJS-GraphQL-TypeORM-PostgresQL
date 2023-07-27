@@ -33,7 +33,7 @@ input GetManyInput {
 }
 
 input GetOneInput {
-  where: JSON
+  where: JSON!
 }
 
 type GetPlaceType {
@@ -95,8 +95,8 @@ type Query {
   getManyPlaces(input: GetManyInput): GetPlaceType!
   getManyUsers(input: GetManyInput): GetUserType!
   getMe: User!
-  getOnePlace(input: GetOneInput): Place!
-  getOneUser(input: GetOneInput): User!
+  getOnePlace(input: GetOneInput!): Place!
+  getOneUser(input: GetOneInput!): User!
 }
 
 input SignInInput {

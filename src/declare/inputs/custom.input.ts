@@ -18,13 +18,17 @@ export class IPagination {
 
 @InputType()
 export class GetOneInput<T> {
-  @Field(() => GraphQLJSON, { nullable: true })
-  @IsOptional()
-  where?: IWhere<T>;
+  @Field(() => GraphQLJSON)
+  @IsNotEmpty()
+  where: IWhere<T>;
 }
 
 @InputType()
-export class GetManyInput<T> extends GetOneInput<T> {
+export class GetManyInput<T> {
+  @Field(() => GraphQLJSON, { nullable: true })
+  @IsOptional()
+  where?: IWhere<T>;
+
   @Field(() => IPagination, { nullable: true })
   @IsOptional()
   pagination?: IPagination;
