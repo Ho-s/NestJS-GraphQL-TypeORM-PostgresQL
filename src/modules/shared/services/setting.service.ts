@@ -2,7 +2,7 @@ import { ApolloDriverConfig } from '@nestjs/apollo';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import GraphQLJSON from 'graphql-type-json';
 import { isNil } from 'lodash';
 import { join } from 'path';
@@ -63,10 +63,6 @@ export class SettingService {
         plugins: [ApolloServerPluginLandingPageLocalDefault()],
       }),
       context: ({ req }) => ({ req }),
-      cors: {
-        origin: '*',
-        Credential: true,
-      },
       cache: 'bounded',
       formatError,
     };

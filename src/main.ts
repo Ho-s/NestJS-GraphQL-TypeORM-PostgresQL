@@ -27,7 +27,10 @@ async function bootstrap() {
     graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
   );
 
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+  });
   const configService = app.select(AppModule).get(ConfigService);
 
   await app.listen(configService.get('PORT'));
