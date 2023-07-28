@@ -7,6 +7,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { GetManyInput, GetOneInput } from 'src/declare/inputs/custom.input';
 import { GetUserType, User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
+import { CurrentQuery } from 'src/modules/decorators/query.decorator';
 
 @Resolver()
 export class UserResolver {
@@ -17,17 +18,19 @@ export class UserResolver {
   getManyUsers(
     @Args({ name: 'input', nullable: true })
     qs: GetManyInput<User>,
+    @CurrentQuery() query: string,
   ) {
-    return this.userService.getMany(qs);
+    return this.userService.getMany(qs, query);
   }
 
   @Query(() => User)
   @UseGuards(new GraphqlPassportAuthGuard('admin'))
   getOneUser(
-    @Args({ name: 'input', nullable: true })
+    @Args({ name: 'input' })
     qs: GetOneInput<User>,
+    @CurrentQuery() query: string,
   ) {
-    return this.userService.getOne(qs);
+    return this.userService.getOne(qs, query);
   }
 
   @Mutation(() => User)
@@ -62,7 +65,6 @@ export class UserResolver {
   getMe(@CurrentUser() user: User) {
     return this.userService.getOne({
       where: { id: user.id },
-      relations: ['place'],
     });
   }
 }

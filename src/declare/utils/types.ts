@@ -1,4 +1,8 @@
-import { FindOptionsWhereProperty } from 'typeorm';
+import {
+  FindOptionsRelations,
+  FindOptionsSelect,
+  FindOptionsWhereProperty,
+} from 'typeorm';
 
 // equal
 // where:{user:{id:3}}
@@ -122,3 +126,15 @@ type ExtendedFindOptionsWhere<Entity> = {
 export type IWhere<T> =
   | ExtendedFindOptionsWhere<T>
   | ExtendedFindOptionsWhere<T>[];
+
+export interface GetInfoFromQueryProps<Entity> {
+  relations: FindOptionsRelations<Entity>;
+  select: FindOptionsSelect<Entity>;
+}
+
+export interface AddKeyValueInObjectProps<Entity>
+  extends GetInfoFromQueryProps<Entity> {
+  stack: string[];
+  expandRelation?: boolean;
+  hasCountType?: boolean;
+}

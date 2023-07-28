@@ -29,13 +29,11 @@ input GetManyInput {
   """
   order: JSON
   pagination: IPagination
-  relations: [String!]
   where: JSON
 }
 
 input GetOneInput {
-  relations: [String!]
-  where: JSON
+  where: JSON!
 }
 
 type GetPlaceType {
@@ -97,8 +95,8 @@ type Query {
   getManyPlaces(input: GetManyInput): GetPlaceType!
   getManyUsers(input: GetManyInput): GetUserType!
   getMe: User!
-  getOnePlace(input: GetOneInput): Place!
-  getOneUser(input: GetOneInput): User!
+  getOnePlace(input: GetOneInput!): Place!
+  getOneUser(input: GetOneInput!): User!
 }
 
 input SignInInput {
