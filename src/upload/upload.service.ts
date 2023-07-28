@@ -1,12 +1,15 @@
-import { S3, AWSError } from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
-import { ReadStream } from 'fs';
+import {
+  DeleteObjectCommand,
+  ListObjectsCommand,
+  S3,
+} from '@aws-sdk/client-s3';
 import { FileUpload } from 'graphql-upload';
 import * as path from 'path';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Upload } from '@aws-sdk/lib-storage';
 
 @Injectable()
 export class UploadService {
@@ -18,11 +21,19 @@ export class UploadService {
     private readonly httpService: HttpService,
   ) {
     this.awsS3 = new S3({
-      accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
-      secretAccessKey: this.configService.get('AWS_S3_SECRET_KEY'),
       region: this.configService.get('AWS_S3_REGION'),
+      credentials: {
+        accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
+        secretAccessKey: this.configService.get('AWS_S3_SECRET_KEY'),
+      },
     });
     this.S3_BUCKET_NAME = this.configService.get('AWS_S3_BUCKET_NAME');
+  }
+
+  getLinkByKey(key: string) {
+    return `https://${this.configService.get(
+      'AWS_S3_BUCKET_NAME',
+    )}.s3.amazonaws.com/${key}`;
   }
 
   async uploadFileToS3({
@@ -32,65 +43,49 @@ export class UploadService {
     folderName: string;
     file: FileUpload;
   }) {
-    const promised = await file;
     const key = `${folderName}/${new Date().toISOString()}_${path.basename(
-      promised.filename,
+      file.filename,
     )}`.replace(/ /g, '');
+
+    const upload = new Upload({
+      client: this.awsS3,
+      params: {
+        Bucket: this.S3_BUCKET_NAME,
+        Key: key,
+        Body: file.createReadStream(),
+        ContentType: file.mimetype,
+      },
+    });
+
     try {
-      await this.awsS3
-        .upload({
-          Bucket: this.S3_BUCKET_NAME,
-          Key: key,
-          Body: promised.createReadStream(),
-        })
-        .promise();
+      await upload.done();
 
       return { key };
     } catch (error) {
+      console.log(error);
       throw new BadRequestException(`File upload failed : ${error}`);
     }
   }
 
-  async uploadTxtToS3(
-    folder: string,
-    file: ReadStream,
-  ): Promise<{
-    key: string;
-    s3Object: PromiseResult<S3.PutObjectOutput, AWSError>;
-    contentType: string;
-  }> {
-    try {
-      const key = `${folder}/${new Date().toISOString()}_log`.replace(/ /g, '');
+  async deleteS3Object(key: string): Promise<{ success: true }> {
+    const command = new DeleteObjectCommand({
+      Bucket: this.S3_BUCKET_NAME,
+      Key: key,
+    });
 
-      const s3Object = await this.awsS3
-        .putObject({
-          Bucket: this.S3_BUCKET_NAME,
-          Key: key,
-          Body: file,
-          ACL: 'public-read',
-          ContentType: 'text/plain; charset=utf-8',
-        })
-        .promise();
-      return { key, s3Object, contentType: 'content-type' };
-    } catch (error) {
-      throw new BadRequestException(`File upload failed : ${error}`);
+    const check = new ListObjectsCommand({
+      Bucket: this.S3_BUCKET_NAME,
+      Prefix: key,
+    });
+
+    const fileList = await this.awsS3.send(check);
+
+    if (!fileList.Contents || fileList.Contents.length === 0) {
+      throw new BadRequestException(`File does not exist`);
     }
-  }
 
-  async deleteS3Object(
-    key: string,
-    callback?: (err: AWSError, data: S3.DeleteObjectOutput) => void,
-  ): Promise<{ success: true }> {
     try {
-      await this.awsS3
-        .deleteObject(
-          {
-            Bucket: this.S3_BUCKET_NAME,
-            Key: key,
-          },
-          callback,
-        )
-        .promise();
+      await this.awsS3.send(command);
       return { success: true };
     } catch (error) {
       throw new BadRequestException(`Failed to delete file : ${error}`);
@@ -98,18 +93,17 @@ export class UploadService {
   }
 
   async listS3Object(folder: string) {
-    const s3Object = await this.awsS3
-      .listObjectsV2({
-        Bucket: this.S3_BUCKET_NAME,
-        Prefix: folder,
-      })
-      .promise();
+    const command = new ListObjectsCommand({
+      Bucket: this.S3_BUCKET_NAME,
+      Prefix: folder,
+    });
+
+    const data = await this.awsS3.send(command);
 
     const promise = await Promise.all(
-      s3Object.Contents.map(async (v) => {
-        const url = `https://${this.configService.get(
-          'AWS_S3_BUCKET_NAME',
-        )}.s3.amazonaws.com/${v.Key}`;
+      data.Contents.map(async (v) => {
+        const url = this.getLinkByKey(v.Key);
+
         const data = await firstValueFrom(this.httpService.get(url));
         return data;
       }),

@@ -1,14 +1,11 @@
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
-import { ConfigService } from '@nestjs/config';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { UploadService } from './upload.service';
 
 @Resolver()
 export class UploadResolver {
-  constructor(
-    private readonly uploadService: UploadService,
-    private readonly configService: ConfigService,
-  ) {}
+  private readonly FOLDER_NAME = 'someFolderName';
+  constructor(private readonly uploadService: UploadService) {}
 
   @Mutation(() => String)
   async uploadFile(
@@ -16,13 +13,11 @@ export class UploadResolver {
     file: FileUpload,
   ): Promise<string> {
     const { key } = await this.uploadService.uploadFileToS3({
-      folderName: 'bewave',
+      folderName: this.FOLDER_NAME,
       file,
     });
 
-    return `https://${this.configService.get(
-      'AWS_S3_BUCKET_NAME',
-    )}.s3.amazonaws.com/${key}`;
+    return this.uploadService.getLinkByKey(key);
   }
 
   @Mutation(() => [String])
@@ -33,13 +28,11 @@ export class UploadResolver {
     return Promise.all(
       files.map(async (file) => {
         const { key } = await this.uploadService.uploadFileToS3({
-          folderName: 'bewave',
+          folderName: this.FOLDER_NAME,
           file,
         });
 
-        return `https://${this.configService.get(
-          'AWS_S3_BUCKET_NAME',
-        )}.s3.amazonaws.com/${key}`;
+        return this.uploadService.getLinkByKey(key);
       }),
     );
   }
