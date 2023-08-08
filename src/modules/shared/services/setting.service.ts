@@ -81,8 +81,8 @@ export class SettingService {
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
       autoLoadEntities: true,
-      logging: false, // if you want to see the query log, change to true
-      // timezone: '+09:00', // if you want to use timezone, change to your timezone
+      logging: false, // if you want to see the query log, change it to true
+      // timezone: '+09:00', // if you want to use timezone, change it to your timezone
     };
   }
 }
