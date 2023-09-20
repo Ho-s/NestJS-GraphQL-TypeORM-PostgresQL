@@ -5,7 +5,7 @@ NestJS boilerplate with TypeORM, GraphQL and PostgreSQL
 ## Open for Contribution
 
 Totally open for any Pull Request, please feel free to contribute in any ways.
-There can be errors related with type or something. It would be very helpful to me for you to fix this errors.
+There can be errors related with type or something. It would be very helpful to me for you to fix these errors.
 
 ## [NestJS](https://docs.nestjs.com/)
 
