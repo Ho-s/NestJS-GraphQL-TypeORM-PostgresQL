@@ -17,7 +17,7 @@ export class UserService {
     return this.userRepository.getMany(qs || {}, query);
   }
 
-  async create(input: CreateUserInput | SignUpInput): Promise<User> {
+  create(input: CreateUserInput | SignUpInput): Promise<User> {
     return this.userRepository.save(Object.assign(new User(), input));
   }
 

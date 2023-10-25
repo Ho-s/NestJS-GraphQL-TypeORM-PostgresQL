@@ -16,7 +16,7 @@ export class PlaceService {
     return this.placeRepository.getMany(qs || {}, query);
   }
 
-  async create(input: CreatePlaceInput): Promise<Place> {
+  create(input: CreatePlaceInput): Promise<Place> {
     return this.placeRepository.save(input);
   }
 
