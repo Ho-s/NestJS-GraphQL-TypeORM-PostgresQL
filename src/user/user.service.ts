@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { SignUpInput } from 'src/auth/inputs/auth.input';
 import { OneRepoQuery, RepoQuery } from 'src/declare/types';
 import { User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
@@ -13,11 +12,11 @@ export class UserService {
     return this.userRepository.getOne(qs, query);
   }
 
-  getMany(qs?: RepoQuery<User>, query?: string) {
-    return this.userRepository.getMany(qs || {}, query);
+  getMany(qs: RepoQuery<User> = {}, query?: string) {
+    return this.userRepository.getMany(qs, query);
   }
 
-  create(input: CreateUserInput | SignUpInput): Promise<User> {
+  create(input: CreateUserInput): Promise<User> {
     return this.userRepository.save(Object.assign(new User(), input));
   }
 

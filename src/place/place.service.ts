@@ -12,8 +12,8 @@ export class PlaceService {
     return this.placeRepository.getOne(qs, query);
   }
 
-  getMany(qs?: RepoQuery<Place>, query?: string) {
-    return this.placeRepository.getMany(qs || {}, query);
+  getMany(qs: RepoQuery<Place> = {}, query?: string) {
+    return this.placeRepository.getMany(qs, query);
   }
 
   create(input: CreatePlaceInput): Promise<Place> {

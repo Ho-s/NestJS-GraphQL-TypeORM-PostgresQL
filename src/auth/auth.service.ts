@@ -27,7 +27,7 @@ export class AuthService {
       throw new BadRequestException('Username already exists');
     }
 
-    const user = await this.userService.create(input);
+    const user = await this.userService.create({ ...input, role: 'user' });
 
     return this.signIn(user);
   }

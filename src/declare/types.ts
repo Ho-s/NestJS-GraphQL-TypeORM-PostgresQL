@@ -12,10 +12,10 @@ export const valueObj = {
 } as const;
 
 const direction = ['ASC', 'DESC', 'asc', 'desc'] as const;
-type DirectionUnion = typeof direction[number];
+type DirectionUnion = (typeof direction)[number];
 
 const nulls = ['first', 'last', 'FIRST', 'LAST'] as const;
-type NullsUnion = typeof nulls[number];
+type NullsUnion = (typeof nulls)[number];
 
 export const checkObject = {
   direction,
@@ -32,7 +32,7 @@ type IDirectionWitnNulls = {
   [directionObj.nulls]?: NullsUnion;
 };
 
-export type IDriection = typeof valueObj[keyof typeof valueObj];
+export type IDriection = (typeof valueObj)[keyof typeof valueObj];
 export type ISort = IDriection | IDirectionWitnNulls;
 
 export type IDataType = 'count' | 'data' | 'all';

@@ -215,8 +215,8 @@ const createServiceText = (name, typeOfId) => {
       name,
     )}Repository) {}`,
     ``,
-    `getMany(qs?: RepoQuery<${capitalize(name)}>, query?: string) {`,
-    `  return this.${name}Repository.getMany(qs || {}, query);`,
+    `getMany(qs: RepoQuery<${capitalize(name)}> = {}, query?: string) {`,
+    `  return this.${name}Repository.getMany(qs, query);`,
     `}`,
     ``,
     `getOne(qs: OneRepoQuery<${capitalize(name)}>, query?: string) {`,
@@ -361,6 +361,10 @@ const addSource = async (name, test, typeOfId) => {
     fs.writeFileSync(
       `${dir}/${name}.service.spec.ts`,
       createTestText(name, 'service'),
+    );
+    fs.writeFileSync(
+      `${dir}/${name}.resolver.spec.ts`,
+      createTestText(name, 'resolver'),
     );
   }
 };
