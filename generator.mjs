@@ -252,31 +252,116 @@ const createRepositoryText = (name) => {
   ].join('\n');
 };
 
-const createTestText = (name, type) => {
+const createUnitTest = (name, typeOfId) => {
   return [
     `import { Test, TestingModule } from '@nestjs/testing'`,
-    `import { ${capitalize(name)}${capitalize(
-      type,
-    )} } from './${name}.${type}'`,
+    `import { ${capitalize(name)}Service } from './${name}.service'`,
     ``,
-    `describe('${capitalize(name)}${capitalize(type)}', () => {`,
-    `  let ${type}: ${capitalize(name)}${capitalize(type)}`,
+    `import {`,
+    `  MockRepository,`,
+    `  MockRepositoryFactory,`,
+    `} from 'src/common/factory/mockRepositoryFactory'`,
+    `import { getRepositoryToken } from '@nestjs/typeorm'`,
+    `import { ${capitalize(name)}Repository } from './${name}.repository'`,
+    `import { ${capitalize(name)} } from './entities/${name}.entity'`,
+    `import { Create${capitalize(name)}Input, Update${capitalize(
+      name,
+    )}Input } from './inputs/${name}.input'`,
+    `import { ExtendedRepository } from 'src/common/graphql/customExtended'`,
+    `import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types'`,
+    typeOfId === 'increment'
+      ? `import { getRandomNumber } from 'src/util/getRandomNumber'`
+      : `import { getRandomUUID } from 'src/util/getRandomUUID'`,
     ``,
-    `  beforeEach(async () => {`,
+    `describe('${capitalize(name)}Service', () => {`,
+    `  let service: ${capitalize(name)}Service`,
+    `  let mockedRepository: MockRepository<ExtendedRepository<${capitalize(
+      name,
+    )}>>`,
+    ``,
+    `  beforeAll(async () => {`,
     `    const module: TestingModule = await Test.createTestingModule({`,
-    `      providers: [${capitalize(name)}${capitalize(type)}]`,
+    `      providers: [`,
+    `        ${capitalize(name)}Service,`,
+    `        {`,
+    `          provide: getRepositoryToken(${capitalize(name)}Repository),`,
+    `          useValue: MockRepositoryFactory.getMockRepository(${capitalize(
+      name,
+    )}Repository),`,
+    `        },`,
+    `      ],`,
     `    }).compile()`,
     ``,
-    `    ${type} = module.get<${capitalize(name)}${capitalize(
-      type,
-    )}>(${capitalize(name)}${capitalize(type)})`,
+    `    service = module.get<${capitalize(name)}Service>(${capitalize(
+      name,
+    )}Service)`,
+    `    mockedRepository = module.get<MockRepository<ExtendedRepository<${capitalize(
+      name,
+    )}>>>(`,
+    `      getRepositoryToken(${capitalize(name)}Repository),`,
+    `    )`,
     `  })`,
     ``,
-    `  it('should be defined', () => {`,
-    `    expect(${type}).toBeDefined()`,
+    `  afterEach(() => {`,
+    `    jest.resetAllMocks()`,
+    `  })`,
+    ``,
+    `  it('Calling "Get many" method', () => {`,
+    `    const qs: RepoQuery<${capitalize(name)}> = {`,
+    `      where: { id: ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    } },`,
+    `    }`,
+    ``,
+    `    expect(service.getMany(qs)).not.toEqual(null)`,
+    `    expect(mockedRepository.getMany).toHaveBeenCalled()`,
+    `  })`,
+    ``,
+    `  it('Calling "Get one" method', () => {`,
+    `    const qs: OneRepoQuery<${capitalize(name)}> = {`,
+    `      where: { id: ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    } },`,
+    `    }`,
+    ``,
+    `    expect(service.getOne(qs)).not.toEqual(null)`,
+    `    expect(mockedRepository.getOne).toHaveBeenCalled()`,
+    `  })`,
+    ``,
+    `  it('Calling "Create" method', () => {`,
+    `    const dto = new Create${capitalize(name)}Input()`,
+    `    const ${name} = mockedRepository.create(dto)`,
+    ``,
+    `    expect(service.create(dto)).not.toEqual(null)`,
+    `    expect(mockedRepository.create).toHaveBeenCalledWith(dto)`,
+    `    expect(mockedRepository.save).toHaveBeenCalledWith(${name})`,
+    `  })`,
+    ``,
+    `  it('Calling "Update" method', () => {`,
+    `    const id = ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    }`,
+    `    const dto = new Update${capitalize(name)}Input()`,
+    `    const ${name} = mockedRepository.create(dto)`,
+    ``,
+    `    service.update(id, dto)`,
+    ``,
+    `    expect(mockedRepository.create).toHaveBeenCalledWith(dto)`,
+    `    expect(mockedRepository.update).toHaveBeenCalledWith(id, ${name})`,
+    `  })`,
+    ``,
+    `  it('Calling "Delete" method', () => {`,
+    `    const id = ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    }`,
+    ``,
+    `    service.delete(id)`,
+    ``,
+    `    expect(mockedRepository.delete).toHaveBeenCalledWith({ id })`,
     `  })`,
     `})`,
-    ``,
+
+    ,
   ].join('\n');
 };
 
@@ -345,12 +430,12 @@ const addSource = async (name, test, typeOfId) => {
   if (test !== 'no') {
     fs.writeFileSync(
       `${dir}/${name}.service.spec.ts`,
-      createTestText(name, 'service'),
+      createUnitTest(name, typeOfId),
     );
-    fs.writeFileSync(
-      `${dir}/${name}.resolver.spec.ts`,
-      createTestText(name, 'resolver'),
-    );
+    // fs.writeFileSync(
+    //   `${dir}/${name}.resolver.spec.ts`,
+    //   createTestText(name, 'resolver'),
+    // );
   }
 };
 
