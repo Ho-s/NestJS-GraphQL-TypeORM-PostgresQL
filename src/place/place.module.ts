@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmExModule } from '../modules/decorators/typeorm.module';
+import { TypeOrmExModule } from '../common/modules/typeorm.module';
 import { PlaceRepository } from './place.repositoy';
 import { PlaceResolver } from './place.resolver';
 import { PlaceService } from './place.service';

@@ -3,8 +3,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import { LoggingInterceptor } from './modules/interceptors/logging.interceptor';
-import { TimeoutInterceptor } from './modules/interceptors/timeout.interceptor';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {

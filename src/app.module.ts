@@ -7,11 +7,11 @@ import { AuthModule } from './auth/auth.module';
 import { PlaceModule } from './place/place.module';
 import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
-import { getEnvPath } from './modules/helper/env.helper';
+import { getEnvPath } from './common/helper/env.helper';
 import { CronModule } from './cron/cron.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { SharedModule } from './modules/shared/shared.module';
-import { SettingService } from './modules/shared/services/setting.service';
+import { SharedModule } from './common/shared/shared.module';
+import { SettingService } from './common/shared/services/setting.service';
 import { HealthModule } from './health/health.module';
 
 @Module({

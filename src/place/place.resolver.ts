@@ -3,11 +3,11 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import GraphQLJSON from 'graphql-type-json';
 import { GetManyInput, GetOneInput } from 'src/declare/inputs/custom.input';
 
-import { GraphqlPassportAuthGuard } from 'src/modules/guards/graphql-passport-auth.guard';
+import { GraphqlPassportAuthGuard } from 'src/common/guards/graphql-passport-auth.guard';
 import { GetPlaceType, Place } from './entities/place.entity';
 import { CreatePlaceInput, UpdatePlaceInput } from './inputs/place.input';
 import { PlaceService } from './place.service';
-import { CurrentQuery } from 'src/modules/decorators/query.decorator';
+import { CurrentQuery } from 'src/common/decorators/query.decorator';
 
 @Resolver()
 export class PlaceResolver {

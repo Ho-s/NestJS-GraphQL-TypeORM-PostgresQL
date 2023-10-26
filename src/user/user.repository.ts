@@ -1,4 +1,4 @@
-import { CustomRepository } from '../modules/decorators/typeorm.decorator';
+import { CustomRepository } from '../common/decorators/typeorm.decorator';
 import { User } from './entities/user.entity';
 import { ExtendedRepository } from 'src/declare/declare.module';
 
