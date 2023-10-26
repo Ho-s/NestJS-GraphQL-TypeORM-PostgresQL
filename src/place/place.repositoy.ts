@@ -1,6 +1,6 @@
 import { CustomRepository } from '../modules/decorators/typeorm.decorator';
-import { Repository } from 'typeorm/repository/Repository';
 import { Place } from './entities/place.entity';
+import { ExtendedRepository } from 'src/declare/declare.module';
 
 @CustomRepository(Place)
-export class PlaceRepository extends Repository<Place> {}
+export class PlaceRepository extends ExtendedRepository<Place> {}

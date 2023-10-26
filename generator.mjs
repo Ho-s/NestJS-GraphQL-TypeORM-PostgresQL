@@ -256,12 +256,12 @@ const createRepositoryText = (name) => {
   return [
     `import { ${capitalize(name)} } from './entities/${name}.entity'`,
     `import { CustomRepository } from '../modules/decorators/typeorm.decorator'`,
-    `import { Repository } from 'typeorm/repository/Repository'`,
+    `import { ExtendedRepository } from 'src/declare/declare.module'`,
     ``,
     `@CustomRepository(${capitalize(name)})`,
-    `export class ${capitalize(name)}Repository extends Repository<${capitalize(
+    `export class ${capitalize(
       name,
-    )}> {`,
+    )}Repository extends ExtendedRepository<${capitalize(name)}> {`,
     `}`,
     ``,
   ].join('\n');
@@ -411,6 +411,9 @@ const start = async () => {
       {
         name: 'coulumn',
         message: 'Please enter only one data column name to generate.',
+        validate: (input) => {
+          return String(input).trim().length > 0 || `A column is required`;
+        },
       },
       {
         type: 'list',

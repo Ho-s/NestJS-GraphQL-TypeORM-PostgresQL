@@ -7,7 +7,6 @@ import { AuthModule } from './auth/auth.module';
 import { PlaceModule } from './place/place.module';
 import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
-import { DeclareModule } from './declare/declare.module';
 import { getEnvPath } from './modules/helper/env.helper';
 import { CronModule } from './cron/cron.module';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -39,7 +38,6 @@ import { HealthModule } from './health/health.module';
     AuthModule,
     PlaceModule,
     UploadModule,
-    DeclareModule,
     CronModule,
     HealthModule,
   ],
