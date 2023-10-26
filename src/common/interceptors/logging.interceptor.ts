@@ -12,12 +12,8 @@ export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const date = new Date().toISOString();
     const { fieldName } = context.getArgs()[3] ?? { fieldName: 'REST API' };
-    return next
-      .handle()
-      .pipe(
-        tap(() =>
-          console.timeEnd(`Request-Response time ${date} for ${fieldName}`),
-        ),
-      );
+    const message = `${date} Request-Response time of ${fieldName}`;
+    console.time(message);
+    return next.handle().pipe(tap(() => console.timeEnd(message)));
   }
 }
