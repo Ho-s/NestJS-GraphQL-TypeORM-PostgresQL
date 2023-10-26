@@ -65,8 +65,6 @@ type JwtWithUser {
 }
 
 type Mutation {
-  createManyPlaces(input: [CreatePlaceInput!]!): [Place!]!
-  createManyUsers(input: [CreateUserInput!]!): [User!]!
   createPlace(input: CreatePlaceInput!): Place!
   createUser(input: CreateUserInput!): User!
   deleteFiles(keys: [String!]!): Boolean!
@@ -78,8 +76,8 @@ type Mutation {
   Before you start to sign up, you have to set private key and public key in .env
   """
   signUp(input: SignUpInput!): JwtWithUser!
-  updatePlace(id: Float!, input: UpdatePlaceInput!): Place!
-  updateUser(id: String!, input: UpdateUserInput!): User!
+  updatePlace(id: Float!, input: UpdatePlaceInput!): JSON!
+  updateUser(id: String!, input: UpdateUserInput!): JSON!
   uploadFile(file: Upload!): String!
   uploadFiles(files: [Upload!]!): [String!]!
 }

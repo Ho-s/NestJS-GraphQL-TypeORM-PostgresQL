@@ -39,16 +39,7 @@ export class UserResolver {
     return this.userService.create(input);
   }
 
-  @Mutation(() => [User])
-  @UseGuards(new GraphqlPassportAuthGuard('admin'))
-  createManyUsers(
-    @Args({ name: 'input', type: () => [CreateUserInput] })
-    input: CreateUserInput[],
-  ) {
-    return this.userService.createMany(input);
-  }
-
-  @Mutation(() => User)
+  @Mutation(() => GraphQLJSON)
   @UseGuards(new GraphqlPassportAuthGuard('admin'))
   updateUser(@Args('id') id: string, @Args('input') input: UpdateUserInput) {
     return this.userService.update(id, input);

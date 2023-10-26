@@ -39,16 +39,7 @@ export class PlaceResolver {
     return this.placeService.create(input);
   }
 
-  @Mutation(() => [Place])
-  @UseGuards(new GraphqlPassportAuthGuard('admin'))
-  createManyPlaces(
-    @Args({ name: 'input', type: () => [CreatePlaceInput] })
-    input: CreatePlaceInput[],
-  ) {
-    return this.placeService.createMany(input);
-  }
-
-  @Mutation(() => Place)
+  @Mutation(() => GraphQLJSON)
   @UseGuards(new GraphqlPassportAuthGuard('admin'))
   updatePlace(@Args('id') id: number, @Args('input') input: UpdatePlaceInput) {
     return this.placeService.update(id, input);

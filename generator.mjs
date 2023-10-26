@@ -129,6 +129,7 @@ const createResolverModuleText = (name, typeOfId) => {
     `import { ${capitalize(name)}Service } from './${name}.service'`,
     `import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input'`,
     `import { CurrentQuery } from 'src/common/decorators/query.decorator'`,
+    `import GraphQLJSON from 'graphql-type-json';`,
 
     `import { Get${capitalize(name)}Type, ${capitalize(
       name,
@@ -170,16 +171,7 @@ const createResolverModuleText = (name, typeOfId) => {
     `  return this.${name}Service.create(input);`,
     `}`,
     ``,
-    `@Mutation(()=> [${capitalize(name)}])`,
-    `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
-    `createMany${capitalize(name)}(`,
-    `  @Args({ name: 'input', type: () => [Create${capitalize(name)}Input] })`,
-    `  input: Create${capitalize(name)}Input[],`,
-    `) {`,
-    `  return this.${name}Service.createMany(input);`,
-    `}`,
-    ``,
-    `@Mutation(() => ${capitalize(name)})`,
+    `@Mutation(() => GraphQLJSON)`,
     `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
     `update${capitalize(name)}(@Args('id') id: ${
       typeOfId === 'increment' ? 'number' : 'string'
@@ -187,7 +179,7 @@ const createResolverModuleText = (name, typeOfId) => {
     `  return this.${name}Service.update(id, input);`,
     `}`,
     ``,
-    `@Mutation(() => ${capitalize(name)})`,
+    `@Mutation(() => GraphQLJSON)`,
     `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
     `delete${capitalize(name)}(@Args('id') id: ${
       typeOfId === 'increment' ? 'number' : 'string'
@@ -223,29 +215,22 @@ const createServiceText = (name, typeOfId) => {
     `  return this.${name}Repository.getOne(qs, gqlQuery);`,
     `}`,
     ``,
-    `create(input: Create${capitalize(name)}Input):Promise<${capitalize(
-      name,
-    )}> {`,
-    `  return this.${name}Repository.save(input);`,
+    `create(input: Create${capitalize(name)}Input) {`,
+    `  const ${name} = this.${name}Repository.create(input)`,
+    ``,
+    `  return this.${name}Repository.save(${name});`,
     `}`,
     ``,
-    `createMany(input: Create${capitalize(name)}Input[]):Promise<${capitalize(
-      name,
-    )}[]> {`,
-    `  return this.${name}Repository.save(input);`,
-    `}`,
-    ``,
-    `async update(id:${
+    `update(id:${
       typeOfId === 'increment' ? 'number' : 'string'
-    }, input: Update${capitalize(name)}Input):Promise<${capitalize(name)}> {`,
-    `  const ${name} = await this.${name}Repository.findOne({ where: { id } })`,
-    `  return this.${name}Repository.save({ ...${name}, ...input })`,
+    }, input: Update${capitalize(name)}Input) {`,
+    `  const ${name} = this.${name}Repository.create(input)`,
+    ``,
+    `  return this.${name}Repository.update(id, ${name})`,
     `}`,
     ``,
-    `async delete(id: ${typeOfId === 'increment' ? 'number' : 'string'}) {`,
-    `  const ${name} = this.${name}Repository.findOne({ where: { id } })`,
-    `  await this.${name}Repository.delete({ id })`,
-    `  return ${name}`,
+    `delete(id: ${typeOfId === 'increment' ? 'number' : 'string'}) {`,
+    `  return this.${name}Repository.delete({ id })`,
     `}`,
     `}`,
     ``,

@@ -17,20 +17,18 @@ export class UserService {
   }
 
   create(input: CreateUserInput): Promise<User> {
-    return this.userRepository.save(Object.assign(new User(), input));
+    const user = this.userRepository.create(input);
+
+    return this.userRepository.save(user);
   }
 
-  createMany(input: CreateUserInput[]): Promise<User[]> {
-    return this.userRepository.save(input);
+  update(id: string, input: UpdateUserInput) {
+    const user = this.userRepository.create(input);
+
+    return this.userRepository.update(id, user);
   }
 
-  async update(id: string, input: UpdateUserInput): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
-    return this.userRepository.save({ ...user, ...input });
-  }
-
-  async delete(id: string) {
-    const { affected } = await this.userRepository.delete({ id });
-    return { status: affected > 0 ? 'success' : 'fail' };
+  delete(id: string) {
+    return this.userRepository.delete({ id });
   }
 }
