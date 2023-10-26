@@ -4,7 +4,7 @@ import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import GraphQLJSON from 'graphql-type-json';
-import { GetManyInput, GetOneInput } from 'src/declare/inputs/custom.input';
+import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
 import { GetUserType, User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 import { CurrentQuery } from 'src/common/decorators/query.decorator';

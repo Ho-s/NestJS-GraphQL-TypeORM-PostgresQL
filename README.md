@@ -75,7 +75,7 @@ MIT
 To make most of GraphQL's advantage, We created its own api, such as GetMany or GetOne.
 We tried to make it as comfortable as possible, but if you find any mistakes or improvements, please point them out or promote them.
 
-You can see detail in `declare.module.ts`, `processWhere.ts` and `custom.input.ts`
+You can see detail in folder [/src/common/graphql](/src/common/graphql) files
 
 ```js
 // query

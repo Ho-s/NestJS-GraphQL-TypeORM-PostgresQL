@@ -1,7 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import GraphQLJSON from 'graphql-type-json';
-import { GetManyInput, GetOneInput } from 'src/declare/inputs/custom.input';
+import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
 
 import { GraphqlPassportAuthGuard } from 'src/common/guards/graphql-passport-auth.guard';
 import { GetPlaceType, Place } from './entities/place.entity';

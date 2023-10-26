@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OneRepoQuery, RepoQuery } from 'src/declare/types';
+import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types';
 import { Place } from './entities/place.entity';
 import { CreatePlaceInput, UpdatePlaceInput } from './inputs/place.input';
 

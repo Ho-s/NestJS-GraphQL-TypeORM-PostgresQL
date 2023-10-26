@@ -123,12 +123,12 @@ const createModuleText = (name) => {
 
 const createResolverModuleText = (name, typeOfId) => {
   return [
-    `import { GraphqlPassportAuthGuard } from '../modules/guards/graphql-passport-auth.guard'`,
+    `import { GraphqlPassportAuthGuard } from '../common/guards/graphql-passport-auth.guard'`,
     `import { UseGuards } from '@nestjs/common'`,
     `import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'`,
     `import { ${capitalize(name)}Service } from './${name}.service'`,
-    `import { GetManyInput, GetOneInput } from 'src/declare/inputs/custom.input';`,
-    `import { CurrentQuery } from 'src/modules/decorators/query.decorator';`,
+    `import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input'`,
+    `import { CurrentQuery } from 'src/common/decorators/query.decorator'`,
 
     `import { Get${capitalize(name)}Type, ${capitalize(
       name,
@@ -202,7 +202,7 @@ const createResolverModuleText = (name, typeOfId) => {
 const createServiceText = (name, typeOfId) => {
   return [
     `import { Injectable } from '@nestjs/common'`,
-    `import { OneRepoQuery, RepoQuery } from 'src/declare/types';`,
+    `import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types'`,
     `import { ${capitalize(name)}Repository } from './${name}.repository'`,
     `import { ${capitalize(name)} } from './entities/${name}.entity';`,
     `import { Create${capitalize(name)}Input, Update${capitalize(
@@ -254,9 +254,9 @@ const createServiceText = (name, typeOfId) => {
 
 const createRepositoryText = (name) => {
   return [
+    `import { CustomRepository } from '../common/decorators/typeorm.decorator'`,
     `import { ${capitalize(name)} } from './entities/${name}.entity'`,
-    `import { CustomRepository } from '../modules/decorators/typeorm.decorator'`,
-    `import { ExtendedRepository } from 'src/declare/declare.module'`,
+    `import { ExtendedRepository } from 'src/common/graphql/customExtended'`,
     ``,
     `@CustomRepository(${capitalize(name)})`,
     `export class ${capitalize(

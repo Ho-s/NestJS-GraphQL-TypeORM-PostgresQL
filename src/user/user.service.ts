@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { OneRepoQuery, RepoQuery } from 'src/declare/types';
+import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types';
 import { User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 

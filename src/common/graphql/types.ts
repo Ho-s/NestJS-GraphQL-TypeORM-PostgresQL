@@ -1,5 +1,5 @@
 import { FindOptionsOrder, FindOptionsRelations } from 'typeorm';
-import { IPagination } from './inputs/custom.input';
+import { IPagination } from './custom.input';
 import { IWhere } from './utils/types';
 
 export const valueObj = {
