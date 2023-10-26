@@ -18,9 +18,9 @@ export class UserResolver {
   getManyUsers(
     @Args({ name: 'input', nullable: true })
     qs: GetManyInput<User>,
-    @CurrentQuery() query: string,
+    @CurrentQuery() gqlQuery: string,
   ) {
-    return this.userService.getMany(qs, query);
+    return this.userService.getMany(qs, gqlQuery);
   }
 
   @Query(() => User)
@@ -28,9 +28,9 @@ export class UserResolver {
   getOneUser(
     @Args({ name: 'input' })
     qs: GetOneInput<User>,
-    @CurrentQuery() query: string,
+    @CurrentQuery() gqlQuery: string,
   ) {
-    return this.userService.getOne(qs, query);
+    return this.userService.getOne(qs, gqlQuery);
   }
 
   @Mutation(() => User)

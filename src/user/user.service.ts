@@ -8,12 +8,12 @@ import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  getOne(qs: OneRepoQuery<User>, query?: string) {
-    return this.userRepository.getOne(qs, query);
+  getMany(qs: RepoQuery<User> = {}, gqlQuery?: string) {
+    return this.userRepository.getMany(qs, gqlQuery);
   }
 
-  getMany(qs: RepoQuery<User> = {}, query?: string) {
-    return this.userRepository.getMany(qs, query);
+  getOne(qs: OneRepoQuery<User>, gqlQuery?: string) {
+    return this.userRepository.getOne(qs, gqlQuery);
   }
 
   create(input: CreateUserInput): Promise<User> {

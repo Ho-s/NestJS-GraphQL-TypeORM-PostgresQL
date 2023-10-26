@@ -18,9 +18,9 @@ export class PlaceResolver {
   getManyPlaces(
     @Args({ name: 'input', nullable: true })
     qs: GetManyInput<Place>,
-    @CurrentQuery() query: string,
+    @CurrentQuery() gqlQuery: string,
   ) {
-    return this.placeService.getMany(qs, query);
+    return this.placeService.getMany(qs, gqlQuery);
   }
 
   @Query(() => Place)
@@ -28,9 +28,9 @@ export class PlaceResolver {
   getOnePlace(
     @Args({ name: 'input' })
     qs: GetOneInput<Place>,
-    @CurrentQuery() query: string,
+    @CurrentQuery() gqlQuery: string,
   ) {
-    return this.placeService.getOne(qs, query);
+    return this.placeService.getOne(qs, gqlQuery);
   }
 
   @Mutation(() => Place)

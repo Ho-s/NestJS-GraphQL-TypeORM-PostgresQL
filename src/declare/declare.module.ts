@@ -1,7 +1,12 @@
 import { BadRequestException } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 import { processWhere } from './utils/processWhere';
-import { FindManyOptions, FindOneOptions, FindOptionsOrder } from 'typeorm';
+import {
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsOrder,
+  FindOptionsSelect,
+} from 'typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import { isObject } from 'src/util/isObject';
 import {
@@ -14,7 +19,7 @@ import {
   RepoQuery,
   valueObj,
 } from './types';
-import { getInfoFromQuery } from './utils/getConditionFromQuery';
+import { getConditionFromGqlQuery } from './utils/getConditionFromGqlQuery';
 
 export function filterOrder<T>(order: FindOptionsOrder<T>) {
   Object.entries(order).forEach(([key, value]: [string, ISort]) => {
@@ -50,19 +55,24 @@ export function filterOrder<T>(order: FindOptionsOrder<T>) {
 export class ExtendedRepository<T = unknown> extends Repository<T> {
   async getMany<T>(
     this: Repository<T>,
-    { pagination, where, order, dataType = 'all' }: RepoQuery<T>,
-    query: string,
+    { pagination, where, order, dataType = 'all', relations }: RepoQuery<T>,
+    gqlQuery?: string,
   ): Promise<IGetData<T>> {
     // You can remark these lines(if order {}) if you don't want to use strict order roles
     if (order) {
       filterOrder.call(this, order);
     }
 
-    const { relations, select } = getInfoFromQuery<T>(query, true);
+    let select: FindOptionsSelect<T> = undefined;
+    // In case graphQL query exist
+    if (gqlQuery) {
+      relations = getConditionFromGqlQuery<T>(gqlQuery, true).relations;
+      select = getConditionFromGqlQuery<T>(gqlQuery, true).select;
+    }
 
     const condition: FindManyOptions<T> = {
       relations,
-      select,
+      ...(select && { select }),
       ...(where && !isEmpty(where) && { where: processWhere(where) }),
       ...(order && { order }),
       ...(pagination && {
@@ -85,14 +95,20 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
 
   async getOne<T>(
     this: Repository<T>,
-    { where }: OneRepoQuery<T>,
-    query: string,
+    { where, relations }: OneRepoQuery<T>,
+    gqlQuery?: string,
   ): Promise<T> {
-    const { relations, select } = getInfoFromQuery<T>(query);
+    let select: FindOptionsSelect<T> = undefined;
+
+    // In case graphQL query exist
+    if (gqlQuery) {
+      relations = getConditionFromGqlQuery<T>(gqlQuery).relations;
+      select = getConditionFromGqlQuery<T>(gqlQuery).select;
+    }
 
     const condition: FindOneOptions<T> = {
       relations,
-      select,
+      ...(select && { select }),
       ...(where && { where: processWhere(where) }),
     };
 

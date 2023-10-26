@@ -31,7 +31,7 @@ const addKeyValuesInObject = <Entity>({
   return { relations, select };
 };
 
-export const getInfoFromQuery = <Entity>(
+export const getConditionFromGqlQuery = <Entity>(
   query: string,
   hasCountType?: boolean,
 ): GetInfoFromQueryProps<Entity> => {

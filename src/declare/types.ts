@@ -1,4 +1,4 @@
-import { FindOptionsOrder } from 'typeorm';
+import { FindOptionsOrder, FindOptionsRelations } from 'typeorm';
 import { IPagination } from './inputs/custom.input';
 import { IWhere } from './utils/types';
 
@@ -47,6 +47,8 @@ export interface RepoQuery<T> {
   where?: IWhere<T>;
   order?: FindOptionsOrder<T>;
   dataType?: IDataType;
+  relations?: FindOptionsRelations<T>;
 }
 
-export type OneRepoQuery<T> = Pick<Required<RepoQuery<T>>, 'where'>;
+export type OneRepoQuery<T> = Required<Pick<RepoQuery<T>, 'where'>> &
+  Pick<RepoQuery<T>, 'relations'>;
