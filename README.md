@@ -34,7 +34,7 @@ You can see [playground](http://localhost:8000/graphql)
 We use apollographql as playground. but if you want to use default playground, you can do like below.
 
 ```js
-// app.modules.js
+// setting.service.ts
 
 GraphQLModule.forRootAsync <
   ApolloDriverConfig >
