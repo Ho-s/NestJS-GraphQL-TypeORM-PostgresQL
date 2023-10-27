@@ -8,8 +8,6 @@ import { PlaceModule } from './place/place.module';
 import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
 import { getEnvPath } from './common/helper/env.helper';
-import { CronModule } from './cron/cron.module';
-import { ScheduleModule } from '@nestjs/schedule';
 import { SharedModule } from './common/shared/shared.module';
 import { SettingService } from './common/shared/services/setting.service';
 import { HealthModule } from './health/health.module';
@@ -33,12 +31,10 @@ import { HealthModule } from './health/health.module';
       useFactory: (settingService: SettingService) =>
         settingService.typeOrmUseFactory,
     }),
-    ScheduleModule.forRoot(),
     UserModule,
     AuthModule,
     PlaceModule,
     UploadModule,
-    CronModule,
     HealthModule,
   ],
 })

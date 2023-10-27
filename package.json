@@ -36,7 +36,6 @@
     "@nestjs/jwt": "^10.1.0",
     "@nestjs/passport": "^10.0.0",
     "@nestjs/platform-express": "^10.1.2",
-    "@nestjs/schedule": "^3.0.1",
     "@nestjs/terminus": "^10.0.1",
     "@nestjs/typeorm": "^10.0.0",
     "apollo-server-core": "^3.11.1",
