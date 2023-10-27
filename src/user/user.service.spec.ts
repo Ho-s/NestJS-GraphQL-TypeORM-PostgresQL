@@ -4,7 +4,7 @@ import { UserService } from './user.service';
 import {
   MockRepository,
   MockRepositoryFactory,
-} from 'src/common/factory/mockRepositoryFactory';
+} from 'src/common/factory/mockFactory';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserRepository } from './user.repository';
 import { User } from './entities/user.entity';

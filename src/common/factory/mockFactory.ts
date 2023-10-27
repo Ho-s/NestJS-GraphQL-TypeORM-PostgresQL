@@ -1,6 +1,15 @@
 import { ExtendedRepository } from 'src/common/graphql/customExtended';
 import { Repository } from 'typeorm';
 
+const putMockedFunction = (propsNames: string[]) => {
+  return propsNames
+    .filter((key: string) => key !== 'constructor')
+    .reduce((fncs, key: string) => {
+      fncs[key] = jest.fn();
+      return fncs;
+    }, {});
+};
+
 export type MockRepository<T = unknown> = Partial<
   Record<keyof ExtendedRepository<T>, jest.Mock>
 >;
@@ -10,15 +19,21 @@ export class MockRepositoryFactory {
     repository: new (...args: unknown[]) => T,
   ): () => MockRepository<T> {
     return () =>
-      [
+      putMockedFunction([
         ...Object.getOwnPropertyNames(Repository.prototype),
         ...Object.getOwnPropertyNames(ExtendedRepository.prototype),
         ...Object.getOwnPropertyNames(repository.prototype),
-      ]
-        .filter((key: string) => key !== 'constructor')
-        .reduce((fncs, key: string) => {
-          fncs[key] = jest.fn();
-          return fncs;
-        }, {});
+      ]);
+  }
+}
+
+export type MockService<T = unknown> = Partial<Record<keyof T, jest.Mock>>;
+
+export class MockServiceFactory {
+  static getMockService<T>(
+    service: new (...args: unknown[]) => T,
+  ): () => MockService<T> {
+    return () =>
+      putMockedFunction(Object.getOwnPropertyNames(service.prototype));
   }
 }
