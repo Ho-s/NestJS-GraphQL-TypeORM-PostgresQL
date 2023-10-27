@@ -78,7 +78,7 @@ export class SettingService {
       username: this.getString('DB_USER'),
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_NAME'),
-      entities: ['dist/**/*.entity{.ts,.js}'],
+      entities: [join(__dirname, '**', '*.entity.{ts,js}')],
       synchronize: true,
       autoLoadEntities: true,
       logging: false, // if you want to see the query log, change it to true
