@@ -145,7 +145,7 @@ const createResolverModuleText = (name, typeOfId) => {
     ``,
     `@Query(() => Get${capitalize(name)}Type)`,
     `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
-    `getMany${capitalize(name)}s(`,
+    `getMany${capitalize(name)}List(`,
     `  @Args({ name: 'input', nullable: true })`,
     `  qs: GetManyInput<${capitalize(name)}>,`,
     `  @CurrentQuery() gqlQuery: string,`,

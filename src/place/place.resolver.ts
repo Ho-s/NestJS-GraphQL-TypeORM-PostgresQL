@@ -15,7 +15,7 @@ export class PlaceResolver {
 
   @Query(() => GetPlaceType)
   @UseGuards(new GraphqlPassportAuthGuard('admin'))
-  getManyPlaces(
+  getManyPlaceList(
     @Args({ name: 'input', nullable: true })
     qs: GetManyInput<Place>,
     @CurrentQuery() gqlQuery: string,

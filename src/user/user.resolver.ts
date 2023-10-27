@@ -15,7 +15,7 @@ export class UserResolver {
 
   @Query(() => GetUserType)
   @UseGuards(new GraphqlPassportAuthGuard('admin'))
-  getManyUsers(
+  getManyUserList(
     @Args({ name: 'input', nullable: true })
     qs: GetManyInput<User>,
     @CurrentQuery() gqlQuery: string,

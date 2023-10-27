@@ -90,8 +90,8 @@ type Place {
 }
 
 type Query {
-  getManyPlaces(input: GetManyInput): GetPlaceType!
-  getManyUsers(input: GetManyInput): GetUserType!
+  getManyPlaceList(input: GetManyInput): GetPlaceType!
+  getManyUserList(input: GetManyInput): GetUserType!
   getMe: User!
   getOnePlace(input: GetOneInput!): Place!
   getOneUser(input: GetOneInput!): User!
