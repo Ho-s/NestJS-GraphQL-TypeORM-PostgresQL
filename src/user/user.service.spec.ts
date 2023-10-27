@@ -23,7 +23,7 @@ describe('UserService', () => {
         UserService,
         {
           provide: getRepositoryToken(UserRepository),
-          useValue: MockRepositoryFactory.getMockRepository(UserRepository),
+          useFactory: MockRepositoryFactory.getMockRepository(UserRepository),
         },
       ],
     }).compile();
