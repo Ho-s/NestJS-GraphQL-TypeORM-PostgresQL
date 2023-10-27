@@ -252,7 +252,7 @@ const createRepositoryText = (name) => {
   ].join('\n');
 };
 
-const createUnitTest = (name, typeOfId) => {
+const createServiceSpec = (name, typeOfId) => {
   return [
     `import { Test, TestingModule } from '@nestjs/testing'`,
     `import { ${capitalize(name)}Service } from './${name}.service'`,
@@ -260,7 +260,7 @@ const createUnitTest = (name, typeOfId) => {
     `import {`,
     `  MockRepository,`,
     `  MockRepositoryFactory,`,
-    `} from 'src/common/factory/mockRepositoryFactory'`,
+    `} from 'src/common/factory/mockFactory';`,
     `import { getRepositoryToken } from '@nestjs/typeorm'`,
     `import { ${capitalize(name)}Repository } from './${name}.repository'`,
     `import { ${capitalize(name)} } from './entities/${name}.entity'`,
@@ -285,7 +285,7 @@ const createUnitTest = (name, typeOfId) => {
     `        ${capitalize(name)}Service,`,
     `        {`,
     `          provide: getRepositoryToken(${capitalize(name)}Repository),`,
-    `          useValue: MockRepositoryFactory.getMockRepository(${capitalize(
+    `          useFactory: MockRepositoryFactory.getMockRepository(${capitalize(
       name,
     )}Repository),`,
     `        },`,
@@ -365,6 +365,131 @@ const createUnitTest = (name, typeOfId) => {
   ].join('\n');
 };
 
+const createResolverSpec = (name, typeOfId) => {
+  return [
+    `import { Test, TestingModule } from '@nestjs/testing'`,
+    `import { ${capitalize(name)}Resolver } from './${name}.resolver'`,
+    `import {`,
+    `  MockService,`,
+    `  MockServiceFactory,`,
+    `} from 'src/common/factory/mockFactory'`,
+    `import { ${capitalize(name)}Service } from './${name}.service'`,
+    `import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input'`,
+    `import { ${capitalize(name)} } from './entities/${name}.entity'`,
+    typeOfId === 'increment'
+      ? `import { getRandomNumber } from 'src/util/getRandomNumber'`
+      : `import { getRandomUUID } from 'src/util/getRandomUUID'`,
+    `import { Create${capitalize(name)}Input, Update${capitalize(
+      name,
+    )}Input } from './inputs/${name}.input'`,
+    ``,
+    `describe('${capitalize(name)}Resolver', () => {`,
+    `  let resolver: ${capitalize(name)}Resolver`,
+    `  let mockedService: MockService<${capitalize(name)}Service>`,
+    ``,
+    `  beforeAll(async () => {`,
+    `    const module: TestingModule = await Test.createTestingModule({`,
+    `      providers: [`,
+    `        ${capitalize(name)}Resolver,`,
+    `        {`,
+    `          provide: ${capitalize(name)}Service,`,
+    `          useFactory: MockServiceFactory.getMockService(${capitalize(
+      name,
+    )}Service),`,
+    `        },`,
+    `      ],`,
+    `    }).compile()`,
+    ``,
+    `    resolver = module.get<${capitalize(name)}Resolver>(${capitalize(
+      name,
+    )}Resolver)`,
+    `    mockedService = module.get<MockService<${capitalize(
+      name,
+    )}Service>>(${capitalize(name)}Service)`,
+    `  })`,
+    ``,
+    `  afterEach(() => {`,
+    `    jest.resetAllMocks()`,
+    `  })`,
+    ``,
+    `  it('Calling "Get many ${name} list" method', () => {`,
+    `    const qs: GetManyInput<${capitalize(name)}> = {`,
+    `      where: { id: ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    } },`,
+    `    }`,
+    ``,
+    `    const gqlQuery = ${'`'}`,
+    `      query GetMany${capitalize(name)}List {`,
+    `        getMany${capitalize(name)}List {`,
+    `          data {`,
+    `            id`,
+    `          }`,
+    `        }`,
+    `      }`,
+    `    ${'`'}`,
+    ``,
+    `    expect(resolver.getMany${capitalize(
+      name,
+    )}List(qs, gqlQuery)).not.toEqual(null)`,
+    `    expect(mockedService.getMany).toHaveBeenCalledWith(qs, gqlQuery)`,
+    `  })`,
+    ``,
+    `  it('Calling "Get one ${name} list" method', () => {`,
+    `    const qs: GetOneInput<${capitalize(name)}> = {`,
+    `      where: { id: ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    } },`,
+    `    }`,
+    ``,
+    `    const gqlQuery = ${'`'}`,
+    `      query GetOne${capitalize(name)} {`,
+    `        getOne${capitalize(name)} {`,
+    `          data {`,
+    `            id`,
+    `          }`,
+    `        }`,
+    `      }`,
+    `    ${'`'}`,
+    ``,
+    `    expect(resolver.getOne${capitalize(
+      name,
+    )}(qs, gqlQuery)).not.toEqual(null)`,
+    `    expect(mockedService.getOne).toHaveBeenCalledWith(qs, gqlQuery)`,
+    `  })`,
+    ``,
+    `  it('Calling "Create ${name}" method', () => {`,
+    `    const dto = new Create${capitalize(name)}Input()`,
+    ``,
+    `    expect(resolver.create${capitalize(name)}(dto)).not.toEqual(null)`,
+    `    expect(mockedService.create).toHaveBeenCalledWith(dto)`,
+    `  })`,
+    ``,
+    `  it('Calling "Update ${name}" method', () => {`,
+    `    const id = ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    }`,
+    `    const dto = new Update${capitalize(name)}Input()`,
+    ``,
+    `    resolver.update${capitalize(name)}(id, dto)`,
+    ``,
+    `    expect(mockedService.update).toHaveBeenCalledWith(id, dto)`,
+    `  })`,
+    ``,
+    `  it('Calling "Delete ${name}" method', () => {`,
+    `    const id = ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    }`,
+    ``,
+    `    resolver.delete${capitalize(name)}(id)`,
+    ``,
+    `    expect(mockedService.delete).toHaveBeenCalledWith(id)`,
+    `  })`,
+    `})`,
+    ``,
+  ].join('\n');
+};
+
 const changeAppMpdule = async (name) => {
   const array = [];
   const fileStream = fs.createReadStream('./src/app.module.ts');
@@ -375,7 +500,7 @@ const changeAppMpdule = async (name) => {
   array.push(
     `import { ${capitalize(name)}Module } from './${name}/${name}.module';`,
   );
-  for await (let line of rl) {
+  for await (const line of rl) {
     array.push(line);
   }
 
@@ -430,12 +555,12 @@ const addSource = async (name, test, typeOfId) => {
   if (test !== 'no') {
     fs.writeFileSync(
       `${dir}/${name}.service.spec.ts`,
-      createUnitTest(name, typeOfId),
+      createServiceSpec(name, typeOfId),
     );
-    // fs.writeFileSync(
-    //   `${dir}/${name}.resolver.spec.ts`,
-    //   createTestText(name, 'resolver'),
-    // );
+    fs.writeFileSync(
+      `${dir}/${name}.resolver.spec.ts`,
+      createResolverSpec(name, typeOfId),
+    );
   }
 };
 
