@@ -185,7 +185,12 @@ $ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=1q2w3e4r -d postg
 
 ## Todo
 
-- [ ] Get Jest(e2e or unit test) to be work
+- [ ] TDD
+
+  - [x] Unit Test (Use mock)
+  - [ ] Integration Test (Use in-memory DB)
+  - [ ] End To End Test (Use docker)
+
 - [ ] Add Many OAUths (Both of front and back end)
 
   - [ ] Kakao

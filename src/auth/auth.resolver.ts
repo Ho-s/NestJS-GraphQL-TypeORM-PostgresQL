@@ -13,7 +13,7 @@ export class AuthResolver {
 
   @Mutation(() => JwtWithUser)
   @UseGuards(SignInGuard)
-  signIn(@CurrentUser() user: User, @Args('input') _: SignInInput) {
+  signIn(@Args('input') _: SignInInput, @CurrentUser() user: User) {
     return this.authService.signIn(user);
   }
 
