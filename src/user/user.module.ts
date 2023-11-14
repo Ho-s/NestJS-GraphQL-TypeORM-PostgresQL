@@ -1,4 +1,4 @@
-import { TypeOrmExModule } from '../modules/decorators/typeorm.module';
+import { TypeOrmExModule } from '../common/modules/typeorm.module';
 import { Module } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { UserResolver } from './user.resolver';

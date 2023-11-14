@@ -34,7 +34,7 @@ You can see [playground](http://localhost:8000/graphql)
 We use apollographql as playground. but if you want to use default playground, you can do like below.
 
 ```js
-// app.modules.js
+// setting.service.ts
 
 GraphQLModule.forRootAsync <
   ApolloDriverConfig >
@@ -75,7 +75,7 @@ MIT
 To make most of GraphQL's advantage, We created its own api, such as GetMany or GetOne.
 We tried to make it as comfortable as possible, but if you find any mistakes or improvements, please point them out or promote them.
 
-You can see detail in `declare.module.ts`, `processWhere.ts` and `custom.input.ts`
+You can see detail in folder [/src/common/graphql](/src/common/graphql) files
 
 ```js
 // query
@@ -185,7 +185,12 @@ $ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=1q2w3e4r -d postg
 
 ## Todo
 
-- [ ] Get Jest(e2e or unit test) to be work
+- [ ] TDD
+
+  - [x] Unit Test (Use mock)
+  - [ ] Integration Test (Use in-memory DB)
+  - [ ] End To End Test (Use docker)
+
 - [ ] Add Many OAUths (Both of front and back end)
 
   - [ ] Kakao

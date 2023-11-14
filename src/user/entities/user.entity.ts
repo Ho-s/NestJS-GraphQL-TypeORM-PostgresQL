@@ -1,6 +1,7 @@
 import { IsEmail } from 'class-validator';
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -56,11 +57,15 @@ export class User {
   place: Place[];
 
   @BeforeInsert()
-  async beforeInsert() {
+  @BeforeUpdate()
+  async beforeInsertOrUpdate() {
     if (this.password) {
       this.password = await bcrypt.hash(this.password, BCRYPT_HASH_ROUNDS);
     }
+  }
 
+  @BeforeInsert()
+  beforeInsert() {
     if (!this.role) {
       this.role = 'user';
     }

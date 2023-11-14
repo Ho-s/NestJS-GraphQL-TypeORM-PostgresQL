@@ -1,5 +1,5 @@
-import { FindOptionsOrder } from 'typeorm';
-import { IPagination } from './inputs/custom.input';
+import { FindOptionsOrder, FindOptionsRelations } from 'typeorm';
+import { IPagination } from './custom.input';
 import { IWhere } from './utils/types';
 
 export const valueObj = {
@@ -12,10 +12,10 @@ export const valueObj = {
 } as const;
 
 const direction = ['ASC', 'DESC', 'asc', 'desc'] as const;
-type DirectionUnion = typeof direction[number];
+type DirectionUnion = (typeof direction)[number];
 
 const nulls = ['first', 'last', 'FIRST', 'LAST'] as const;
-type NullsUnion = typeof nulls[number];
+type NullsUnion = (typeof nulls)[number];
 
 export const checkObject = {
   direction,
@@ -32,7 +32,7 @@ type IDirectionWitnNulls = {
   [directionObj.nulls]?: NullsUnion;
 };
 
-export type IDriection = typeof valueObj[keyof typeof valueObj];
+export type IDriection = (typeof valueObj)[keyof typeof valueObj];
 export type ISort = IDriection | IDirectionWitnNulls;
 
 export type IDataType = 'count' | 'data' | 'all';
@@ -47,6 +47,8 @@ export interface RepoQuery<T> {
   where?: IWhere<T>;
   order?: FindOptionsOrder<T>;
   dataType?: IDataType;
+  relations?: FindOptionsRelations<T>;
 }
 
-export type OneRepoQuery<T> = Pick<Required<RepoQuery<T>>, 'where'>;
+export type OneRepoQuery<T> = Required<Pick<RepoQuery<T>, 'where'>> &
+  Pick<RepoQuery<T>, 'relations'>;

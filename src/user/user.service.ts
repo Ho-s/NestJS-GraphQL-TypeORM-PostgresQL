@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { SignUpInput } from 'src/auth/inputs/auth.input';
-import { OneRepoQuery, RepoQuery } from 'src/declare/types';
+import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types';
 import { User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 
@@ -9,29 +8,27 @@ import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  getOne(qs: OneRepoQuery<User>, query?: string) {
-    return this.userRepository.getOne(qs, query);
+  getMany(qs: RepoQuery<User> = {}, gqlQuery?: string) {
+    return this.userRepository.getMany(qs, gqlQuery);
   }
 
-  getMany(qs?: RepoQuery<User>, query?: string) {
-    return this.userRepository.getMany(qs || {}, query);
+  getOne(qs: OneRepoQuery<User>, gqlQuery?: string) {
+    return this.userRepository.getOne(qs, gqlQuery);
   }
 
-  async create(input: CreateUserInput | SignUpInput): Promise<User> {
-    return this.userRepository.save(Object.assign(new User(), input));
+  create(input: CreateUserInput): Promise<User> {
+    const user = this.userRepository.create(input);
+
+    return this.userRepository.save(user);
   }
 
-  createMany(input: CreateUserInput[]): Promise<User[]> {
-    return this.userRepository.save(input);
+  update(id: string, input: UpdateUserInput) {
+    const user = this.userRepository.create(input);
+
+    return this.userRepository.update(id, user);
   }
 
-  async update(id: string, input: UpdateUserInput): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
-    return this.userRepository.save({ ...user, ...input });
-  }
-
-  async delete(id: string) {
-    const { affected } = await this.userRepository.delete({ id });
-    return { status: affected > 0 ? 'success' : 'fail' };
+  delete(id: string) {
+    return this.userRepository.delete({ id });
   }
 }

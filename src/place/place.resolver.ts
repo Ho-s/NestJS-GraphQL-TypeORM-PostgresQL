@@ -1,13 +1,13 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import GraphQLJSON from 'graphql-type-json';
-import { GetManyInput, GetOneInput } from 'src/declare/inputs/custom.input';
+import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
 
-import { GraphqlPassportAuthGuard } from 'src/modules/guards/graphql-passport-auth.guard';
+import { GraphqlPassportAuthGuard } from 'src/common/guards/graphql-passport-auth.guard';
 import { GetPlaceType, Place } from './entities/place.entity';
 import { CreatePlaceInput, UpdatePlaceInput } from './inputs/place.input';
 import { PlaceService } from './place.service';
-import { CurrentQuery } from 'src/modules/decorators/query.decorator';
+import { CurrentQuery } from 'src/common/decorators/query.decorator';
 
 @Resolver()
 export class PlaceResolver {
@@ -15,12 +15,12 @@ export class PlaceResolver {
 
   @Query(() => GetPlaceType)
   @UseGuards(new GraphqlPassportAuthGuard('admin'))
-  getManyPlaces(
+  getManyPlaceList(
     @Args({ name: 'input', nullable: true })
     qs: GetManyInput<Place>,
-    @CurrentQuery() query: string,
+    @CurrentQuery() gqlQuery: string,
   ) {
-    return this.placeService.getMany(qs, query);
+    return this.placeService.getMany(qs, gqlQuery);
   }
 
   @Query(() => Place)
@@ -28,9 +28,9 @@ export class PlaceResolver {
   getOnePlace(
     @Args({ name: 'input' })
     qs: GetOneInput<Place>,
-    @CurrentQuery() query: string,
+    @CurrentQuery() gqlQuery: string,
   ) {
-    return this.placeService.getOne(qs, query);
+    return this.placeService.getOne(qs, gqlQuery);
   }
 
   @Mutation(() => Place)
@@ -39,16 +39,7 @@ export class PlaceResolver {
     return this.placeService.create(input);
   }
 
-  @Mutation(() => [Place])
-  @UseGuards(new GraphqlPassportAuthGuard('admin'))
-  createManyPlaces(
-    @Args({ name: 'input', type: () => [CreatePlaceInput] })
-    input: CreatePlaceInput[],
-  ) {
-    return this.placeService.createMany(input);
-  }
-
-  @Mutation(() => Place)
+  @Mutation(() => GraphQLJSON)
   @UseGuards(new GraphqlPassportAuthGuard('admin'))
   updatePlace(@Args('id') id: number, @Args('input') input: UpdatePlaceInput) {
     return this.placeService.update(id, input);

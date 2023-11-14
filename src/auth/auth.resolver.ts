@@ -4,8 +4,8 @@ import { AuthService } from './auth.service';
 import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
 import { UseGuards } from '@nestjs/common';
 import { User } from 'src/user/entities/user.entity';
-import { CurrentUser } from 'src/modules/decorators/user.decorator';
-import { SignInGuard } from 'src/modules/guards/graphql-signin-guard';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { SignInGuard } from 'src/common/guards/graphql-signin.guard';
 
 @Resolver()
 export class AuthResolver {
@@ -13,7 +13,7 @@ export class AuthResolver {
 
   @Mutation(() => JwtWithUser)
   @UseGuards(SignInGuard)
-  signIn(@CurrentUser() user: User, @Args('input') _: SignInInput) {
+  signIn(@Args('input') _: SignInInput, @CurrentUser() user: User) {
     return this.authService.signIn(user);
   }
 

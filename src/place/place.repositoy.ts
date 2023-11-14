@@ -1,6 +1,6 @@
-import { CustomRepository } from '../modules/decorators/typeorm.decorator';
-import { Repository } from 'typeorm/repository/Repository';
+import { CustomRepository } from '../common/decorators/typeorm.decorator';
 import { Place } from './entities/place.entity';
+import { ExtendedRepository } from 'src/common/graphql/customExtended';
 
 @CustomRepository(Place)
-export class PlaceRepository extends Repository<Place> {}
+export class PlaceRepository extends ExtendedRepository<Place> {}

@@ -6,7 +6,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import GraphQLJSON from 'graphql-type-json';
 import { isNil } from 'lodash';
 import { join } from 'path';
-import { formatError } from 'src/modules/format/graphql-error.format';
+import { formatError } from 'src/common/format/graphql-error.format';
 
 @Injectable()
 export class SettingService {

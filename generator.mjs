@@ -104,7 +104,7 @@ const createInputText = (name, coulumn, type, check) => {
 const createModuleText = (name) => {
   return [
     `import { Module } from '@nestjs/common';`,
-    `import { TypeOrmExModule } from '../modules/decorators/typeorm.module'`,
+    `import { TypeOrmExModule } from 'src/common/modules/typeorm.module'`,
     `import { ${capitalize(name)}Service } from './${name}.service';`,
     `import { ${capitalize(name)}Repository } from './${name}.repository';`,
     `import { ${capitalize(name)}Resolver } from './${name}.resolver';`,
@@ -123,12 +123,13 @@ const createModuleText = (name) => {
 
 const createResolverModuleText = (name, typeOfId) => {
   return [
-    `import { GraphqlPassportAuthGuard } from '../modules/guards/graphql-passport-auth.guard'`,
+    `import { GraphqlPassportAuthGuard } from '../common/guards/graphql-passport-auth.guard'`,
     `import { UseGuards } from '@nestjs/common'`,
     `import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'`,
     `import { ${capitalize(name)}Service } from './${name}.service'`,
-    `import { GetManyInput, GetOneInput } from 'src/declare/inputs/custom.input';`,
-    `import { CurrentQuery } from 'src/modules/decorators/query.decorator';`,
+    `import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input'`,
+    `import { CurrentQuery } from 'src/common/decorators/query.decorator'`,
+    `import GraphQLJSON from 'graphql-type-json';`,
 
     `import { Get${capitalize(name)}Type, ${capitalize(
       name,
@@ -144,12 +145,12 @@ const createResolverModuleText = (name, typeOfId) => {
     ``,
     `@Query(() => Get${capitalize(name)}Type)`,
     `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
-    `getMany${capitalize(name)}s(`,
+    `getMany${capitalize(name)}List(`,
     `  @Args({ name: 'input', nullable: true })`,
     `  qs: GetManyInput<${capitalize(name)}>,`,
-    `  @CurrentQuery() query: string,`,
+    `  @CurrentQuery() gqlQuery: string,`,
     `) {`,
-    `  return this.${name}Service.getMany(qs, query);`,
+    `  return this.${name}Service.getMany(qs, gqlQuery);`,
     `}`,
     ``,
     `@Query(() => ${capitalize(name)})`,
@@ -157,9 +158,9 @@ const createResolverModuleText = (name, typeOfId) => {
     `getOne${capitalize(name)}(`,
     `  @Args({ name: 'input' })`,
     `  qs: GetOneInput<${capitalize(name)}>,`,
-    `  @CurrentQuery() query: string,`,
+    `  @CurrentQuery() gqlQuery: string,`,
     `) {`,
-    `  return this.${name}Service.getOne(qs, query);`,
+    `  return this.${name}Service.getOne(qs, gqlQuery);`,
     `}`,
     ``,
     `@Mutation(() => ${capitalize(name)})`,
@@ -170,16 +171,7 @@ const createResolverModuleText = (name, typeOfId) => {
     `  return this.${name}Service.create(input);`,
     `}`,
     ``,
-    `@Mutation(()=> [${capitalize(name)}])`,
-    `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
-    `createMany${capitalize(name)}(`,
-    `  @Args({ name: 'input', type: () => [Create${capitalize(name)}Input] })`,
-    `  input: Create${capitalize(name)}Input[],`,
-    `) {`,
-    `  return this.${name}Service.createMany(input);`,
-    `}`,
-    ``,
-    `@Mutation(() => ${capitalize(name)})`,
+    `@Mutation(() => GraphQLJSON)`,
     `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
     `update${capitalize(name)}(@Args('id') id: ${
       typeOfId === 'increment' ? 'number' : 'string'
@@ -187,7 +179,7 @@ const createResolverModuleText = (name, typeOfId) => {
     `  return this.${name}Service.update(id, input);`,
     `}`,
     ``,
-    `@Mutation(() => ${capitalize(name)})`,
+    `@Mutation(() => GraphQLJSON)`,
     `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
     `delete${capitalize(name)}(@Args('id') id: ${
       typeOfId === 'increment' ? 'number' : 'string'
@@ -202,7 +194,7 @@ const createResolverModuleText = (name, typeOfId) => {
 const createServiceText = (name, typeOfId) => {
   return [
     `import { Injectable } from '@nestjs/common'`,
-    `import { OneRepoQuery, RepoQuery } from 'src/declare/types';`,
+    `import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types'`,
     `import { ${capitalize(name)}Repository } from './${name}.repository'`,
     `import { ${capitalize(name)} } from './entities/${name}.entity';`,
     `import { Create${capitalize(name)}Input, Update${capitalize(
@@ -215,37 +207,30 @@ const createServiceText = (name, typeOfId) => {
       name,
     )}Repository) {}`,
     ``,
-    `getMany(qs?: RepoQuery<${capitalize(name)}>, query?: string) {`,
-    `  return this.${name}Repository.getMany(qs || {}, query);`,
+    `getMany(qs: RepoQuery<${capitalize(name)}> = {}, gqlQuery?: string) {`,
+    `  return this.${name}Repository.getMany(qs, gqlQuery);`,
     `}`,
     ``,
-    `getOne(qs: OneRepoQuery<${capitalize(name)}>, query?: string) {`,
-    `  return this.${name}Repository.getOne(qs, query);`,
+    `getOne(qs: OneRepoQuery<${capitalize(name)}>, gqlQuery?: string) {`,
+    `  return this.${name}Repository.getOne(qs, gqlQuery);`,
     `}`,
     ``,
-    `create(input: Create${capitalize(name)}Input):Promise<${capitalize(
-      name,
-    )}> {`,
-    `  return this.${name}Repository.save(input);`,
+    `create(input: Create${capitalize(name)}Input) {`,
+    `  const ${name} = this.${name}Repository.create(input)`,
+    ``,
+    `  return this.${name}Repository.save(${name});`,
     `}`,
     ``,
-    `createMany(input: Create${capitalize(name)}Input[]):Promise<${capitalize(
-      name,
-    )}[]> {`,
-    `  return this.${name}Repository.save(input);`,
-    `}`,
-    ``,
-    `async update(id:${
+    `update(id:${
       typeOfId === 'increment' ? 'number' : 'string'
-    }, input: Update${capitalize(name)}Input):Promise<${capitalize(name)}> {`,
-    `  const ${name} = await this.${name}Repository.findOne({ where: { id } })`,
-    `  return this.${name}Repository.save({ ...${name}, ...input })`,
+    }, input: Update${capitalize(name)}Input) {`,
+    `  const ${name} = this.${name}Repository.create(input)`,
+    ``,
+    `  return this.${name}Repository.update(id, ${name})`,
     `}`,
     ``,
-    `async delete(id: ${typeOfId === 'increment' ? 'number' : 'string'}) {`,
-    `  const ${name} = this.${name}Repository.findOne({ where: { id } })`,
-    `  await this.${name}Repository.delete({ id })`,
-    `  return ${name}`,
+    `delete(id: ${typeOfId === 'increment' ? 'number' : 'string'}) {`,
+    `  return this.${name}Repository.delete({ id })`,
     `}`,
     `}`,
     ``,
@@ -254,41 +239,251 @@ const createServiceText = (name, typeOfId) => {
 
 const createRepositoryText = (name) => {
   return [
+    `import { CustomRepository } from '../common/decorators/typeorm.decorator'`,
     `import { ${capitalize(name)} } from './entities/${name}.entity'`,
-    `import { CustomRepository } from '../modules/decorators/typeorm.decorator'`,
-    `import { Repository } from 'typeorm/repository/Repository'`,
+    `import { ExtendedRepository } from 'src/common/graphql/customExtended'`,
     ``,
     `@CustomRepository(${capitalize(name)})`,
-    `export class ${capitalize(name)}Repository extends Repository<${capitalize(
+    `export class ${capitalize(
       name,
-    )}> {`,
+    )}Repository extends ExtendedRepository<${capitalize(name)}> {`,
     `}`,
     ``,
   ].join('\n');
 };
 
-const createTestText = (name, type) => {
+const createServiceSpec = (name, typeOfId) => {
   return [
     `import { Test, TestingModule } from '@nestjs/testing'`,
-    `import { ${capitalize(name)}${capitalize(
-      type,
-    )} } from './${name}.${type}'`,
+    `import { ${capitalize(name)}Service } from './${name}.service'`,
     ``,
-    `describe('${capitalize(name)}${capitalize(type)}', () => {`,
-    `  let ${type}: ${capitalize(name)}${capitalize(type)}`,
+    `import {`,
+    `  MockRepository,`,
+    `  MockRepositoryFactory,`,
+    `} from 'src/common/factory/mockFactory';`,
+    `import { getRepositoryToken } from '@nestjs/typeorm'`,
+    `import { ${capitalize(name)}Repository } from './${name}.repository'`,
+    `import { ${capitalize(name)} } from './entities/${name}.entity'`,
+    `import { Create${capitalize(name)}Input, Update${capitalize(
+      name,
+    )}Input } from './inputs/${name}.input'`,
+    `import { ExtendedRepository } from 'src/common/graphql/customExtended'`,
+    `import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types'`,
+    typeOfId === 'increment'
+      ? `import { getRandomNumber } from 'src/util/getRandomNumber'`
+      : `import { getRandomUUID } from 'src/util/getRandomUUID'`,
     ``,
-    `  beforeEach(async () => {`,
+    `describe('${capitalize(name)}Service', () => {`,
+    `  let service: ${capitalize(name)}Service`,
+    `  let mockedRepository: MockRepository<ExtendedRepository<${capitalize(
+      name,
+    )}>>`,
+    ``,
+    `  beforeAll(async () => {`,
     `    const module: TestingModule = await Test.createTestingModule({`,
-    `      providers: [${capitalize(name)}${capitalize(type)}]`,
+    `      providers: [`,
+    `        ${capitalize(name)}Service,`,
+    `        {`,
+    `          provide: getRepositoryToken(${capitalize(name)}Repository),`,
+    `          useFactory: MockRepositoryFactory.getMockRepository(${capitalize(
+      name,
+    )}Repository),`,
+    `        },`,
+    `      ],`,
     `    }).compile()`,
     ``,
-    `    ${type} = module.get<${capitalize(name)}${capitalize(
-      type,
-    )}>(${capitalize(name)}${capitalize(type)})`,
+    `    service = module.get<${capitalize(name)}Service>(${capitalize(
+      name,
+    )}Service)`,
+    `    mockedRepository = module.get<MockRepository<ExtendedRepository<${capitalize(
+      name,
+    )}>>>(`,
+    `      getRepositoryToken(${capitalize(name)}Repository),`,
+    `    )`,
     `  })`,
     ``,
-    `  it('should be defined', () => {`,
-    `    expect(${type}).toBeDefined()`,
+    `  afterEach(() => {`,
+    `    jest.resetAllMocks()`,
+    `  })`,
+    ``,
+    `  it('Calling "Get many" method', () => {`,
+    `    const qs: RepoQuery<${capitalize(name)}> = {`,
+    `      where: { id: ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    } },`,
+    `    }`,
+    ``,
+    `    expect(service.getMany(qs)).not.toEqual(null)`,
+    `    expect(mockedRepository.getMany).toHaveBeenCalled()`,
+    `  })`,
+    ``,
+    `  it('Calling "Get one" method', () => {`,
+    `    const qs: OneRepoQuery<${capitalize(name)}> = {`,
+    `      where: { id: ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    } },`,
+    `    }`,
+    ``,
+    `    expect(service.getOne(qs)).not.toEqual(null)`,
+    `    expect(mockedRepository.getOne).toHaveBeenCalled()`,
+    `  })`,
+    ``,
+    `  it('Calling "Create" method', () => {`,
+    `    const dto = new Create${capitalize(name)}Input()`,
+    `    const ${name} = mockedRepository.create(dto)`,
+    ``,
+    `    expect(service.create(dto)).not.toEqual(null)`,
+    `    expect(mockedRepository.create).toHaveBeenCalledWith(dto)`,
+    `    expect(mockedRepository.save).toHaveBeenCalledWith(${name})`,
+    `  })`,
+    ``,
+    `  it('Calling "Update" method', () => {`,
+    `    const id = ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    }`,
+    `    const dto = new Update${capitalize(name)}Input()`,
+    `    const ${name} = mockedRepository.create(dto)`,
+    ``,
+    `    service.update(id, dto)`,
+    ``,
+    `    expect(mockedRepository.create).toHaveBeenCalledWith(dto)`,
+    `    expect(mockedRepository.update).toHaveBeenCalledWith(id, ${name})`,
+    `  })`,
+    ``,
+    `  it('Calling "Delete" method', () => {`,
+    `    const id = ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    }`,
+    ``,
+    `    service.delete(id)`,
+    ``,
+    `    expect(mockedRepository.delete).toHaveBeenCalledWith({ id })`,
+    `  })`,
+    `})`,
+
+    ,
+  ].join('\n');
+};
+
+const createResolverSpec = (name, typeOfId) => {
+  return [
+    `import { Test, TestingModule } from '@nestjs/testing'`,
+    `import { ${capitalize(name)}Resolver } from './${name}.resolver'`,
+    `import {`,
+    `  MockService,`,
+    `  MockServiceFactory,`,
+    `} from 'src/common/factory/mockFactory'`,
+    `import { ${capitalize(name)}Service } from './${name}.service'`,
+    `import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input'`,
+    `import { ${capitalize(name)} } from './entities/${name}.entity'`,
+    typeOfId === 'increment'
+      ? `import { getRandomNumber } from 'src/util/getRandomNumber'`
+      : `import { getRandomUUID } from 'src/util/getRandomUUID'`,
+    `import { Create${capitalize(name)}Input, Update${capitalize(
+      name,
+    )}Input } from './inputs/${name}.input'`,
+    ``,
+    `describe('${capitalize(name)}Resolver', () => {`,
+    `  let resolver: ${capitalize(name)}Resolver`,
+    `  let mockedService: MockService<${capitalize(name)}Service>`,
+    ``,
+    `  beforeAll(async () => {`,
+    `    const module: TestingModule = await Test.createTestingModule({`,
+    `      providers: [`,
+    `        ${capitalize(name)}Resolver,`,
+    `        {`,
+    `          provide: ${capitalize(name)}Service,`,
+    `          useFactory: MockServiceFactory.getMockService(${capitalize(
+      name,
+    )}Service),`,
+    `        },`,
+    `      ],`,
+    `    }).compile()`,
+    ``,
+    `    resolver = module.get<${capitalize(name)}Resolver>(${capitalize(
+      name,
+    )}Resolver)`,
+    `    mockedService = module.get<MockService<${capitalize(
+      name,
+    )}Service>>(${capitalize(name)}Service)`,
+    `  })`,
+    ``,
+    `  afterEach(() => {`,
+    `    jest.resetAllMocks()`,
+    `  })`,
+    ``,
+    `  it('Calling "Get many ${name} list" method', () => {`,
+    `    const qs: GetManyInput<${capitalize(name)}> = {`,
+    `      where: { id: ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    } },`,
+    `    }`,
+    ``,
+    `    const gqlQuery = ${'`'}`,
+    `      query GetMany${capitalize(name)}List {`,
+    `        getMany${capitalize(name)}List {`,
+    `          data {`,
+    `            id`,
+    `          }`,
+    `        }`,
+    `      }`,
+    `    ${'`'}`,
+    ``,
+    `    expect(resolver.getMany${capitalize(
+      name,
+    )}List(qs, gqlQuery)).not.toEqual(null)`,
+    `    expect(mockedService.getMany).toHaveBeenCalledWith(qs, gqlQuery)`,
+    `  })`,
+    ``,
+    `  it('Calling "Get one ${name} list" method', () => {`,
+    `    const qs: GetOneInput<${capitalize(name)}> = {`,
+    `      where: { id: ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    } },`,
+    `    }`,
+    ``,
+    `    const gqlQuery = ${'`'}`,
+    `      query GetOne${capitalize(name)} {`,
+    `        getOne${capitalize(name)} {`,
+    `          data {`,
+    `            id`,
+    `          }`,
+    `        }`,
+    `      }`,
+    `    ${'`'}`,
+    ``,
+    `    expect(resolver.getOne${capitalize(
+      name,
+    )}(qs, gqlQuery)).not.toEqual(null)`,
+    `    expect(mockedService.getOne).toHaveBeenCalledWith(qs, gqlQuery)`,
+    `  })`,
+    ``,
+    `  it('Calling "Create ${name}" method', () => {`,
+    `    const dto = new Create${capitalize(name)}Input()`,
+    ``,
+    `    expect(resolver.create${capitalize(name)}(dto)).not.toEqual(null)`,
+    `    expect(mockedService.create).toHaveBeenCalledWith(dto)`,
+    `  })`,
+    ``,
+    `  it('Calling "Update ${name}" method', () => {`,
+    `    const id = ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    }`,
+    `    const dto = new Update${capitalize(name)}Input()`,
+    ``,
+    `    resolver.update${capitalize(name)}(id, dto)`,
+    ``,
+    `    expect(mockedService.update).toHaveBeenCalledWith(id, dto)`,
+    `  })`,
+    ``,
+    `  it('Calling "Delete ${name}" method', () => {`,
+    `    const id = ${
+      typeOfId === 'increment' ? 'getRandomNumber(0,999999)' : 'getRandomUUID()'
+    }`,
+    ``,
+    `    resolver.delete${capitalize(name)}(id)`,
+    ``,
+    `    expect(mockedService.delete).toHaveBeenCalledWith(id)`,
     `  })`,
     `})`,
     ``,
@@ -305,7 +500,7 @@ const changeAppMpdule = async (name) => {
   array.push(
     `import { ${capitalize(name)}Module } from './${name}/${name}.module';`,
   );
-  for await (let line of rl) {
+  for await (const line of rl) {
     array.push(line);
   }
 
@@ -360,7 +555,11 @@ const addSource = async (name, test, typeOfId) => {
   if (test !== 'no') {
     fs.writeFileSync(
       `${dir}/${name}.service.spec.ts`,
-      createTestText(name, 'service'),
+      createServiceSpec(name, typeOfId),
+    );
+    fs.writeFileSync(
+      `${dir}/${name}.resolver.spec.ts`,
+      createResolverSpec(name, typeOfId),
     );
   }
 };
@@ -407,6 +606,9 @@ const start = async () => {
       {
         name: 'coulumn',
         message: 'Please enter only one data column name to generate.',
+        validate: (input) => {
+          return String(input).trim().length > 0 || `A column is required`;
+        },
       },
       {
         type: 'list',
