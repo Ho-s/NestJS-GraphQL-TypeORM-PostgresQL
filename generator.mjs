@@ -123,8 +123,7 @@ const createModuleText = (name) => {
 
 const createResolverModuleText = (name, typeOfId) => {
   return [
-    `import { GraphqlPassportAuthGuard } from '../common/guards/graphql-passport-auth.guard'`,
-    `import { UseGuards } from '@nestjs/common'`,
+    `import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';`,
     `import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'`,
     `import { ${capitalize(name)}Service } from './${name}.service'`,
     `import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input'`,
@@ -144,7 +143,7 @@ const createResolverModuleText = (name, typeOfId) => {
     )}Service) {}`,
     ``,
     `@Query(() => Get${capitalize(name)}Type)`,
-    `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
+    `@UseAuthGuard('admin')`,
     `getMany${capitalize(name)}List(`,
     `  @Args({ name: 'input', nullable: true })`,
     `  qs: GetManyInput<${capitalize(name)}>,`,
@@ -154,7 +153,7 @@ const createResolverModuleText = (name, typeOfId) => {
     `}`,
     ``,
     `@Query(() => ${capitalize(name)})`,
-    `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
+    `@UseAuthGuard('admin')`,
     `getOne${capitalize(name)}(`,
     `  @Args({ name: 'input' })`,
     `  qs: GetOneInput<${capitalize(name)}>,`,
@@ -164,7 +163,7 @@ const createResolverModuleText = (name, typeOfId) => {
     `}`,
     ``,
     `@Mutation(() => ${capitalize(name)})`,
-    `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
+    `@UseAuthGuard('admin')`,
     `create${capitalize(name)}(@Args('input') input: Create${capitalize(
       name,
     )}Input) {`,
@@ -172,7 +171,7 @@ const createResolverModuleText = (name, typeOfId) => {
     `}`,
     ``,
     `@Mutation(() => GraphQLJSON)`,
-    `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
+    `@UseAuthGuard('admin')`,
     `update${capitalize(name)}(@Args('id') id: ${
       typeOfId === 'increment' ? 'number' : 'string'
     }, @Args('input') input: Update${capitalize(name)}Input) {`,
@@ -180,7 +179,7 @@ const createResolverModuleText = (name, typeOfId) => {
     `}`,
     ``,
     `@Mutation(() => GraphQLJSON)`,
-    `@UseGuards(new GraphqlPassportAuthGuard('admin'))`,
+    `@UseAuthGuard('admin')`,
     `delete${capitalize(name)}(@Args('id') id: ${
       typeOfId === 'increment' ? 'number' : 'string'
     }) {`,
