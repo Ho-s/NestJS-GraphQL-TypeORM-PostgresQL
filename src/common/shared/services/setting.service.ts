@@ -72,7 +72,7 @@ export class SettingService {
     | TypeOrmModuleOptions
     | Promise<TypeOrmModuleOptions> {
     return {
-      type: 'postgres' as any,
+      type: 'postgres',
       host: this.getString('DB_HOST'),
       port: this.getNumber('DB_PORT'),
       username: this.getString('DB_USER'),

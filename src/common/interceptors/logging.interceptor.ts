@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import {
   CallHandler,
@@ -9,7 +8,7 @@ import {
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler<unknown>) {
     const date = new Date().toISOString();
     const { fieldName } = context.getArgs()[3] ?? { fieldName: 'REST API' };
     const message = `${date} Request-Response time of ${fieldName}`;

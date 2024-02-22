@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import {
   CallHandler,
@@ -11,7 +10,7 @@ const REQUEST_TIMEOUT = 30000000;
 
 @Injectable()
 export class TimeoutInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(_: ExecutionContext, next: CallHandler<unknown>) {
     return next.handle().pipe(timeout(REQUEST_TIMEOUT));
   }
 }

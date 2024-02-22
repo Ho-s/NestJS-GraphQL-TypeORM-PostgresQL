@@ -1,7 +1,23 @@
-import { GraphQLError, GraphQLFormattedError } from 'graphql';
+import {
+  GraphQLError,
+  GraphQLFormattedError,
+  GraphQLErrorExtensions,
+} from 'graphql';
+
+interface CustomGraphQLErrorExtenssions extends GraphQLErrorExtensions {
+  exception?: {
+    message: string;
+    status: number;
+  };
+
+  response?: {
+    message: string;
+    statusCode: number;
+  };
+}
 
 export const formatError = (error: GraphQLError) => {
-  const extensions: any = error.extensions;
+  const extensions = error.extensions as CustomGraphQLErrorExtenssions;
   const standardError: GraphQLFormattedError = {
     message: error.extensions?.message || error.message,
     ...error,
