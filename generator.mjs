@@ -867,7 +867,7 @@ const start = async () => {
         name: 'type',
         message: 'Please decide the type of column you created.',
         choices: ['string', 'number', 'boolean'],
-        default: 'yes',
+        default: 'string',
       },
       {
         type: 'list',
