@@ -5,13 +5,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import * as bcrypt from 'bcrypt';
-import { Place } from 'src/place/entities/place.entity';
 
 const BCRYPT_HASH_ROUNDS = 10;
 
@@ -49,12 +47,6 @@ export class User {
     type: 'timestamp with time zone',
   })
   updatedAt: Date;
-
-  @Field(() => [Place], { nullable: true })
-  @OneToMany(() => Place, (place) => place.user, {
-    nullable: true,
-  })
-  place: Place[];
 
   @BeforeInsert()
   @BeforeUpdate()

@@ -56,7 +56,7 @@ function goDeep<T>(
   // Check if "and" expression
   if (isPlainObject(filters) && Object.keys(filters).length > 1) {
     const array = Object.entries(filters).map(([key, value]) => {
-      return goDeep({ [key]: value } as any, keyStore, {});
+      return goDeep({ [key]: value }, keyStore, {});
     });
 
     return array.reduce(

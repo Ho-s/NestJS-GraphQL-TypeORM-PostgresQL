@@ -58,11 +58,9 @@ describe('UserResolver', () => {
     };
 
     const gqlQuery = `
-      query GetOneUser {
-        getOneUser {
-          data {
-            id
-          }
+    query GetOneUser ($input: GetOneInput!) {
+      getOneUser (input:$input) {
+          id
         }
       }
     `;

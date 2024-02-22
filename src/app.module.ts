@@ -4,7 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { PlaceModule } from './place/place.module';
 import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
 import { getEnvPath } from './common/helper/env.helper';
@@ -33,7 +32,6 @@ import { HealthModule } from './health/health.module';
     }),
     UserModule,
     AuthModule,
-    PlaceModule,
     UploadModule,
     HealthModule,
   ],
