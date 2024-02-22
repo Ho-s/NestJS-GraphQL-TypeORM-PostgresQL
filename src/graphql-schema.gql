@@ -2,12 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input CreatePlaceInput {
-  address: String!
-  name: String!
-  user: UserIdInput!
-}
-
 input CreateUserInput {
   nickname: String!
   password: String!
@@ -36,11 +30,6 @@ input GetOneInput {
   where: JSON!
 }
 
-type GetPlaceType {
-  count: Float
-  data: [Place!]
-}
-
 type GetUserType {
   count: Float
   data: [User!]
@@ -65,10 +54,8 @@ type JwtWithUser {
 }
 
 type Mutation {
-  createPlace(input: CreatePlaceInput!): Place!
   createUser(input: CreateUserInput!): User!
   deleteFiles(keys: [String!]!): Boolean!
-  deletePlace(id: Float!): JSON!
   deleteUser(id: String!): JSON!
   signIn(input: SignInInput!): JwtWithUser!
 
@@ -76,24 +63,14 @@ type Mutation {
   Before you start to sign up, you have to set private key and public key in .env
   """
   signUp(input: SignUpInput!): JwtWithUser!
-  updatePlace(id: Float!, input: UpdatePlaceInput!): JSON!
   updateUser(id: String!, input: UpdateUserInput!): JSON!
   uploadFile(file: Upload!): String!
   uploadFiles(files: [Upload!]!): [String!]!
 }
 
-type Place {
-  address: String!
-  id: ID!
-  name: String!
-  user: User
-}
-
 type Query {
-  getManyPlaceList(input: GetManyInput): GetPlaceType!
   getManyUserList(input: GetManyInput): GetUserType!
   getMe: User!
-  getOnePlace(input: GetOneInput!): Place!
   getOneUser(input: GetOneInput!): User!
 }
 
@@ -106,11 +83,6 @@ input SignUpInput {
   nickname: String!
   password: String!
   username: String!
-}
-
-input UpdatePlaceInput {
-  address: String
-  name: String
 }
 
 input UpdateUserInput {
@@ -127,12 +99,7 @@ type User {
   createdAt: DateTime!
   id: ID!
   nickname: String!
-  place: [Place!]
   role: String!
   updatedAt: DateTime!
   username: String!
-}
-
-input UserIdInput {
-  id: String!
 }
