@@ -161,6 +161,12 @@ or run with docker following below
 
 Download docker from [Official website](https://docs.docker.com/compose/install)
 
+### Before getting started
+
+Before running Docker, you need to create an env file named `.production.env`.
+The content should be modified based on `.example.env`.
+The crucial point is that DB_HOST must be set to 'postgres'.
+
 ### Run
 
 Open terminal and navigate to project directory and run the following command.
@@ -182,6 +188,12 @@ You can just create postgresql by below code, sync with .development.env
 ```bash
 $ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=1q2w3e4r -d postgres
 ```
+
+## TDD
+
+### Before getting started
+
+Before starting the test, you need to set at least jwt-related environment variables in an env file named `.test.env`.
 
 ## Todo
 
