@@ -51,7 +51,7 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  @UseAuthGuard('admin')
+  @UseAuthGuard()
   getMe(@CurrentUser() user: User) {
     return this.userService.getOne({
       where: { id: user.id },

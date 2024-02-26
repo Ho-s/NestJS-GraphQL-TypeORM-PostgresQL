@@ -195,13 +195,19 @@ $ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=1q2w3e4r -d postg
 
 Before starting the test, you need to set at least jwt-related environment variables in an env file named `.test.env`.
 
+### E2E in docker
+
+```bash
+$ yarn test:e2e:docker
+```
+
 ## Todo
 
-- [ ] TDD
+- [x] TDD
 
   - [x] Unit Test (Use mock)
   - [x] Integration Test (Use in-memory DB)
-  - [ ] End To End Test (Use docker)
+  - [x] End To End Test (Use docker)
 
 - [ ] Add Many OAUths (Both of front and back end)
 

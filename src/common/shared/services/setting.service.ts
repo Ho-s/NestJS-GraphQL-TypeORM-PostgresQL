@@ -38,8 +38,8 @@ export class SettingService {
     return value.replace(/\\n/g, '\n');
   }
 
-  get nodeEnv(): string {
-    return this.getString('NODE_ENV');
+  get nodeEnv() {
+    return this.getString('NODE_ENV') as 'development' | 'production' | 'test';
   }
 
   get isDevelopment(): boolean {
@@ -56,7 +56,10 @@ export class SettingService {
     return {
       uploads: false,
       resolvers: { JSON: GraphQLJSON },
-      autoSchemaFile: join(process.cwd(), 'src/graphql-schema.gql'),
+      autoSchemaFile: join(
+        process.cwd(),
+        `${this.nodeEnv === 'test' ? 'test' : 'src'}/graphql-schema.gql`,
+      ),
       sortSchema: true,
       playground: false,
       ...(!this.isProduction && {
@@ -78,11 +81,14 @@ export class SettingService {
       username: this.getString('DB_USER'),
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_NAME'),
-      entities: ['dist/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      entities:
+        this.nodeEnv === 'test'
+          ? [join(process.cwd(), 'src', '**', '*.entity.{ts,js}')]
+          : ['dist/**/*.entity.js'],
+      synchronize: this.nodeEnv !== 'production',
       autoLoadEntities: true,
+      dropSchema: this.nodeEnv === 'test',
       logging: false, // if you want to see the query log, change it to true
-      // timezone: '+09:00', // if you want to use timezone, change it to your timezone
     };
   }
 }
