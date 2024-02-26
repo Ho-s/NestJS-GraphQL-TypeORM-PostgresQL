@@ -58,10 +58,6 @@ type Mutation {
   deleteFiles(keys: [String!]!): Boolean!
   deleteUser(id: String!): JSON!
   signIn(input: SignInInput!): JwtWithUser!
-
-  """
-  Before you start to sign up, you have to set private key and public key in .env
-  """
   signUp(input: SignUpInput!): JwtWithUser!
   updateUser(id: String!, input: UpdateUserInput!): JSON!
   uploadFile(file: Upload!): String!
