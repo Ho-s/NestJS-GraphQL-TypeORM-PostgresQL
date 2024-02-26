@@ -191,11 +191,39 @@ $ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=1q2w3e4r -d postg
 
 ## TDD
 
+### Introduction
+
+[`@nestjs/testing`](https://docs.nestjs.com/fundamentals/testing) = `supertest` + `jest`
+
 ### Before getting started
 
 Before starting the test, you need to set at least jwt-related environment variables in an env file named `.test.env`.
 
-### E2E in docker
+### Unit Test (Use mock)
+
+Unit test(with jest mock) for services & resolvers (\*.service.spec.ts & \*.resolver.spec.ts)
+
+#### Run
+
+```bash
+$ yarn test
+```
+
+### Integration Test (Use in-memory DB)
+
+Integration test(with [pg-mem](https://github.com/oguimbal/pg-mem)) for modules (\*.module.spec.ts)
+
+#### Run
+
+```bash
+$ yarn test
+```
+
+### End To End Test (Use docker)
+
+E2E Test(with docker container)
+
+#### Run
 
 ```bash
 $ yarn test:e2e:docker
