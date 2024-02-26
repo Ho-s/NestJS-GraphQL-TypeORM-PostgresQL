@@ -17,10 +17,7 @@ export class AuthResolver {
     return this.authService.signIn(user);
   }
 
-  @Mutation(() => JwtWithUser, {
-    description:
-      'Before you start to sign up, you have to set private key and public key in .env',
-  })
+  @Mutation(() => JwtWithUser)
   signUp(@Args('input') input: SignUpInput) {
     return this.authService.signUp(input);
   }

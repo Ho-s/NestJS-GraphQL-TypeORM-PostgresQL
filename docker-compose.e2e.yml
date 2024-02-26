@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    container_name: nestjs_boilerplate
+    build: .
+    ports:
+      - '${PORT}:${PORT}'
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    command: yarn test:e2e
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      TZ: 'UTC'
+      PGTZ: 'UTC'
+    ports:
+      - '5432:5432'
+
+volumes:
+  node_modules:

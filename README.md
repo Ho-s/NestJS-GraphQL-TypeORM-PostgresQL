@@ -161,6 +161,12 @@ or run with docker following below
 
 Download docker from [Official website](https://docs.docker.com/compose/install)
 
+### Before getting started
+
+Before running Docker, you need to create an env file named `.production.env`.
+The content should be modified based on `.example.env`.
+The crucial point is that DB_HOST must be set to 'postgres'.
+
 ### Run
 
 Open terminal and navigate to project directory and run the following command.
@@ -183,13 +189,53 @@ You can just create postgresql by below code, sync with .development.env
 $ docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=1q2w3e4r -d postgres
 ```
 
+## TDD
+
+### Introduction
+
+[`@nestjs/testing`](https://docs.nestjs.com/fundamentals/testing) = `supertest` + `jest`
+
+### Before getting started
+
+Before starting the test, you need to set at least jwt-related environment variables in an env file named `.test.env`.
+
+### Unit Test (Use mock)
+
+Unit test(with jest mock) for services & resolvers (\*.service.spec.ts & \*.resolver.spec.ts)
+
+#### Run
+
+```bash
+$ yarn test
+```
+
+### Integration Test (Use in-memory DB)
+
+Integration test(with [pg-mem](https://github.com/oguimbal/pg-mem)) for modules (\*.module.spec.ts)
+
+#### Run
+
+```bash
+$ yarn test
+```
+
+### End To End Test (Use docker)
+
+E2E Test(with docker container)
+
+#### Run
+
+```bash
+$ yarn test:e2e:docker
+```
+
 ## Todo
 
-- [ ] TDD
+- [x] TDD
 
   - [x] Unit Test (Use mock)
   - [x] Integration Test (Use in-memory DB)
-  - [ ] End To End Test (Use docker)
+  - [x] End To End Test (Use docker)
 
 - [ ] Add Many OAUths (Both of front and back end)
 
