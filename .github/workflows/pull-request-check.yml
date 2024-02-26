@@ -1,0 +1,46 @@
+name: Perform a build check when a PR is opened
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/checkout
+      # This action checks out the repository's code onto the runner.
+      # This is necessary so that the workflow can access and operate on the code.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # https://github.com/actions/setup-node
+      # This action sets up a specific version of Node.js on the runner.
+      # It also caches the specified package manager (in this case, yarn) for faster future runs.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      # https://github.com/actions/cache
+      # This action restores cache from a key.
+      # It helps to reduce the time to install dependencies by reusing the previously cached dependencies.
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nestjs-${{ hashFiles('**/package.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          # Change the cache only when the package file is changed, not the source file.
+          restore-keys: |
+            ${{ runner.os }}-nestjs-${{ hashFiles('**/package.json', '**/yarn.lock') }}-
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build with Nestjs.js
+        run: yarn build
+
+      - name: Do Test
+        run: yarn test
