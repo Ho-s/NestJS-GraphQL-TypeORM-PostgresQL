@@ -107,8 +107,7 @@ query($input:GetManyInput) {
 };
 ```
 
-You can see detail of operators in where below or in code.
-![image](https://bewave.s3.ap-northeast-2.amazonaws.com/docs.png)
+You can see detail [here](./process-where.md).
 
 ## Code generator
 
