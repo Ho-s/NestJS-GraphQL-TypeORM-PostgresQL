@@ -1,10 +1,11 @@
-import { timeout } from 'rxjs/operators';
 import {
   CallHandler,
   ExecutionContext,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
+
+import { timeout } from 'rxjs/operators';
 
 const REQUEST_TIMEOUT = 30000000;
 

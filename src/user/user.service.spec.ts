@@ -1,17 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from './user.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 import {
   MockRepository,
   MockRepositoryFactory,
 } from 'src/common/factory/mockFactory';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserRepository } from './user.repository';
-import { User } from './entities/user.entity';
-import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 import { ExtendedRepository } from 'src/common/graphql/customExtended';
 import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types';
 import { getRandomUUID } from 'src/util/getRandomUUID';
+
+import { User } from './entities/user.entity';
+import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
+import { UserRepository } from './user.repository';
+import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;

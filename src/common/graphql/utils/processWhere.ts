@@ -1,18 +1,20 @@
 import { BadRequestException } from '@nestjs/common';
-import { isPlainObject, isArray, merge, set } from 'lodash';
+
+import { isArray, isPlainObject, merge, set } from 'lodash';
 import {
   Between,
+  FindOptionsWhere,
+  ILike,
   In,
   IsNull,
   LessThan,
-  ILike,
   LessThanOrEqual,
   Like,
   MoreThan,
   MoreThanOrEqual,
   Not,
-  FindOptionsWhere,
 } from 'typeorm';
+
 import { IWhere, OperatorType } from './types';
 
 function processOperator<T>(prevKey: string, nextObject: OperatorType<T>) {

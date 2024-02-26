@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import {
   HealthCheckError,
-  HttpHealthIndicator,
   HealthIndicator,
   HealthIndicatorResult,
+  HttpHealthIndicator,
 } from '@nestjs/terminus';
 
 @Injectable()

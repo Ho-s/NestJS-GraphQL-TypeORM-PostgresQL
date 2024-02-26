@@ -1,7 +1,7 @@
 import {
   GraphQLError,
-  GraphQLFormattedError,
   GraphQLErrorExtensions,
+  GraphQLFormattedError,
 } from 'graphql';
 
 interface CustomGraphQLErrorExtenssions extends GraphQLErrorExtensions {

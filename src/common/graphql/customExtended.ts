@@ -1,25 +1,28 @@
 import { BadRequestException } from '@nestjs/common';
+
 import { isEmpty } from 'lodash';
-import { processWhere } from './utils/processWhere';
 import {
   FindManyOptions,
   FindOneOptions,
   FindOptionsOrder,
   FindOptionsSelect,
+  Repository,
 } from 'typeorm';
-import { Repository } from 'typeorm/repository/Repository';
+
 import { isObject } from 'src/util/isObject';
+
 import {
-  checkObject,
-  directionObj,
   IDriection,
   IGetData,
   ISort,
   OneRepoQuery,
   RepoQuery,
+  checkObject,
+  directionObj,
   valueObj,
 } from './types';
 import { getConditionFromGqlQuery } from './utils/getConditionFromGqlQuery';
+import { processWhere } from './utils/processWhere';
 
 export function filterOrder<T>(order: FindOptionsOrder<T>) {
   Object.entries(order).forEach(([key, value]: [string, ISort]) => {
