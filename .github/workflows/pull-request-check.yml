@@ -44,7 +44,7 @@ jobs:
 
       - name: Set env
         run: |
-          echo "${{ secrets.ENV }}" > ./.env
+          echo "${{ secrets.ENV }}" > ./.test.env
 
       - name: Do Test
         run: yarn test
