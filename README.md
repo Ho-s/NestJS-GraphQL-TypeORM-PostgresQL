@@ -228,6 +228,12 @@ E2E Test(with docker container)
 $ yarn test:e2e:docker
 ```
 
+## CI
+
+### Github actions
+
+To ensure github actions execution, please set the 'ENV' variable within your github actions secrets as your .test.env configuration.
+
 ## Todo
 
 - [x] TDD
@@ -242,6 +248,11 @@ $ yarn test:e2e:docker
   - [ ] Google
   - [ ] Apple
   - [ ] Naver
+
+- [ ] CI
+
+  - [ ] Github actions
+  - [ ] husky
 
 - [x] GraphQL Upload
 - [x] Healthcheck
