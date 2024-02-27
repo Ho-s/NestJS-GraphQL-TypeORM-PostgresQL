@@ -234,6 +234,14 @@ $ yarn test:e2e:docker
 
 To ensure github actions execution, please set the 'ENV' variable within your github actions secrets as your .test.env configuration.
 
+**Note:** Github Actions does not recognize newline characters. Therefore, you must remove any newline characters from each environment variable value in your `.env` file, ensuring that the entire content is on a single line when setting the Secret. If you need to use an environment variable value that includes newline characters, encode the value using Base64 and store it in the Github Secret, then decode it within the workflow.
+
+ex)
+
+```bash
+JWT_PRIVATE_KEY= -----BEGIN RSA PRIVATE KEY-----...MIIEogIBAAKCAQBZ...-----END RSA PRIVATE KEY-----
+```
+
 ## Todo
 
 - [x] TDD
@@ -249,14 +257,15 @@ To ensure github actions execution, please set the 'ENV' variable within your gi
   - [ ] Apple
   - [ ] Naver
 
-- [ ] CI
+- [x] CI
 
-  - [ ] Github actions
+  - [x] Github actions
   - [ ] husky
 
 - [x] GraphQL Upload
 - [x] Healthcheck
 - [x] Divide usefactory
+- [ ] Refresh Token
 - [ ] Redis
 - [ ] ElasticSearch
 - [ ] Caching
