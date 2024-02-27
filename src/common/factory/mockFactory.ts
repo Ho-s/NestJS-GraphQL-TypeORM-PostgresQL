@@ -1,5 +1,6 @@
-import { ExtendedRepository } from 'src/common/graphql/customExtended';
 import { Repository } from 'typeorm';
+
+import { ExtendedRepository } from 'src/common/graphql/customExtended';
 
 const putMockedFunction = (propsNames: string[]) => {
   return propsNames

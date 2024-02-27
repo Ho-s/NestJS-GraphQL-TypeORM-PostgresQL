@@ -6,6 +6,7 @@ import {
   MemoryHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
+
 import { PingIndicator } from './indicator/ping.indicator';
 
 @Controller('health')

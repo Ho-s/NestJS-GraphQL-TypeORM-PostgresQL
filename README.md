@@ -228,6 +228,54 @@ E2E Test(with docker container)
 $ yarn test:e2e:docker
 ```
 
+## CI
+
+### Github actions
+
+To ensure github actions execution, please set the 'ENV' variable within your github actions secrets as your .test.env configuration.
+
+**Note:** Github Actions does not recognize newline characters. Therefore, you must remove any newline characters from each environment variable value in your `.env` file, ensuring that the entire content is on a single line when setting the Secret. If you need to use an environment variable value that includes newline characters, encode the value using Base64 and store it in the Github Secret, then decode it within the workflow.
+
+ex)
+
+```bash
+JWT_PRIVATE_KEY= -----BEGIN RSA PRIVATE KEY-----...MIIEogIBAAKCAQBZ...-----END RSA PRIVATE KEY-----
+```
+
+### [Husky v9](https://github.com/typicode/husky)
+
+#### Before getting started
+
+```bash
+$ yarn prepare
+```
+
+#### Pre commit
+
+[You can check detail here](./.husky/pre-commit)
+
+Before commit, The pre-commit hooks is executed.
+
+Lint checks have been automated to run before a commit is made.
+
+If you want to add test before commit actions, you can add follow line in [pre-commit](./.husky/pre-commit) file.
+
+```bash
+...
+yarn test
+...
+```
+
+#### Pre push
+
+[You can check detail here](./.husky/pre-push)
+
+The pre-push hooks is executed before the push action.
+
+The default rule set in the pre-push hook is to prevent direct pushes to the main branch.
+
+If you want to enable this action, you should uncomment the lines in the pre push file.
+
 ## Todo
 
 - [x] TDD
@@ -243,9 +291,15 @@ $ yarn test:e2e:docker
   - [ ] Apple
   - [ ] Naver
 
+- [x] CI
+
+  - [x] Github actions
+  - [x] husky
+
 - [x] GraphQL Upload
 - [x] Healthcheck
 - [x] Divide usefactory
+- [ ] Refresh Token
 - [ ] Redis
 - [ ] ElasticSearch
 - [ ] Caching

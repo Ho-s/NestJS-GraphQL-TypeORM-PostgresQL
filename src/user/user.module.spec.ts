@@ -1,22 +1,25 @@
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { HttpStatus, INestApplication } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DataType, IBackup, newDb } from 'pg-mem';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import GraphQLJSON from 'graphql-type-json';
+import { join } from 'path';
+import { DataType, IBackup, newDb } from 'pg-mem';
+import * as request from 'supertest';
 import { DataSource } from 'typeorm';
 import { v4 } from 'uuid';
-import { join } from 'path';
-import { HttpStatus, INestApplication } from '@nestjs/common';
-import { UserModule } from './user.module';
-import * as request from 'supertest';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { ConfigModule } from '@nestjs/config';
-import { getEnvPath } from '../common/helper/env.helper';
-import { formatError } from 'src/common/format/graphql-error.format';
-import GraphQLJSON from 'graphql-type-json';
+
 import { AuthModule } from 'src/auth/auth.module';
-import { GraphqlPassportAuthGuard } from 'src/common/guards/graphql-passport-auth.guard';
-import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
+import { formatError } from 'src/common/format/graphql-error.format';
 import { GetOneInput } from 'src/common/graphql/custom.input';
+import { GraphqlPassportAuthGuard } from 'src/common/guards/graphql-passport-auth.guard';
+
+import { getEnvPath } from '../common/helper/env.helper';
+import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
+import { UserModule } from './user.module';
 
 describe('UserModule', () => {
   // let backup: IBackup;

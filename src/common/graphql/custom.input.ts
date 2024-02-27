@@ -1,8 +1,11 @@
+import { Field, InputType, Int } from '@nestjs/graphql';
+
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import GraphQLJSON from 'graphql-type-json';
-import { Field, InputType, Int } from '@nestjs/graphql';
 import { FindOptionsOrder } from 'typeorm';
+
 import { IDataType } from 'src/common/graphql/types';
+
 import { IWhere } from './utils/types';
 
 @InputType()

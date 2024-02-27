@@ -1,15 +1,16 @@
+import { HttpService } from '@nestjs/axios';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
 import {
   DeleteObjectCommand,
   ListObjectsCommand,
   S3,
 } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 import { FileUpload } from 'graphql-upload';
 import * as path from 'path';
 import { firstValueFrom } from 'rxjs';
-import { HttpService } from '@nestjs/axios';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Upload } from '@aws-sdk/lib-storage';
 
 @Injectable()
 export class UploadService {

@@ -1,3 +1,6 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+
+import * as bcrypt from 'bcrypt';
 import { IsEmail } from 'class-validator';
 import {
   BeforeInsert,
@@ -8,8 +11,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import * as bcrypt from 'bcrypt';
 
 const BCRYPT_HASH_ROUNDS = 10;
 

@@ -1,14 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserResolver } from './user.resolver';
+
 import {
   MockService,
   MockServiceFactory,
 } from 'src/common/factory/mockFactory';
-import { UserService } from './user.service';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
-import { User } from './entities/user.entity';
 import { getRandomUUID } from 'src/util/getRandomUUID';
+
+import { User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
+import { UserResolver } from './user.resolver';
+import { UserService } from './user.service';
 
 describe('UserResolver', () => {
   let resolver: UserResolver;

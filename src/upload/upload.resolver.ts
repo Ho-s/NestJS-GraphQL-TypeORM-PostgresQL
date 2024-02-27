@@ -1,5 +1,7 @@
-import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
+
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
+
 import { UploadService } from './upload.service';
 
 @Resolver()

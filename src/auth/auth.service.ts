@@ -1,10 +1,13 @@
-import { UserService } from '../user/user.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+
+import * as bcrypt from 'bcrypt';
 import { pick } from 'lodash';
+
+import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
 import { User } from 'src/user/entities/user.entity';
+
+import { UserService } from '../user/user.service';
 import { JwtWithUser } from './entities/auth._entity';
 
 @Injectable()

@@ -1,5 +1,6 @@
 import { parse, print } from 'graphql';
 import { set } from 'lodash';
+
 import { AddKeyValueInObjectProps, GetInfoFromQueryProps } from './types';
 
 const DATA = 'data';

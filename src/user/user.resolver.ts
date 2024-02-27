@@ -1,12 +1,15 @@
-import { CurrentUser } from '../common/decorators/user.decorator';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { UserService } from './user.service';
+
 import GraphQLJSON from 'graphql-type-json';
+
+import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
+import { CurrentQuery } from 'src/common/decorators/query.decorator';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
+
+import { CurrentUser } from '../common/decorators/user.decorator';
 import { GetUserType, User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
-import { CurrentQuery } from 'src/common/decorators/query.decorator';
-import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
+import { UserService } from './user.service';
 
 @Resolver()
 export class UserResolver {

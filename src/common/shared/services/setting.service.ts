@@ -2,10 +2,12 @@ import { ApolloDriverConfig } from '@nestjs/apollo';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import GraphQLJSON from 'graphql-type-json';
 import { isNil } from 'lodash';
 import { join } from 'path';
+
 import { formatError } from 'src/common/format/graphql-error.format';
 
 @Injectable()
