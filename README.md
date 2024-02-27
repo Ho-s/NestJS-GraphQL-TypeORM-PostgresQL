@@ -242,6 +242,40 @@ ex)
 JWT_PRIVATE_KEY= -----BEGIN RSA PRIVATE KEY-----...MIIEogIBAAKCAQBZ...-----END RSA PRIVATE KEY-----
 ```
 
+### [Husky v9](https://github.com/typicode/husky)
+
+#### Before getting started
+
+```bash
+$ yarn prepare
+```
+
+#### Pre commit
+
+[You can check detail here](./.husky/pre-commit)
+
+Before commit, The pre-commit hooks is executed.
+
+Lint checks have been automated to run before a commit is made.
+
+If you want to add test before commit actions, you can add follow line in [pre-commit](./.husky/pre-commit) file.
+
+```bash
+...
+yarn test
+...
+```
+
+#### Pre push
+
+[You can check detail here](./.husky/pre-push)
+
+The pre-push hooks is executed before the push action.
+
+The default rule set in the pre-push hook is to prevent direct pushes to the main branch.
+
+If you want to enable this action, you should uncomment the lines in the pre push file.
+
 ## Todo
 
 - [x] TDD
@@ -260,7 +294,7 @@ JWT_PRIVATE_KEY= -----BEGIN RSA PRIVATE KEY-----...MIIEogIBAAKCAQBZ...-----END R
 - [x] CI
 
   - [x] Github actions
-  - [ ] husky
+  - [x] husky
 
 - [x] GraphQL Upload
 - [x] Healthcheck

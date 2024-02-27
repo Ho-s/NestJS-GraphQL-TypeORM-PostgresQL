@@ -24,7 +24,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "rm -rf dist && jest --config ./test/jest-e2e.json",
     "test:e2e:docker": "rm -rf dist && docker-compose -f docker-compose.e2e.yml --env-file ./.test.env up --exit-code-from app",
-    "g": "node generator.mjs"
+    "g": "node generator.mjs",
+    "prepare": "husky"
   },
   "dependencies": {
     "@apollo/server": "^4.9.0",
@@ -84,6 +85,7 @@
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^9.0.11",
     "jest": "^29.6.2",
     "pg-mem": "^2.7.1",
     "prettier": "^3.0.0",
