@@ -276,6 +276,42 @@ The default rule set in the pre-push hook is to prevent direct pushes to the mai
 
 If you want to enable this action, you should uncomment the lines in the pre push file.
 
+### [SWC Compiler](https://docs.nestjs.com/recipes/swc)
+
+[SWC](https://swc.rs/) (Speedy Web Compiler) is an extensible Rust-based platform that can be used for both compilation and bundling. Using SWC with Nest CLI is a great and simple way to significantly speed up your development process.
+
+#### SWC + Jest error resolution
+
+After applying `SWC`, the following error was displayed in jest using an in-memory database (`pg-mem`):
+
+```bash
+    QueryFailedError: ERROR: function obj_description(regclass,text) does not exist
+    HINT: 🔨 Please note that pg-mem implements very few native functions.
+
+                👉 You can specify the functions you would like to use via "db.public.registerFunction(...)"
+
+    🐜 This seems to be an execution error, which means that your request syntax seems okay,
+        but the resulting statement cannot be executed → Probably not a pg-mem error.
+
+    *️⃣ Failed SQL statement: SELECT "table_schema", "table_name", obj_description(('"' || "table_schema" || '"."' || "table_name" || '"')::regclass, 'pg_class') AS table_comment FROM "information_schema"."tables" WHERE ("table_schema" = 'public' AND "table_name" = 'user');
+
+    👉 You can file an issue at https://github.com/oguimbal/pg-mem along with a way to reproduce this error (if you can), and  the stacktrace:
+```
+
+`pg-mem` is a library designed to emulate `PostgreSQL`, however, it does not support all features, which is why the above error occurred.
+
+This error can be resolved by implementing or overriding existing functions. Below is the function implementation for the resolution.
+Related issues can be checked [here](https://github.com/oguimbal/pg-mem/issues/380).
+
+```ts
+db.public.registerFunction({
+  name: 'obj_description',
+  args: [DataType.text, DataType.text],
+  returns: DataType.text,
+  implementation: () => 'test',
+});
+```
+
 ## Todo
 
 - [x] TDD
@@ -299,6 +335,7 @@ If you want to enable this action, you should uncomment the lines in the pre pus
 - [x] GraphQL Upload
 - [x] Healthcheck
 - [x] Divide usefactory
+- [x] SWC Compiler
 - [ ] Refresh Token
 - [ ] Redis
 - [ ] ElasticSearch

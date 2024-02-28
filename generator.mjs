@@ -1,9 +1,9 @@
+import { exec } from 'child_process';
 import fs from 'fs';
 import inquirer from 'inquirer';
-import readline from 'readline';
-import { exec } from 'child_process';
-import util from 'util';
 import ora from 'ora';
+import readline from 'readline';
+import util from 'util';
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -526,6 +526,13 @@ const createModuleSpec = (name, typeOfId, column, columType) => {
     `      implementation: () => 'test',`,
     `    });`,
     ``,
+    `    db.public.registerFunction({`,
+    `      name: 'obj_description',`,
+    `      args: [DataType.text, DataType.text],`,
+    `      returns: DataType.text,`,
+    `      implementation: () => 'test',`,
+    `    });`,
+    ``,
     `     db.public.registerFunction({`,
     `      name: 'version',`,
     `      implementation: () => '${name}',`,
@@ -591,8 +598,8 @@ const createModuleSpec = (name, typeOfId, column, columType) => {
       columType === 'string'
         ? `'sampleString'`
         : columType === 'number'
-        ? 1
-        : true
+          ? 1
+          : true
     },`,
     `  };`,
     `  it('create', async () => {`,
