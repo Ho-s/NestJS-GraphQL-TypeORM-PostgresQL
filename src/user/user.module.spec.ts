@@ -37,6 +37,15 @@ describe('UserModule', () => {
       implementation: () => 'test',
     });
 
+    // To resolve swc compiler issue. If you don't use swc compiler, remove these lines
+    // https://github.com/oguimbal/pg-mem/issues/380
+    db.public.registerFunction({
+      name: 'obj_description',
+      args: [DataType.text, DataType.text],
+      returns: DataType.text,
+      implementation: () => 'test',
+    });
+
     // To implement custom function
     db.public.registerFunction({
       name: 'version',
