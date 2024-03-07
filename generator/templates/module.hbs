@@ -1,0 +1,12 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmExModule } from 'src/common/modules/typeorm.module'
+import { {{pascalCase tableName}}Service } from './{{tableName}}.service';
+import { {{pascalCase tableName}}Repository } from './{{tableName}}.repository';
+import { {{pascalCase tableName}}Resolver } from './{{tableName}}.resolver';
+
+@Module({
+  imports: [TypeOrmExModule.forCustomRepository([{{pascalCase tableName}}Repository])],
+  providers: [{{pascalCase tableName}}Service, {{pascalCase tableName}}Resolver],
+  exports: [{{pascalCase tableName}}Service],
+})
+export class {{pascalCase tableName}}Module {}

@@ -1,0 +1,66 @@
+import {
+  Column,
+{{#if (isIn "createdAt" columnList)}}
+  CreateDateColumn,
+{{/if}}
+  Entity,
+  PrimaryGeneratedColumn,
+{{#if (isIn "updatedAt" columnList)}}
+  UpdateDateColumn,
+{{/if}}
+} from 'typeorm'
+import { Field, ID, ObjectType } from '@nestjs/graphql'
+
+@ObjectType()
+@Entity()
+export class {{pascalCase tableName}} {
+  @Field(() => ID)
+  @PrimaryGeneratedColumn('{{idType}}')
+{{#if (is "increment" idType)}}
+  id: number;
+{{else}}
+  id: string;
+{{/if}}
+
+  @Field(() => {{pascalCase columnType}}
+{{#unless columnRequired}}
+  , { nullable: true }
+{{/unless}}
+)
+
+  @Column(
+{{#unless columnRequired}}
+  { nullable: true }
+{{/unless}}
+  )
+  {{columnName}}
+{{#unless columnRequired}}
+  ?
+{{/unless}}
+    : {{columnType}}
+
+{{#if (isIn "createdAt" columnList)}}
+    @Field()
+    @CreateDateColumn({
+      type: 'timestamp with time zone',
+    })
+    createdAt: Date;
+{{/if}}
+{{#if (isIn "updatedAt" columnList)}}
+    @Field()
+    @UpdateDateColumn({
+      type: 'timestamp with time zone',
+    })
+    updatedAt: Date;
+{{/if}}
+
+}
+
+@ObjectType()
+export class Get{{pascalCase tableName}}Type {
+  @Field(() => [{{pascalCase tableName}}], { nullable: true })
+  data?: {{pascalCase tableName}}[];
+
+  @Field(() => Number, { nullable: true })
+  count?: number;
+}

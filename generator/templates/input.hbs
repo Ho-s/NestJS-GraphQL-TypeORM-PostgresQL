@@ -1,0 +1,42 @@
+import
+{{#if columnRequired}}
+  { IsNotEmpty, IsOptional }
+{{else}}
+  { IsOptional }
+{{/if}}
+ from 'class-validator'
+import { Field, InputType } from '@nestjs/graphql'
+
+@InputType()
+export class Create{{pascalCase tableName}}Input {
+  @Field(()=>{{pascalCase columnType}}
+{{#unless columnRequired}}
+  , { nullable: true }
+{{/unless}}
+  )
+{{#if columnRequired}}
+  @IsNotEmpty()
+{{else}}
+  @IsOptional()
+{{/if}}
+  {{columnName}}
+{{#unless columnRequired}}
+  ?
+{{/unless}}
+  : {{columnType}}
+}
+
+@InputType()
+export class Update{{pascalCase tableName}}Input {
+  @Field(()=>{{pascalCase columnType}}
+{{#unless columnRequired}}
+  , { nullable: true }
+{{/unless}}
+  )
+  @IsOptional()
+  {{columnName}}
+{{#unless columnRequired}}
+  ?
+{{/unless}}
+  : {{columnType}}
+}

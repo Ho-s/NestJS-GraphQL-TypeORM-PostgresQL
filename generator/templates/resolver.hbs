@@ -1,0 +1,62 @@
+import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { {{pascalCase tableName}}Service } from './{{tableName}}.service'
+import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input'
+import { CurrentQuery } from 'src/common/decorators/query.decorator'
+import GraphQLJSON from 'graphql-type-json';
+
+import { Get{{pascalCase tableName}}Type, {{pascalCase tableName}} } from './entities/{{tableName}}.entity';
+import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Input } from './inputs/{{tableName}}.input';
+
+@Resolver()
+export class {{pascalCase tableName}}Resolver {
+  constructor(private readonly {{tableName}}Service: {{pascalCase tableName}}Service) {}
+  @Query(() => Get{{pascalCase tableName}}Type)
+  @UseAuthGuard('admin')
+  getMany{{pascalCase tableName}}List(
+    @Args({ name: 'input', nullable: true }) qs: GetManyInput<{{pascalCase tableName}}>,
+    @CurrentQuery() gqlQuery: string,
+  ) {
+    return this.{{tableName}}Service.getMany(qs, gqlQuery);
+  }
+    
+  @Query(() => {{pascalCase tableName}})
+  @UseAuthGuard('admin')
+  getOne{{pascalCase tableName}}(
+    @Args({ name: 'input' }) qs: GetOneInput<{{pascalCase tableName}}>,
+    @CurrentQuery() gqlQuery: string,
+  ) {
+    return this.{{tableName}}Service.getOne(qs, gqlQuery);
+  }
+      
+  @Mutation(() => {{pascalCase tableName}})
+  @UseAuthGuard('admin')
+  create{{pascalCase tableName}}(@Args('input') input: Create{{pascalCase tableName}}Input) {
+    return this.{{tableName}}Service.create(input);
+  }
+      
+  @Mutation(() => GraphQLJSON)
+  @UseAuthGuard('admin')
+  update{{pascalCase tableName}}(@Args('id')
+{{#if (is "increment" idType)}}
+    id: number,
+{{else}}
+    id: string,
+{{/if}}
+  @Args('input') input: Update{{pascalCase tableName}}Input) {
+    return this.{{tableName}}Service.update(id, input);
+  }
+      
+  @Mutation(() => GraphQLJSON)
+  @UseAuthGuard('admin')
+  delete{{pascalCase tableName}}(@Args('id') 
+  {{#if (is "increment" idType)}}
+    id: number,
+  {{else}}
+    id: string,
+  {{/if}}
+  ) {
+    return this.{{tableName}}Service.delete(id);
+  }
+}
+    
