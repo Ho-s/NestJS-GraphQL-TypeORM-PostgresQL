@@ -1,0 +1,109 @@
+import { Test, TestingModule } from '@nestjs/testing'
+import { {{pascalCase tableName}}Service } from './{{tableName}}.service'
+
+import {
+MockRepository,
+MockRepositoryFactory,
+} from 'src/common/factory/mockFactory';
+import { getRepositoryToken } from '@nestjs/typeorm'
+import { {{pascalCase tableName}}Repository } from './{{tableName}}.repository'
+import { {{pascalCase tableName}} } from './entities/{{tableName}}.entity'
+import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Input } from './inputs/{{tableName}}.input'
+import { ExtendedRepository } from 'src/common/graphql/customExtended'
+import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types'
+{{#if (is "increment" idType)}}
+import { getRandomNumber } from 'src/util/getRandomNumber';
+{{else}}
+import { getRandomUUID } from 'src/util/getRandomUUID';
+{{/if}}
+
+describe('{{pascalCase tableName}}Service', () => {
+  let service: {{pascalCase tableName}}Service
+  let mockedRepository: MockRepository<ExtendedRepository<{{pascalCase tableName}}>>
+
+  beforeAll(async () => {
+  const module: TestingModule = await Test.createTestingModule({
+    providers: [
+      {{pascalCase tableName}}Service,
+      {
+        provide: getRepositoryToken({{pascalCase tableName}}Repository),
+        useFactory: MockRepositoryFactory.getMockRepository({{pascalCase tableName}}Repository),
+      },
+    ],
+  }).compile()
+
+  service = module.get<{{pascalCase tableName}}Service>({{pascalCase tableName}}Service)
+  mockedRepository = module.get<MockRepository<ExtendedRepository<{{pascalCase tableName}}>>>(
+    getRepositoryToken({{pascalCase tableName}}Repository),)
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('Calling "Get many" method', () => {
+  const qs: RepoQuery<{{pascalCase tableName}}> = {
+    where: { 
+{{#if (is "increment" idType)}}
+      id: getRandomNumber(0,999999)
+{{else}}
+      id: getRandomUUID()
+{{/if}}
+    },
+  }
+
+  expect(service.getMany(qs)).not.toEqual(null)
+  expect(mockedRepository.getMany).toHaveBeenCalled()
+  })
+
+  it('Calling "Get one" method', () => {
+  const qs: OneRepoQuery<{{pascalCase tableName}}> = {
+    where: { 
+{{#if (is "increment" idType)}}
+      id: getRandomNumber(0,999999)
+{{else}}
+      id: getRandomUUID()
+{{/if}}
+    },
+  }
+
+  expect(service.getOne(qs)).not.toEqual(null)
+  expect(mockedRepository.getOne).toHaveBeenCalled()
+  })
+
+  it('Calling "Create" method', () => {
+    const dto = new Create{{pascalCase tableName}}Input()
+    const {{tableName}} = mockedRepository.create(dto)
+
+    expect(service.create(dto)).not.toEqual(null)
+    expect(mockedRepository.create).toHaveBeenCalledWith(dto)
+    expect(mockedRepository.save).toHaveBeenCalledWith({{tableName}})
+  })
+
+  it('Calling "Update" method', () => {
+{{#if (is "increment" idType)}}
+    const id = getRandomNumber(0,999999);
+{{else}}
+    const id = getRandomUUID();
+{{/if}}
+    const dto = new Update{{pascalCase tableName}}Input()
+    const {{tableName}} = mockedRepository.create(dto)
+
+    service.update(id, dto)
+
+    expect(mockedRepository.create).toHaveBeenCalledWith(dto)
+    expect(mockedRepository.update).toHaveBeenCalledWith(id, {{tableName}})
+  })
+
+  it('Calling "Delete" method', () => {
+{{#if (is "increment" idType)}}
+    const id = getRandomNumber(0,999999);
+{{else}}
+    const id = getRandomUUID();
+{{/if}}
+
+    service.delete(id)
+
+    expect(mockedRepository.delete).toHaveBeenCalledWith({ id })
+  })
+})

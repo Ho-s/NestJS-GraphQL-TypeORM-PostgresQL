@@ -1,0 +1,46 @@
+import { Injectable } from '@nestjs/common'
+import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types'
+import { {{pascalCase tableName}}Repository } from './{{tableName}}.repository'
+import { {{pascalCase tableName}} } from './entities/{{tableName}}.entity';
+import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Input } from './inputs/{{tableName}}.input';
+
+@Injectable()
+export class {{pascalCase tableName}}Service {
+constructor(private readonly {{tableName}}Repository: {{pascalCase tableName}}Repository) {}
+  getMany(qs: RepoQuery<{{pascalCase tableName}}> = {}, gqlQuery?: string) {
+    return this.{{tableName}}Repository.getMany(qs, gqlQuery);
+  }
+
+  getOne(qs: OneRepoQuery<{{pascalCase tableName}}>, gqlQuery?: string) {
+    return this.{{tableName}}Repository.getOne(qs, gqlQuery);
+  }
+
+  create(input: Create{{pascalCase tableName}}Input) {
+    const {{tableName}} = this.{{tableName}}Repository.create(input)
+
+    return this.{{tableName}}Repository.save({{tableName}});
+  }
+
+  update(
+{{#if (is "increment" idType)}}
+    id: number,
+{{else}}
+    id: string,
+{{/if}}
+    input: Update{{pascalCase tableName}}Input
+  ) {
+    const {{tableName}} = this.{{tableName}}Repository.create(input)
+
+    return this.{{tableName}}Repository.update(id, {{tableName}})
+  }
+
+  delete(
+{{#if (is "increment" idType)}}
+    id: number,
+{{else}}
+    id: string,
+{{/if}}
+  ) {
+    return this.{{tableName}}Repository.delete({ id })
+  }
+}
