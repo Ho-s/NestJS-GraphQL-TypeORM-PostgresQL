@@ -341,3 +341,5 @@ db.public.registerFunction({
 - [ ] ElasticSearch
 - [ ] Caching
 - [ ] Graphql Subscription
+- [ ] Remove lodash
+- [ ] [CASL](https://docs.nestjs.com/security/authorization#integrating-casl)
