@@ -66,16 +66,13 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
       filterOrder.call(this, order);
     }
 
-    let select: FindOptionsSelect<T> = undefined;
-    // In case graphQL query exist
-    if (gqlQuery) {
-      relations = getConditionFromGqlQuery<T>(gqlQuery, true).relations;
-      select = getConditionFromGqlQuery<T>(gqlQuery, true).select;
-    }
+    const queryCondition = gqlQuery
+      ? getConditionFromGqlQuery<T>(gqlQuery, true)
+      : { relations: undefined, select: undefined };
 
     const condition: FindManyOptions<T> = {
-      relations,
-      ...(select && { select }),
+      relations: relations ?? queryCondition.relations,
+      ...(queryCondition.select && { select: queryCondition.select }),
       ...(where && !isEmpty(where) && { where: processWhere(where) }),
       ...(order && { order }),
       ...(pagination && {
@@ -101,17 +98,13 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
     { where, relations }: OneRepoQuery<T>,
     gqlQuery?: string,
   ): Promise<T> {
-    let select: FindOptionsSelect<T> = undefined;
-
-    // In case graphQL query exist
-    if (gqlQuery) {
-      relations = getConditionFromGqlQuery<T>(gqlQuery).relations;
-      select = getConditionFromGqlQuery<T>(gqlQuery).select;
-    }
+    const queryCondition = gqlQuery
+      ? getConditionFromGqlQuery<T>(gqlQuery)
+      : { relations: undefined, select: undefined };
 
     const condition: FindOneOptions<T> = {
-      relations,
-      ...(select && { select }),
+      relations: relations ?? queryCondition.relations,
+      ...(queryCondition.select && { select: queryCondition.select }),
       ...(where && { where: processWhere(where) }),
     };
 
