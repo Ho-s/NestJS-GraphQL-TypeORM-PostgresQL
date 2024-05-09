@@ -5,7 +5,6 @@ import {
   FindManyOptions,
   FindOneOptions,
   FindOptionsOrder,
-  FindOptionsSelect,
   Repository,
 } from 'typeorm';
 
@@ -24,7 +23,10 @@ import {
 import { getConditionFromGqlQuery } from './utils/getConditionFromGqlQuery';
 import { processWhere } from './utils/processWhere';
 
-export function filterOrder<T>(order: FindOptionsOrder<T>) {
+export function filterOrder<T>(
+  this: Repository<T>,
+  order: FindOptionsOrder<T>,
+) {
   Object.entries(order).forEach(([key, value]: [string, ISort]) => {
     if (!(key in this.metadata.propertiesMap)) {
       throw new BadRequestException(
