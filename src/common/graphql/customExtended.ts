@@ -69,7 +69,7 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
     }
 
     const queryCondition = gqlQuery
-      ? getConditionFromGqlQuery<T>(gqlQuery, true)
+      ? getConditionFromGqlQuery.call(this, gqlQuery, true)
       : { relations: undefined, select: undefined };
 
     const condition: FindManyOptions<T> = {
@@ -101,7 +101,7 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
     gqlQuery?: string,
   ): Promise<T> {
     const queryCondition = gqlQuery
-      ? getConditionFromGqlQuery<T>(gqlQuery)
+      ? getConditionFromGqlQuery.call(this, gqlQuery)
       : { relations: undefined, select: undefined };
 
     const condition: FindOneOptions<T> = {
