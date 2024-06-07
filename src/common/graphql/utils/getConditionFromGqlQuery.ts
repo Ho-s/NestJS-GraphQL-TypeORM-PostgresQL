@@ -1,4 +1,3 @@
-import { parse, print } from 'graphql';
 import { set } from 'lodash';
 import { Repository } from 'typeorm';
 
