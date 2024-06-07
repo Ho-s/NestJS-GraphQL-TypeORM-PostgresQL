@@ -38,14 +38,7 @@ export function getConditionFromGqlQuery<Entity>(
   query: string,
   hasCountType?: boolean,
 ): GetInfoFromQueryProps<Entity> {
-  const ast = parse(query);
-  const operationJson = print(ast);
-
-  const splitted = operationJson.split('\n');
-
-  // Remove first and last braces
-  splitted.shift();
-  splitted.pop();
+  const splitted = query.split('\n');
 
   // Remove alias
   splitted.shift();
