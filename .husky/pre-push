@@ -1,9 +1,9 @@
-# BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-# PROTECTED_BRANCHES="^(main)"
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+PROTECTED_BRANCHES="^(main)"
 
-# if [[ "$BRANCH" =~ $PROTECTED_BRANCHES ]]; then
-#   echo "You can't commit directly to main branch"
-#   exit 1
-# fi
+if [[ "$BRANCH" =~ $PROTECTED_BRANCHES ]]; then
+  echo "You can't commit directly to main branch"
+  exit 1
+fi
 
-# exit 0
+exit 0
