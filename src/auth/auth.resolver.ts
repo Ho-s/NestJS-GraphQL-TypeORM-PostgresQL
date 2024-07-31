@@ -3,6 +3,7 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
 import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { RefreshGuard } from 'src/common/guards/graphql-refresh.guard';
 import { SignInGuard } from 'src/common/guards/graphql-signin.guard';
 import { User } from 'src/user/entities/user.entity';
 
@@ -22,5 +23,13 @@ export class AuthResolver {
   @Mutation(() => JwtWithUser)
   signUp(@Args('input') input: SignUpInput) {
     return this.authService.signUp(input);
+  }
+
+  @Mutation(() => JwtWithUser)
+  @UseGuards(RefreshGuard)
+  refreshAccessToken(@CurrentUser() user: User) {
+    const jwt = this.authService.generateAccessToken(user, user.refreshToken);
+
+    return { jwt, user };
   }
 }

@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
@@ -15,10 +16,43 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
-  private signJWT(user: User) {
-    return this.jwtService.sign(pick(user, ['id', 'role']));
+  private async generateRefreshToken(userId: string) {
+    const refreshToken = this.jwtService.sign(
+      { id: userId },
+      {
+        secret: this.configService.get('JWT_REFRESH_TOKEN_PRIVATE_KEY'),
+        expiresIn: '7d',
+      },
+    );
+    await this.userService.update(userId, { refreshToken });
+
+    return refreshToken;
+  }
+
+  async verifyRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<User> {
+    try {
+      this.jwtService.verify(refreshToken, {
+        secret: this.configService.get('JWT_REFRESH_TOKEN_PRIVATE_KEY'),
+      });
+      return this.userService.getOne({ where: { id: userId, refreshToken } });
+    } catch (err) {
+      if (err.message === 'jwt expired') {
+        this.userService.update(userId, { refreshToken: null });
+      }
+    }
+  }
+
+  generateAccessToken(user: User, refreshToken: string) {
+    return this.jwtService.sign({
+      ...pick(user, ['id', 'role']),
+      refreshToken,
+    });
   }
 
   async signUp(input: SignUpInput): Promise<JwtWithUser> {
@@ -35,8 +69,9 @@ export class AuthService {
     return this.signIn(user);
   }
 
-  signIn(user: User) {
-    const jwt = this.signJWT(user);
+  async signIn(user: User) {
+    const refreshToken = await this.generateRefreshToken(user.id);
+    const jwt = this.generateAccessToken(user, refreshToken);
 
     return { jwt, user };
   }
