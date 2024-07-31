@@ -5,6 +5,7 @@
 input CreateUserInput {
   nickname: String!
   password: String!
+  refreshToken: String
   role: String!
   username: String!
 }
@@ -15,7 +16,9 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 input GetManyInput {
-  """count or data or all, default = data"""
+  """
+  count or data or all, default = data
+  """
   dataType: String
 
   """
@@ -36,10 +39,14 @@ type GetUserType {
 }
 
 input IPagination {
-  """Started from 0"""
+  """
+  Started from 0
+  """
   page: Int!
 
-  """Size of page"""
+  """
+  Size of page
+  """
   size: Int!
 }
 
@@ -57,7 +64,9 @@ type Mutation {
   createUser(input: CreateUserInput!): User!
   deleteFiles(keys: [String!]!): Boolean!
   deleteUser(id: String!): JSON!
+  refreshAccessToken: JwtWithUser!
   signIn(input: SignInInput!): JwtWithUser!
+  signOut: Boolean!
   signUp(input: SignUpInput!): JwtWithUser!
   updateUser(id: String!, input: UpdateUserInput!): JSON!
   uploadFile(file: Upload!): String!
@@ -84,17 +93,21 @@ input SignUpInput {
 input UpdateUserInput {
   nickname: String
   password: String
+  refreshToken: String
   role: String
   username: String
 }
 
-"""The `Upload` scalar type represents a file upload."""
+"""
+The `Upload` scalar type represents a file upload.
+"""
 scalar Upload
 
 type User {
   createdAt: DateTime!
   id: ID!
   nickname: String!
+  refreshToken: String
   role: String!
   updatedAt: DateTime!
   username: String!

@@ -7,6 +7,7 @@ import { UserModule } from 'src/user/user.module';
 
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 
@@ -31,6 +32,12 @@ import { LocalStrategy } from './strategies/local.strategy';
     ConfigModule,
     UserModule,
   ],
-  providers: [AuthResolver, AuthService, JwtStrategy, LocalStrategy],
+  providers: [
+    AuthResolver,
+    AuthService,
+    JwtStrategy,
+    LocalStrategy,
+    JwtRefreshStrategy,
+  ],
 })
 export class AuthModule {}

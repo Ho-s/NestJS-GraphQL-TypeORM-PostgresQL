@@ -49,6 +49,10 @@ export class User {
   })
   updatedAt: Date;
 
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  refreshToken?: string;
+
   @BeforeInsert()
   @BeforeUpdate()
   async beforeInsertOrUpdate() {
