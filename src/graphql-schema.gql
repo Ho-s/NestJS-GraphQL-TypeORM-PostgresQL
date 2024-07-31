@@ -66,6 +66,7 @@ type Mutation {
   deleteUser(id: String!): JSON!
   refreshAccessToken: JwtWithUser!
   signIn(input: SignInInput!): JwtWithUser!
+  signOut: Boolean!
   signUp(input: SignUpInput!): JwtWithUser!
   updateUser(id: String!, input: UpdateUserInput!): JSON!
   uploadFile(file: Upload!): String!

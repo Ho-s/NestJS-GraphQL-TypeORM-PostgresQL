@@ -6,13 +6,17 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { RefreshGuard } from 'src/common/guards/graphql-refresh.guard';
 import { SignInGuard } from 'src/common/guards/graphql-signin.guard';
 import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
 
 import { AuthService } from './auth.service';
 import { JwtWithUser } from './entities/auth._entity';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @Mutation(() => JwtWithUser)
   @UseGuards(SignInGuard)
@@ -23,6 +27,13 @@ export class AuthResolver {
   @Mutation(() => JwtWithUser)
   signUp(@Args('input') input: SignUpInput) {
     return this.authService.signUp(input);
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(RefreshGuard)
+  async signOut(@CurrentUser() user: User) {
+    await this.userService.update(user.id, { refreshToken: null });
+    return true;
   }
 
   @Mutation(() => JwtWithUser)
