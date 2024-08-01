@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { CustomCache } from 'src/cache/custom-cache.decorator';
 import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types';
 
 import { User } from './entities/user.entity';
@@ -10,6 +11,7 @@ import { UserRepository } from './user.repository';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
+  @CustomCache({ logger: console.log, ttl: 1000 })
   getMany(qs: RepoQuery<User> = {}, gqlQuery?: string) {
     return this.userRepository.getMany(qs, gqlQuery);
   }

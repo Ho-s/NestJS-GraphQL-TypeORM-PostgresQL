@@ -2,6 +2,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import GraphQLJSON from 'graphql-type-json';
 
+import { CustomCache } from 'src/cache/custom-cache.decorator';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentQuery } from 'src/common/decorators/query.decorator';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
@@ -17,6 +18,7 @@ export class UserResolver {
 
   @Query(() => GetUserType)
   @UseAuthGuard('admin')
+  @CustomCache({ logger: console.log, ttl: 1000 })
   getManyUserList(
     @Args({ name: 'input', nullable: true })
     qs: GetManyInput<User>,
