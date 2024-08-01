@@ -40,30 +40,46 @@ export class CustomCacheService {
       }
 
       const customKey = `${instance.constructor.name}.${methodName}`;
-      const { key: cacheKey = customKey, ttl = Infinity, logger } = options;
 
       const methodOverride = async (...args: unknown[]) => {
-        const argsAddedKey = cacheKey + JSON.stringify(args);
+        const result = async () => await methodRef.apply(instance, args);
 
-        const cachedValue = await this.cacheManager.get(argsAddedKey);
-        if (Boolean(cachedValue)) {
-          logger?.('Cache Hit', { cacheKey });
-
-          return cachedValue;
-        }
-
-        const result = await methodRef.apply(instance, args);
-
-        logger?.('Cached', { cacheKey });
-
-        await this.cacheManager.set(argsAddedKey, result, ttl);
-
-        return result;
+        return this.setCache({ customKey, options, result, args });
       };
 
       Object.defineProperty(instance, methodName, {
         value: methodOverride.bind(instance),
       });
     };
+  }
+
+  async setCache({
+    options,
+    args,
+    result: _result,
+    customKey,
+  }: {
+    options: CustomCacheOptions;
+    args: unknown[];
+    result: () => Promise<unknown>;
+    customKey: string;
+  }) {
+    const { key: cacheKey = customKey, ttl = Infinity, logger } = options;
+
+    const argsAddedKey = cacheKey + JSON.stringify(args);
+
+    const cachedValue = await this.cacheManager.get(argsAddedKey);
+    if (Boolean(cachedValue)) {
+      logger?.('Cache Hit', { cacheKey });
+
+      return cachedValue;
+    }
+
+    const result = await _result();
+
+    await this.cacheManager.set(argsAddedKey, result, ttl);
+    logger?.('Cached', { cacheKey });
+
+    return result;
   }
 }
