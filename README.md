@@ -119,6 +119,28 @@ You can use like below.
 $ yarn g
 ```
 
+## Caching
+
+This project provides a custom decorator that makes it easy to implement method caching in NestJS applications.
+
+1. **Caching Functionality**: Utilizes `DiscoveryService` and `MetadataScanner` to handle method caching automatically at runtime.
+2. **Usage**: Designed for use with any provider.
+3. **GraphQL Resolvers**: Resolvers are also part of providers, but due to GraphQL's internal logic, method overrides do not work. Therefore, the functionality has been replaced with an interceptor.
+
+You can use like below
+
+```js
+@Injectable()
+export class ExampleService {
+  @Cache(...)
+  async exampleMethod(arg: string) {
+    ...
+  }
+}
+```
+
+You can find related codes [here](./src/cache/custom-cache.module.ts)
+
 ## Getting Started
 
 ### Installation
@@ -339,7 +361,7 @@ db.public.registerFunction({
 - [x] Refresh Token
 - [ ] Redis
 - [ ] ElasticSearch
-- [ ] Caching
+- [x] Caching
 - [ ] Graphql Subscription
 - [ ] Remove lodash
 - [ ] [CASL](https://docs.nestjs.com/security/authorization#integrating-casl)
