@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from './auth/auth.module';
+import { CustomCacheModule } from './cache/custom-cache.module';
 import { getEnvPath } from './common/helper/env.helper';
 import { SettingService } from './common/shared/services/setting.service';
 import { SharedModule } from './common/shared/shared.module';
@@ -35,6 +36,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UploadModule,
     HealthModule,
+    CustomCacheModule.forRoot(),
   ],
 })
 export class AppModule {}
