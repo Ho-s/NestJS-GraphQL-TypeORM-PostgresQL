@@ -133,7 +133,7 @@ You can use like below
 @Injectable()
 export class ExampleService {
   @Cache(...)
-  async exampleMethod(arg: string) {
+  async exampleMethod(...args: unknown) {
     ...
   }
 }
