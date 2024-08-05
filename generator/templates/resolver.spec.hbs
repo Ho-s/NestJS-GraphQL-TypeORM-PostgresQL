@@ -7,21 +7,19 @@ import {
 import { {{pascalCase tableName}}Service } from './{{tableName}}.service'
 import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input'
 import { {{pascalCase tableName}} } from './entities/{{tableName}}.entity'
-
-{{#if (is "increment" idType)}}
-import { getRandomNumber } from 'src/util/getRandomNumber';
-{{else}}
-import { getRandomUUID } from 'src/util/getRandomUUID';
-{{/if}}
+import { UtilModule } from 'src/common/shared/services/util.module';
+import { UtilService } from 'src/common/shared/services/util.service';
 
 import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Input } from './inputs/{{tableName}}.input'
 
 describe('{{pascalCase tableName}}Resolver', () => {
   let resolver: {{pascalCase tableName}}Resolver
   let mockedService: MockService<{{pascalCase tableName}}Service>
+  let utilService: UtilService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [UtilModule],
       providers: [
         {{pascalCase tableName}}Resolver,
         {
@@ -31,6 +29,7 @@ describe('{{pascalCase tableName}}Resolver', () => {
       ],
     }).compile()
 
+    utilService = module.get<UtilService>(UtilService);
     resolver = module.get<{{pascalCase tableName}}Resolver>({{pascalCase tableName}}Resolver)
     mockedService = module.get<MockService<{{pascalCase tableName}}Service>>({{pascalCase tableName}}Service)
   })
@@ -43,9 +42,9 @@ describe('{{pascalCase tableName}}Resolver', () => {
     const qs: GetManyInput<{{pascalCase tableName}}> = {
       where: { 
   {{#if (is "increment" idType)}}
-        id: getRandomNumber(0,999999)
+        id: utilService.getRandomNumber(0,999999)
   {{else}}
-        id: getRandomUUID()
+        id: utilService.getRandomUUID
   {{/if}}
       },
     }
@@ -68,9 +67,9 @@ describe('{{pascalCase tableName}}Resolver', () => {
     const qs: GetOneInput<{{pascalCase tableName}}> = {
       where: { 
 {{#if (is "increment" idType)}}
-        id: getRandomNumber(0,999999)
+        id: utilService.getRandomNumber(0,999999)
 {{else}}
-        id: getRandomUUID()
+        id: utilService.getRandomUUID
 {{/if}}
       },
     }
@@ -98,9 +97,9 @@ describe('{{pascalCase tableName}}Resolver', () => {
 
   it('Calling "Update {{tableName}}" method', () => {
 {{#if (is "increment" idType)}}
-    const id = getRandomNumber(0,999999);
+    const id = utilService.getRandomNumber(0,999999);
 {{else}}
-    const id = getRandomUUID();
+    const id = utilService.getRandomUUID;
 {{/if}}
     const dto = new Update{{pascalCase tableName}}Input()
 
@@ -111,9 +110,9 @@ describe('{{pascalCase tableName}}Resolver', () => {
 
   it('Calling "Delete {{tableName}}" method', () => {
 {{#if (is "increment" idType)}}
-    const id = getRandomNumber(0,999999);
+    const id = utilService.getRandomNumber(0,999999);
 {{else}}
-    const id = getRandomUUID();
+    const id = utilService.getRandomUUID;
 {{/if}}
 
     resolver.delete{{pascalCase tableName}}(id)

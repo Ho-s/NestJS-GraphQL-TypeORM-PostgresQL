@@ -11,18 +11,17 @@ import { {{pascalCase tableName}} } from './entities/{{tableName}}.entity'
 import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Input } from './inputs/{{tableName}}.input'
 import { ExtendedRepository } from 'src/common/graphql/customExtended'
 import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types'
-{{#if (is "increment" idType)}}
-import { getRandomNumber } from 'src/util/getRandomNumber';
-{{else}}
-import { getRandomUUID } from 'src/util/getRandomUUID';
-{{/if}}
+import { UtilModule } from 'src/common/shared/services/util.module';
+import { UtilService } from 'src/common/shared/services/util.service';
 
 describe('{{pascalCase tableName}}Service', () => {
   let service: {{pascalCase tableName}}Service
   let mockedRepository: MockRepository<ExtendedRepository<{{pascalCase tableName}}>>
+  let utilService: UtilService;
 
   beforeAll(async () => {
   const module: TestingModule = await Test.createTestingModule({
+    imports: [UtilModule],
     providers: [
       {{pascalCase tableName}}Service,
       {
@@ -32,10 +31,11 @@ describe('{{pascalCase tableName}}Service', () => {
     ],
   }).compile()
 
-  service = module.get<{{pascalCase tableName}}Service>({{pascalCase tableName}}Service)
-  mockedRepository = module.get<MockRepository<ExtendedRepository<{{pascalCase tableName}}>>>(
-    getRepositoryToken({{pascalCase tableName}}Repository),)
-  })
+    utilService = module.get<UtilService>(UtilService);
+    service = module.get<{{pascalCase tableName}}Service>({{pascalCase tableName}}Service)
+    mockedRepository = module.get<MockRepository<ExtendedRepository<{{pascalCase tableName}}>>>(
+      getRepositoryToken({{pascalCase tableName}}Repository),)
+    })
 
   afterEach(() => {
     jest.resetAllMocks()
@@ -45,9 +45,9 @@ describe('{{pascalCase tableName}}Service', () => {
   const qs: RepoQuery<{{pascalCase tableName}}> = {
     where: { 
 {{#if (is "increment" idType)}}
-      id: getRandomNumber(0,999999)
+      id: utilService.getRandomNumber(0,999999)
 {{else}}
-      id: getRandomUUID()
+      id: utilService.getRandomUUID
 {{/if}}
     },
   }
@@ -60,9 +60,9 @@ describe('{{pascalCase tableName}}Service', () => {
   const qs: OneRepoQuery<{{pascalCase tableName}}> = {
     where: { 
 {{#if (is "increment" idType)}}
-      id: getRandomNumber(0,999999)
+      id: utilService.getRandomNumber(0,999999)
 {{else}}
-      id: getRandomUUID()
+      id: utilService.getRandomUUID
 {{/if}}
     },
   }
@@ -82,9 +82,9 @@ describe('{{pascalCase tableName}}Service', () => {
 
   it('Calling "Update" method', () => {
 {{#if (is "increment" idType)}}
-    const id = getRandomNumber(0,999999);
+    const id = utilService.getRandomNumber(0,999999);
 {{else}}
-    const id = getRandomUUID();
+    const id = utilService.getRandomUUID;
 {{/if}}
     const dto = new Update{{pascalCase tableName}}Input()
     const {{tableName}} = mockedRepository.create(dto)
@@ -97,9 +97,9 @@ describe('{{pascalCase tableName}}Service', () => {
 
   it('Calling "Delete" method', () => {
 {{#if (is "increment" idType)}}
-    const id = getRandomNumber(0,999999);
+    const id = utilService.getRandomNumber(0,999999);
 {{else}}
-    const id = getRandomUUID();
+    const id = utilService.getRandomUUID;
 {{/if}}
 
     service.delete(id)

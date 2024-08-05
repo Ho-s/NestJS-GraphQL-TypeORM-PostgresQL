@@ -8,8 +8,6 @@ import {
   Repository,
 } from 'typeorm';
 
-import { isObject } from 'src/util/isObject';
-
 import {
   IDriection,
   IGetData,
@@ -22,6 +20,10 @@ import {
 } from './types';
 import { getConditionFromGqlQuery } from './utils/getConditionFromGqlQuery';
 import { processWhere } from './utils/processWhere';
+
+const isObject = (value: unknown): boolean => {
+  return typeof value === 'object' && !Array.isArray(value) && value !== null;
+};
 
 export function filterOrder<T>(
   this: Repository<T>,
