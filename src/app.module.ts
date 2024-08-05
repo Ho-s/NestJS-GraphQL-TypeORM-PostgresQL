@@ -15,10 +15,7 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: getEnvPath(`${__dirname}/..`),
-    }),
+    ConfigModule.forRoot({ envFilePath: getEnvPath(`${__dirname}/..`) }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       imports: [SettingModule],
