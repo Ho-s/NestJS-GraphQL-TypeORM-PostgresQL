@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
+import { UtilModule } from 'src/common/shared/services/util.module';
 import { UserModule } from 'src/user/user.module';
 
 import { AuthResolver } from './auth.resolver';
@@ -31,6 +32,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     }),
     ConfigModule,
     UserModule,
+    UtilModule,
   ],
   providers: [
     AuthResolver,

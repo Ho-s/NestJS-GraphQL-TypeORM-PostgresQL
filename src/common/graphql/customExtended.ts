@@ -1,14 +1,11 @@
 import { BadRequestException } from '@nestjs/common';
 
-import { isEmpty } from 'lodash';
 import {
   FindManyOptions,
   FindOneOptions,
   FindOptionsOrder,
   Repository,
 } from 'typeorm';
-
-import { isObject } from 'src/util/isObject';
 
 import {
   IDriection,
@@ -22,6 +19,18 @@ import {
 } from './types';
 import { getConditionFromGqlQuery } from './utils/getConditionFromGqlQuery';
 import { processWhere } from './utils/processWhere';
+
+const isObject = (value: unknown): boolean => {
+  return typeof value === 'object' && !Array.isArray(value) && value !== null;
+};
+
+type EmptyObject<T> = { [K in keyof T]?: never };
+type EmptyObjectOf<T> = EmptyObject<T> extends T ? EmptyObject<T> : never;
+const isEmptyObject = <T extends object>(
+  value: T,
+): value is EmptyObjectOf<T> => {
+  return Object.keys(value).length === 0;
+};
 
 export function filterOrder<T>(
   this: Repository<T>,
@@ -75,7 +84,7 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
     const condition: FindManyOptions<T> = {
       relations: relations ?? queryCondition.relations,
       ...(queryCondition.select && { select: queryCondition.select }),
-      ...(where && !isEmpty(where) && { where: processWhere(where) }),
+      ...(where && !isEmptyObject(where) && { where: processWhere(where) }),
       ...(order && { order }),
       ...(pagination && {
         skip: pagination.page * pagination.size,
@@ -87,8 +96,8 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
       data: async () => ({ data: await this.find(condition) }),
       count: async () => ({ count: await this.count(condition) }),
       all: async () => {
-        const res = await this.findAndCount(condition);
-        return { data: res[0], count: res[1] };
+        const [data, count] = await this.findAndCount(condition);
+        return { data, count };
       },
     };
 

@@ -7,7 +7,8 @@ import {
 } from 'src/common/factory/mockFactory';
 import { ExtendedRepository } from 'src/common/graphql/customExtended';
 import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types';
-import { getRandomUUID } from 'src/util/getRandomUUID';
+import { UtilModule } from 'src/common/shared/services/util.module';
+import { UtilService } from 'src/common/shared/services/util.service';
 
 import { User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
@@ -17,9 +18,11 @@ import { UserService } from './user.service';
 describe('UserService', () => {
   let service: UserService;
   let mockedRepository: MockRepository<ExtendedRepository<User>>;
+  let utilService: UtilService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [UtilModule],
       providers: [
         UserService,
         {
@@ -29,6 +32,7 @@ describe('UserService', () => {
       ],
     }).compile();
 
+    utilService = module.get<UtilService>(UtilService);
     service = module.get<UserService>(UserService);
     mockedRepository = module.get<MockRepository<ExtendedRepository<User>>>(
       getRepositoryToken(UserRepository),
@@ -41,7 +45,7 @@ describe('UserService', () => {
 
   it('Calling "Get many" method', () => {
     const qs: RepoQuery<User> = {
-      where: { id: getRandomUUID() },
+      where: { id: utilService.getRandomUUID },
     };
 
     expect(service.getMany(qs)).not.toEqual(null);
@@ -50,7 +54,7 @@ describe('UserService', () => {
 
   it('Calling "Get one" method', () => {
     const qs: OneRepoQuery<User> = {
-      where: { id: getRandomUUID() },
+      where: { id: utilService.getRandomUUID },
     };
 
     expect(service.getOne(qs)).not.toEqual(null);
@@ -67,7 +71,7 @@ describe('UserService', () => {
   });
 
   it('Calling "Update" method', () => {
-    const id = getRandomUUID();
+    const id = utilService.getRandomUUID;
     const dto = new UpdateUserInput();
     const user = mockedRepository.create(dto);
 
@@ -78,7 +82,7 @@ describe('UserService', () => {
   });
 
   it('Calling "Delete" method', () => {
-    const id = getRandomUUID();
+    const id = utilService.getRandomUUID;
 
     service.delete(id);
 

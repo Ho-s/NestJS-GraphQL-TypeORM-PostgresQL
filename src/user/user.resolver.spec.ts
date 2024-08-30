@@ -5,7 +5,8 @@ import {
   MockServiceFactory,
 } from 'src/common/factory/mockFactory';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
-import { getRandomUUID } from 'src/util/getRandomUUID';
+import { UtilModule } from 'src/common/shared/services/util.module';
+import { UtilService } from 'src/common/shared/services/util.service';
 
 import { User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
@@ -15,9 +16,11 @@ import { UserService } from './user.service';
 describe('UserResolver', () => {
   let resolver: UserResolver;
   let mockedService: MockService<UserService>;
+  let utilService: UtilService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [UtilModule],
       providers: [
         UserResolver,
         {
@@ -27,6 +30,7 @@ describe('UserResolver', () => {
       ],
     }).compile();
 
+    utilService = module.get<UtilService>(UtilService);
     resolver = module.get<UserResolver>(UserResolver);
     mockedService = module.get<MockService<UserService>>(UserService);
   });
@@ -37,7 +41,7 @@ describe('UserResolver', () => {
 
   it('Calling "Get many user list" method', () => {
     const qs: GetManyInput<User> = {
-      where: { id: getRandomUUID() },
+      where: { id: utilService.getRandomUUID },
     };
 
     const gqlQuery = `
@@ -56,7 +60,7 @@ describe('UserResolver', () => {
 
   it('Calling "Get one user list" method', () => {
     const qs: GetOneInput<User> = {
-      where: { id: getRandomUUID() },
+      where: { id: utilService.getRandomUUID },
     };
 
     const gqlQuery = `
@@ -79,7 +83,7 @@ describe('UserResolver', () => {
   });
 
   it('Calling "Update user" method', () => {
-    const id = getRandomUUID();
+    const id = utilService.getRandomUUID;
     const dto = new UpdateUserInput();
 
     resolver.updateUser(id, dto);
@@ -88,7 +92,7 @@ describe('UserResolver', () => {
   });
 
   it('Calling "Delete user" method', () => {
-    const id = getRandomUUID();
+    const id = utilService.getRandomUUID;
 
     resolver.deleteUser(id);
 

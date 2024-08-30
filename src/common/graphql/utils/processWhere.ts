@@ -1,6 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
 
-import { isArray, isPlainObject, merge, set } from 'lodash';
 import {
   Between,
   FindOptionsWhere,
@@ -16,6 +15,35 @@ import {
 } from 'typeorm';
 
 import { IWhere, OperatorType } from './types';
+
+const isArray = (value: unknown): value is unknown[] => {
+  return Array.isArray(value);
+};
+
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && !isArray(value) && value !== null;
+};
+
+const merge = <T, K>(prev: T, next: K): T & K => {
+  return { ...prev, ...next };
+};
+
+export const set = <T, K>(obj: T, path: string, value: K): T & K => {
+  const keys = path.split('.');
+  const lastKey = keys.pop();
+
+  keys.reduce((acc, key) => {
+    if (!acc[key]) {
+      acc[key] = {};
+    }
+
+    return acc[key];
+  }, obj);
+
+  obj[lastKey] = value;
+
+  return obj as T & K;
+};
 
 function processOperator<T>(prevKey: string, nextObject: OperatorType<T>) {
   const key = Object.keys(nextObject)[0];

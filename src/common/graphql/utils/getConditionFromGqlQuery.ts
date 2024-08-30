@@ -1,6 +1,6 @@
-import { set } from 'lodash';
 import { Repository } from 'typeorm';
 
+import { set } from './processWhere';
 import { AddKeyValueInObjectProps, GetInfoFromQueryProps } from './types';
 
 const DATA = 'data';
