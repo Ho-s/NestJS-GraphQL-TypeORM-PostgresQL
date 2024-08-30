@@ -96,8 +96,8 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
       data: async () => ({ data: await this.find(condition) }),
       count: async () => ({ count: await this.count(condition) }),
       all: async () => {
-        const res = await this.findAndCount(condition);
-        return { data: res[0], count: res[1] };
+        const [data, count] = await this.findAndCount(condition);
+        return { data, count };
       },
     };
 
