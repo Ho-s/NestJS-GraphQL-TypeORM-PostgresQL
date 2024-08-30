@@ -4,8 +4,6 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 import GraphQLJSON from 'graphql-type-json';
 import { FindOptionsOrder } from 'typeorm';
 
-import { IDataType } from 'src/common/graphql/types';
-
 import { IWhere } from './utils/types';
 
 @InputType()
@@ -43,11 +41,4 @@ export class GetManyInput<T> {
   })
   @IsOptional()
   order?: FindOptionsOrder<T>;
-
-  @Field(() => String, {
-    nullable: true,
-    description: 'count or data or all, default = data',
-  })
-  @IsOptional()
-  dataType?: IDataType;
 }

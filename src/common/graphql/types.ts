@@ -36,8 +36,6 @@ type IDirectionWitnNulls = {
 export type IDriection = (typeof valueObj)[keyof typeof valueObj];
 export type ISort = IDriection | IDirectionWitnNulls;
 
-export type IDataType = 'count' | 'data' | 'all';
-
 export interface IGetData<T> {
   data?: T[];
   count?: number;
@@ -47,7 +45,6 @@ export interface RepoQuery<T> {
   pagination?: IPagination;
   where?: IWhere<T>;
   order?: FindOptionsOrder<T>;
-  dataType?: IDataType;
   relations?: FindOptionsRelations<T>;
 }
 

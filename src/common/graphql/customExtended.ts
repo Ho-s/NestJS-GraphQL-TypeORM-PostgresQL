@@ -69,8 +69,9 @@ export function filterOrder<T>(
 export class ExtendedRepository<T = unknown> extends Repository<T> {
   async getMany<T>(
     this: Repository<T>,
-    { pagination, where, order, dataType = 'all', relations }: RepoQuery<T>,
+    { pagination, where, order, relations }: RepoQuery<T>,
     gqlQuery?: string,
+    _dataType?: 'count' | 'data' | 'all',
   ): Promise<IGetData<T>> {
     // You can remark these lines(if order {}) if you don't want to use strict order roles
     if (order) {
@@ -91,6 +92,14 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
         take: pagination.size,
       }),
     };
+
+    const dataType =
+      _dataType ??
+      (gqlQuery.includes('count') && gqlQuery.includes('data')
+        ? 'all'
+        : gqlQuery.includes('count')
+          ? 'count'
+          : 'data');
 
     const returns = {
       data: async () => ({ data: await this.find(condition) }),
