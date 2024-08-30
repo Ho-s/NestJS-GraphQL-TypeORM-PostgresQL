@@ -1,6 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
 
-import { isEmpty } from 'lodash';
 import {
   FindManyOptions,
   FindOneOptions,
@@ -23,6 +22,14 @@ import { processWhere } from './utils/processWhere';
 
 const isObject = (value: unknown): boolean => {
   return typeof value === 'object' && !Array.isArray(value) && value !== null;
+};
+
+type EmptyObject<T> = { [K in keyof T]?: never };
+type EmptyObjectOf<T> = EmptyObject<T> extends T ? EmptyObject<T> : never;
+const isEmptyObject = <T extends object>(
+  value: T,
+): value is EmptyObjectOf<T> => {
+  return Object.keys(value).length === 0;
 };
 
 export function filterOrder<T>(
@@ -77,7 +84,7 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
     const condition: FindManyOptions<T> = {
       relations: relations ?? queryCondition.relations,
       ...(queryCondition.select && { select: queryCondition.select }),
-      ...(where && !isEmpty(where) && { where: processWhere(where) }),
+      ...(where && !isEmptyObject(where) && { where: processWhere(where) }),
       ...(order && { order }),
       ...(pagination && {
         skip: pagination.page * pagination.size,
