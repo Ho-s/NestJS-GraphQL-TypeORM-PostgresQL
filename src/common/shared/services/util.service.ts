@@ -27,6 +27,19 @@ export class UtilService {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  pick<T extends object, K extends keyof T>(instance: T, keys: K[]) {
+    return keys.reduce(
+      (picked, key) => {
+        if (key in instance) {
+          picked[key] = instance[key];
+        }
+
+        return picked;
+      },
+      {} as Pick<T, K>,
+    );
+  }
+
   get getRandomUUID() {
     return v4();
   }

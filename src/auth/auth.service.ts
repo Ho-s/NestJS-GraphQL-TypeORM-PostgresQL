@@ -3,9 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
-import { pick } from 'lodash';
 
 import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
+import { UtilService } from 'src/common/shared/services/util.service';
 import { User } from 'src/user/entities/user.entity';
 
 import { UserService } from '../user/user.service';
@@ -17,6 +17,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly utilService: UtilService,
   ) {}
 
   private async generateRefreshToken(userId: string) {
@@ -50,7 +51,7 @@ export class AuthService {
 
   generateAccessToken(user: User, refreshToken: string) {
     return this.jwtService.sign({
-      ...pick(user, ['id', 'role']),
+      ...this.utilService.pick(user, ['id', 'role']),
       refreshToken,
     });
   }
