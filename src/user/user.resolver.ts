@@ -57,9 +57,12 @@ export class UserResolver {
 
   @Query(() => User)
   @UseAuthGuard()
-  getMe(@CurrentUser() user: User) {
-    return this.userService.getOne({
-      where: { id: user.id },
-    });
+  getMe(@CurrentUser() user: User, @CurrentQuery() gqlQuery: string) {
+    return this.userService.getOne(
+      {
+        where: { id: user.id },
+      },
+      gqlQuery,
+    );
   }
 }
