@@ -28,22 +28,21 @@ const merge = <T, K>(prev: T, next: K): T & K => {
   return { ...prev, ...next };
 };
 
-export const set = <T, K>(obj: T, path: string, value: K): T & K => {
+export function set<T, K>(object: T, path: string, value: K): T & K {
   const keys = path.split('.');
   const lastKey = keys.pop();
 
-  keys.reduce((acc, key) => {
-    if (!acc[key]) {
-      acc[key] = {};
+  let target = object;
+  for (const key of keys) {
+    if (!target[key] || typeof target[key] !== 'object') {
+      target[key] = {};
     }
+    target = target[key];
+  }
 
-    return acc[key];
-  }, obj);
-
-  obj[lastKey] = value;
-
-  return obj as T & K;
-};
+  target[lastKey] = value;
+  return object as T & K;
+}
 
 function processOperator<T>(prevKey: string, nextObject: OperatorType<T>) {
   const key = Object.keys(nextObject)[0];
