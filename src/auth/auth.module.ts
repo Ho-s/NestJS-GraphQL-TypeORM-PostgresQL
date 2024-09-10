@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
+import { EnvironmentVariables } from 'src/common/helper/env.validation';
 import { UtilModule } from 'src/common/shared/services/util.module';
 import { UserModule } from 'src/user/user.module';
 
@@ -18,7 +19,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
         privateKey: configService.get('JWT_PRIVATE_KEY'),
         publicKey: configService.get('JWT_PUBLIC_KEY'),
         signOptions: {

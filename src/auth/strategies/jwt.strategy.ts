@@ -4,13 +4,15 @@ import { PassportStrategy } from '@nestjs/passport';
 
 import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
 
+import { EnvironmentVariables } from 'src/common/helper/env.validation';
+
 import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private readonly userService: UserService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<EnvironmentVariables>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

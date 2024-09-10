@@ -4,6 +4,8 @@ import { PassportStrategy } from '@nestjs/passport';
 
 import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
 
+import { EnvironmentVariables } from 'src/common/helper/env.validation';
+
 import { AuthService } from '../auth.service';
 
 @Injectable()
@@ -12,7 +14,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
   'jwt-refresh',
 ) {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<EnvironmentVariables>,
     private readonly authService: AuthService,
   ) {
     super({

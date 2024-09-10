@@ -12,13 +12,15 @@ import { FileUpload } from 'graphql-upload/Upload.js';
 import * as path from 'path';
 import { firstValueFrom } from 'rxjs';
 
+import { EnvironmentVariables } from 'src/common/helper/env.validation';
+
 @Injectable()
 export class UploadService {
   private readonly awsS3: S3;
   public readonly S3_BUCKET_NAME: string;
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<EnvironmentVariables>,
     private readonly httpService: HttpService,
   ) {
     this.awsS3 = new S3({
