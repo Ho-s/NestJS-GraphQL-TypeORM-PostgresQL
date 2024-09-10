@@ -102,9 +102,20 @@ describe('UserResolver', () => {
   it('Calling "Get Me" method', () => {
     const user = new User();
 
-    expect(resolver.getMe(user)).not.toEqual(null);
-    expect(mockedService.getOne).toHaveBeenCalledWith({
-      where: { id: user.id },
-    });
+    const gqlQuery = `
+    query {
+      getMe {
+          id
+        }
+      }
+    `;
+
+    expect(resolver.getMe(user, gqlQuery)).not.toEqual(null);
+    expect(mockedService.getOne).toHaveBeenCalledWith(
+      {
+        where: { id: user.id },
+      },
+      gqlQuery,
+    );
   });
 });
