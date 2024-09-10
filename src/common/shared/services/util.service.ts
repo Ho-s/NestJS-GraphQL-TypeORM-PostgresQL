@@ -3,11 +3,15 @@ import { ConfigService } from '@nestjs/config';
 
 import { v4 } from 'uuid';
 
+import { EnvironmentVariables } from 'src/common/helper/env.validation';
+
 @Injectable()
 export class UtilService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService<EnvironmentVariables>,
+  ) {}
 
-  getNumber(key: string): number {
+  getNumber(key: keyof EnvironmentVariables): number {
     const value = this.configService.get<string>(key);
 
     try {
@@ -17,7 +21,7 @@ export class UtilService {
     }
   }
 
-  getString(key: string): string {
+  getString(key: keyof EnvironmentVariables): string {
     const value = this.configService.get<string>(key);
 
     return value.replace(/\\n/g, '\n');

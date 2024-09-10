@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 
 import { AppModule } from './app.module';
+import { EnvironmentVariables } from './common/helper/env.validation';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 
@@ -33,7 +34,9 @@ async function bootstrap() {
     origin: '*',
     credentials: true,
   });
-  const configService = app.select(AppModule).get(ConfigService);
+  const configService = app
+    .select(AppModule)
+    .get(ConfigService<EnvironmentVariables>);
 
   await app.listen(configService.get('PORT'));
 }

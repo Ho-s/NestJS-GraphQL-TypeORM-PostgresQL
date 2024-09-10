@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
+import { EnvironmentVariables } from 'src/common/helper/env.validation';
 import { UtilService } from 'src/common/shared/services/util.service';
 import { User } from 'src/user/entities/user.entity';
 
@@ -16,7 +17,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<EnvironmentVariables>,
     private readonly utilService: UtilService,
   ) {}
 
