@@ -34,14 +34,10 @@ type GetUserType {
 }
 
 input IPagination {
-  """
-  Started from 0
-  """
+  """Started from 0"""
   page: Int!
 
-  """
-  Size of page
-  """
+  """Size of page"""
   size: Int!
 }
 
@@ -93,9 +89,7 @@ input UpdateUserInput {
   username: String
 }
 
-"""
-The `Upload` scalar type represents a file upload.
-"""
+"""The `Upload` scalar type represents a file upload."""
 scalar Upload
 
 type User {
