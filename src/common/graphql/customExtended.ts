@@ -92,14 +92,15 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
         take: pagination.size,
       }),
     };
-
     const dataType =
       _dataType ??
-      (gqlQuery.includes('count') && gqlQuery.includes('data')
+      (!gqlQuery
         ? 'all'
-        : gqlQuery.includes('count')
-          ? 'count'
-          : 'data');
+        : gqlQuery.includes('count') && gqlQuery.includes('data')
+          ? 'all'
+          : gqlQuery.includes('count')
+            ? 'count'
+            : 'data');
 
     const returns = {
       data: async () => ({ data: await this.find(condition) }),
