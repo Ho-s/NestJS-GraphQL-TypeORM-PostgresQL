@@ -2,6 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 
 import {
   Between,
+  FindOperator,
   FindOptionsWhere,
   ILike,
   In,
@@ -98,6 +99,11 @@ function goDeep<T>(
 
   const thisKey = Object.keys(filters)[0];
   let nextObject = filters[Object.keys(filters)[0]];
+
+  // Check if next item is typeorm find operator
+  if (nextObject instanceof FindOperator) {
+    return { [thisKey]: nextObject };
+  }
 
   // Check if this item is on bottom
   if (!isPlainObject(nextObject)) {
