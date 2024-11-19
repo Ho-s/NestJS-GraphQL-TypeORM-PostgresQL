@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -11,6 +11,13 @@ COPY . .
 
 RUN yarn build
 
-EXPOSE 8000
+FROM node:20-alpine AS runner
 
-CMD [ "yarn", "start" ]
+WORKDIR /app
+COPY --from=builder --chown=node:node /app/dist ./dist
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+
+ENV NODE_ENV=production
+USER node
+
+CMD ["node", "dist/main.js"]
