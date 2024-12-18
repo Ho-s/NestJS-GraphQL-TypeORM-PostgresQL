@@ -227,7 +227,7 @@ Unit test(with jest mock) for services & resolvers (\*.service.spec.ts & \*.reso
 #### Run
 
 ```bash
-$ yarn test
+$ yarn test:unit
 ```
 
 ### Integration Test (Use in-memory DB)
@@ -237,7 +237,7 @@ Integration test(with [pg-mem](https://github.com/oguimbal/pg-mem)) for modules 
 #### Run
 
 ```bash
-$ yarn test
+$ yarn test:integration
 ```
 
 ### End To End Test (Use docker)

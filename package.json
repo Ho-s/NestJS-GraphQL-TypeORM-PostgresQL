@@ -20,6 +20,8 @@
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "lint:fix": "eslint -c ./eslint.config.mjs \"{src,test}/**/*.ts\" --fix",
     "test": "jest",
+    "test:unit": "jest --testPathPattern='^(?!.*\\.integration\\.spec\\.ts$).*\\.spec\\.ts$'",
+    "test:integration": "jest --testPathPattern='\\.integration\\.spec\\.ts$'",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",

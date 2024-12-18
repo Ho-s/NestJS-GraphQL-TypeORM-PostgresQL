@@ -117,8 +117,8 @@ export default function generator(plop) {
       },
       {
         type: 'add',
-        path: `${rootPath}/{{${TABLE_NAME}}}/{{${TABLE_NAME}}}.module.spec.ts`,
-        templateFile: 'templates/module.spec.hbs',
+        path: `${rootPath}/{{${TABLE_NAME}}}/{{${TABLE_NAME}}}.module.integration.spec.ts`,
+        templateFile: 'templates/module.integration.spec.hbs',
         ...(!data[TEST_NEEDED] && {
           skip: () => 'skipped',
         }),
