@@ -9,6 +9,7 @@ import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input'
 import { {{pascalCase tableName}} } from './entities/{{tableName}}.entity'
 import { UtilModule } from 'src/common/shared/services/util.module';
 import { UtilService } from 'src/common/shared/services/util.service';
+import { DataSource } from 'typeorm';
 
 import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Input } from './inputs/{{tableName}}.input'
 
@@ -26,6 +27,10 @@ describe('{{pascalCase tableName}}Resolver', () => {
           provide: {{pascalCase tableName}}Service,
           useFactory: MockServiceFactory.getMockService({{pascalCase tableName}}Service),
         },
+        {
+          provide: DataSource,
+          useValue: undefined,
+        },
       ],
     }).compile()
 
@@ -39,7 +44,7 @@ describe('{{pascalCase tableName}}Resolver', () => {
   })
 
   it('Calling "Get many {{tableName}} list" method', () => {
-    const qs: GetManyInput<{{pascalCase tableName}}> = {
+    const condition: GetManyInput<{{pascalCase tableName}}> = {
       where: { 
   {{#if (is "increment" idType)}}
         id: utilService.getRandomNumber(0,999999)
@@ -49,22 +54,17 @@ describe('{{pascalCase tableName}}Resolver', () => {
       },
     }
 
-    const gqlQuery = `
-      query GetMany{{pascalCase tableName}}List {
-        getMany{{pascalCase tableName}}List {
-          data {
-            id
-          }
-        }
-      }
-    `
+    const option = { relations: undefined, select: undefined };
 
-    expect(resolver.getMany{{pascalCase tableName}}List(qs, gqlQuery)).not.toEqual(null)
-    expect(mockedService.getMany).toHaveBeenCalledWith(qs, gqlQuery)
+    expect(resolver.getMany{{pascalCase tableName}}List(condition, option)).not.toEqual(null)
+    expect(mockedService.getMany).toHaveBeenCalledWith({
+      ...condition,
+      ...option,
+    })
   })
 
   it('Calling "Get one {{tableName}} list" method', () => {
-    const qs: GetOneInput<{{pascalCase tableName}}> = {
+    const condition: GetOneInput<{{pascalCase tableName}}> = {
       where: { 
 {{#if (is "increment" idType)}}
         id: utilService.getRandomNumber(0,999999)
@@ -74,18 +74,13 @@ describe('{{pascalCase tableName}}Resolver', () => {
       },
     }
 
-    const gqlQuery = `
-      query GetOne{{pascalCase tableName}} {
-        getOne{{pascalCase tableName}} {
-          data {
-            id
-          }
-        }
-      }
-    `
+   const option = { relations: undefined, select: undefined };
 
-    expect(resolver.getOne{{pascalCase tableName}}(qs, gqlQuery)).not.toEqual(null)
-    expect(mockedService.getOne).toHaveBeenCalledWith(qs, gqlQuery)
+    expect(resolver.getOne{{pascalCase tableName}}(condition, option)).not.toEqual(null)
+    expect(mockedService.getOne).toHaveBeenCalledWith({
+      ...condition,
+      ...option,
+    })
   })
 
   it('Calling "Create {{tableName}}" method', () => {

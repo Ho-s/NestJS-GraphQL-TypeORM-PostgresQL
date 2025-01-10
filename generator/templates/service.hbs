@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common'
+
 import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types'
+
 import { {{pascalCase tableName}}Repository } from './{{tableName}}.repository'
 import { {{pascalCase tableName}} } from './entities/{{tableName}}.entity';
 import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Input } from './inputs/{{tableName}}.input';
@@ -7,12 +9,12 @@ import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Inpu
 @Injectable()
 export class {{pascalCase tableName}}Service {
 constructor(private readonly {{tableName}}Repository: {{pascalCase tableName}}Repository) {}
-  getMany(qs: RepoQuery<{{pascalCase tableName}}> = {}, gqlQuery?: string) {
-    return this.{{tableName}}Repository.getMany(qs, gqlQuery);
+  getMany(option?: RepoQuery<{{pascalCase tableName}}>) {
+    return this.{{tableName}}Repository.getMany(option);
   }
 
-  getOne(qs: OneRepoQuery<{{pascalCase tableName}}>, gqlQuery?: string) {
-    return this.{{tableName}}Repository.getOne(qs, gqlQuery);
+  getOne(option: OneRepoQuery<{{pascalCase tableName}}>) {
+    return this.{{tableName}}Repository.getOne(option);
   }
 
   create(input: Create{{pascalCase tableName}}Input) {
