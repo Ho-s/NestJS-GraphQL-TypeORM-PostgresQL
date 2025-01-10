@@ -44,20 +44,20 @@ describe('UserService', () => {
   });
 
   it('Calling "Get many" method', () => {
-    const qs: RepoQuery<User> = {
+    const option: RepoQuery<User> = {
       where: { id: utilService.getRandomUUID },
     };
 
-    expect(service.getMany(qs)).not.toEqual(null);
+    expect(service.getMany(option)).not.toEqual(null);
     expect(mockedRepository.getMany).toHaveBeenCalled();
   });
 
   it('Calling "Get one" method', () => {
-    const qs: OneRepoQuery<User> = {
+    const option: OneRepoQuery<User> = {
       where: { id: utilService.getRandomUUID },
     };
 
-    expect(service.getOne(qs)).not.toEqual(null);
+    expect(service.getOne(option)).not.toEqual(null);
     expect(mockedRepository.getOne).toHaveBeenCalled();
   });
 

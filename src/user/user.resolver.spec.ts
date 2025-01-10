@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { DataSource } from 'typeorm';
+
 import {
   MockService,
   MockServiceFactory,
@@ -27,6 +29,10 @@ describe('UserResolver', () => {
           provide: UserService,
           useFactory: MockServiceFactory.getMockService(UserService),
         },
+        {
+          provide: DataSource,
+          useValue: undefined,
+        },
       ],
     }).compile();
 
@@ -40,39 +46,31 @@ describe('UserResolver', () => {
   });
 
   it('Calling "Get many user list" method', () => {
-    const qs: GetManyInput<User> = {
+    const condition: GetManyInput<User> = {
       where: { id: utilService.getRandomUUID },
     };
 
-    const gqlQuery = `
-      query GetManyUserList {
-        getManyUserList {
-          data {
-            id
-          }
-        }
-      }
-    `;
+    const option = { relations: undefined, select: undefined };
 
-    expect(resolver.getManyUserList(qs, gqlQuery)).not.toEqual(null);
-    expect(mockedService.getMany).toHaveBeenCalledWith(qs, gqlQuery);
+    expect(resolver.getManyUserList(condition, option)).not.toEqual(null);
+    expect(mockedService.getMany).toHaveBeenCalledWith({
+      ...condition,
+      ...option,
+    });
   });
 
   it('Calling "Get one user list" method', () => {
-    const qs: GetOneInput<User> = {
+    const condition: GetOneInput<User> = {
       where: { id: utilService.getRandomUUID },
     };
 
-    const gqlQuery = `
-    query GetOneUser ($input: GetOneInput!) {
-      getOneUser (input:$input) {
-          id
-        }
-      }
-    `;
+    const option = { relations: undefined, select: undefined };
 
-    expect(resolver.getOneUser(qs, gqlQuery)).not.toEqual(null);
-    expect(mockedService.getOne).toHaveBeenCalledWith(qs, gqlQuery);
+    expect(resolver.getOneUser(condition, option)).not.toEqual(null);
+    expect(mockedService.getOne).toHaveBeenCalledWith({
+      ...condition,
+      ...option,
+    });
   });
 
   it('Calling "Create user" method', () => {
@@ -102,20 +100,14 @@ describe('UserResolver', () => {
   it('Calling "Get Me" method', () => {
     const user = new User();
 
-    const gqlQuery = `
-    query {
-      getMe {
-          id
-        }
-      }
-    `;
+    const condition: GetOneInput<User> = { where: { id: user.id } };
 
-    expect(resolver.getMe(user, gqlQuery)).not.toEqual(null);
-    expect(mockedService.getOne).toHaveBeenCalledWith(
-      {
-        where: { id: user.id },
-      },
-      gqlQuery,
-    );
+    const option = { relations: undefined, select: undefined };
+
+    expect(resolver.getMe(user, option)).not.toEqual(null);
+    expect(mockedService.getOne).toHaveBeenCalledWith({
+      ...condition,
+      ...option,
+    });
   });
 });
