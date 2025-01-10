@@ -356,13 +356,6 @@ db.public.registerFunction({
   - [x] Integration Test (Use in-memory DB)
   - [x] End To End Test (Use docker)
 
-- [ ] Add Many OAUths (Both of front and back end)
-
-  - [ ] Kakao
-  - [ ] Google
-  - [ ] Apple
-  - [ ] Naver
-
 - [x] CI
 
   - [x] Github actions
