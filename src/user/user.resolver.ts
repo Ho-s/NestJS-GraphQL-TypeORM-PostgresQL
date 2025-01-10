@@ -12,7 +12,6 @@ import { GetInfoFromQueryProps } from 'src/common/graphql/utils/types';
 import { CurrentUser } from '../common/decorators/user.decorator';
 import { GetUserType, User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
-import { UserRepository } from './user.repository';
 import { UserService } from './user.service';
 
 @Resolver()
@@ -21,7 +20,7 @@ export class UserResolver {
 
   @Query(() => GetUserType)
   @UseAuthGuard('admin')
-  @UseRepositoryInterceptor<User>(UserRepository)
+  @UseRepositoryInterceptor(User)
   @CustomCache({ logger: console.log, ttl: 1000 })
   getManyUserList(
     @Args({ name: 'input', nullable: true })
@@ -34,7 +33,7 @@ export class UserResolver {
 
   @Query(() => User)
   @UseAuthGuard('admin')
-  @UseRepositoryInterceptor<User>(UserRepository)
+  @UseRepositoryInterceptor(User)
   getOneUser(
     @Args({ name: 'input' })
     condition: GetOneInput<User>,
@@ -64,7 +63,7 @@ export class UserResolver {
 
   @Query(() => User)
   @UseAuthGuard()
-  @UseRepositoryInterceptor<User>(UserRepository)
+  @UseRepositoryInterceptor(User)
   getMe(
     @CurrentUser() user: User,
     @GraphQLQueryToCondition<User>()
