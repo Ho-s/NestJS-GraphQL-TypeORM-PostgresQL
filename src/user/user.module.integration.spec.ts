@@ -7,7 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import GraphQLJSON from 'graphql-type-json';
 import { join } from 'path';
-import { DataType, IBackup, newDb } from 'pg-mem';
+// import { IBackup } from 'pg-mem';
+import { DataType, newDb } from 'pg-mem';
 import * as request from 'supertest';
 import { DataSource } from 'typeorm';
 import { v4 } from 'uuid';
