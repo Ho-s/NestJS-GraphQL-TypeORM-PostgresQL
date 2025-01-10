@@ -69,7 +69,7 @@ You can solve them with Sending JWT token in `Http Header` with the `Authorizati
 
 - Ensures that only the requested fields and necessary relations are retrieved, reducing over-fetching and improving performance.
 
-- With using interceptor (name: `UseRepositoryInterceptor`) and paramDecorator (name: `GraphQLQueryToCondition`)
+- With using interceptor (name: `UseRepositoryInterceptor`) and paramDecorator (name: `GraphQLQueryToOption`)
 
 #### How to use
 

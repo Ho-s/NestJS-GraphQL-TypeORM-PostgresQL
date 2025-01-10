@@ -43,7 +43,7 @@ const addKeyValuesInObject = <Entity>({
   return { relations, select };
 };
 
-export function getConditionFromGqlQuery<Entity>(
+export function getOptionFromGqlQuery<Entity>(
   this: Repository<Entity>,
   query: string,
   hasCountType?: boolean,
@@ -159,7 +159,7 @@ const getCurrentGraphQLQuery = (ctx: GqlExecutionContext) => {
   return stack.join('\n');
 };
 
-export const GraphQLQueryToCondition = <T>(hasCountType?: boolean) =>
+export const GraphQLQueryToOption = <T>(hasCountType?: boolean) =>
   createParamDecorator((_: unknown, context: ExecutionContext) => {
     const ctx = GqlExecutionContext.create(context);
     const request = ctx.getContext().req;
@@ -172,8 +172,11 @@ export const GraphQLQueryToCondition = <T>(hasCountType?: boolean) =>
       );
     }
 
-    const queryCondition: GetInfoFromQueryProps<T> =
-      getConditionFromGqlQuery.call(repository, query, hasCountType);
+    const queryOption: GetInfoFromQueryProps<T> = getOptionFromGqlQuery.call(
+      repository,
+      query,
+      hasCountType,
+    );
 
-    return queryCondition;
+    return queryOption;
   })();

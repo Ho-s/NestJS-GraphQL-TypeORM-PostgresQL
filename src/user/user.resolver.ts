@@ -4,7 +4,7 @@ import GraphQLJSON from 'graphql-type-json';
 
 import { CustomCache } from 'src/cache/custom-cache.decorator';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
-import { GraphQLQueryToCondition } from 'src/common/decorators/condition.decorator';
+import { GraphQLQueryToOption } from 'src/common/decorators/option.decorator';
 import { UseRepositoryInterceptor } from 'src/common/decorators/repository-interceptor.decorator';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
 import { GetInfoFromQueryProps } from 'src/common/graphql/utils/types';
@@ -25,10 +25,10 @@ export class UserResolver {
   getManyUserList(
     @Args({ name: 'input', nullable: true })
     condition: GetManyInput<User>,
-    @GraphQLQueryToCondition<User>(true)
-    info: GetInfoFromQueryProps<User>,
+    @GraphQLQueryToOption<User>(true)
+    option: GetInfoFromQueryProps<User>,
   ) {
-    return this.userService.getMany({ ...condition, ...info });
+    return this.userService.getMany({ ...condition, ...option });
   }
 
   @Query(() => User)
@@ -37,10 +37,10 @@ export class UserResolver {
   getOneUser(
     @Args({ name: 'input' })
     condition: GetOneInput<User>,
-    @GraphQLQueryToCondition<User>()
-    info: GetInfoFromQueryProps<User>,
+    @GraphQLQueryToOption<User>()
+    option: GetInfoFromQueryProps<User>,
   ) {
-    return this.userService.getOne({ ...condition, ...info });
+    return this.userService.getOne({ ...condition, ...option });
   }
 
   @Mutation(() => User)
@@ -66,12 +66,12 @@ export class UserResolver {
   @UseRepositoryInterceptor(User)
   getMe(
     @CurrentUser() user: User,
-    @GraphQLQueryToCondition<User>()
-    info: GetInfoFromQueryProps<User>,
+    @GraphQLQueryToOption<User>()
+    option: GetInfoFromQueryProps<User>,
   ) {
     return this.userService.getOne({
       where: { id: user.id },
-      ...info,
+      ...option,
     });
   }
 }
