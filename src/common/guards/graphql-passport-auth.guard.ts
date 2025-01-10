@@ -3,6 +3,8 @@ import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 
+import { GUARD_ROLE } from '../decorators/auth-guard.decorator';
+
 @Injectable()
 export class GraphqlPassportAuthGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {
@@ -11,7 +13,7 @@ export class GraphqlPassportAuthGuard extends AuthGuard('jwt') {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.get<string[]>(
-      'roles',
+      GUARD_ROLE,
       context.getHandler(),
     );
     await super.canActivate(context);
