@@ -24,6 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     try {
       const userData = await this.userService.getOne({
         where: { id: payload.id },
+        select: { id: true, role: true },
       });
 
       done(null, userData);

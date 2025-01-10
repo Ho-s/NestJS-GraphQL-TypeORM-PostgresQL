@@ -12,12 +12,12 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   @CustomCache({ logger: console.log, ttl: 1000 })
-  getMany(qs: RepoQuery<User> = {}, gqlQuery?: string) {
-    return this.userRepository.getMany(qs, gqlQuery);
+  getMany(option?: RepoQuery<User>) {
+    return this.userRepository.getMany(option);
   }
 
-  getOne(qs: OneRepoQuery<User>, gqlQuery?: string) {
-    return this.userRepository.getOne(qs, gqlQuery);
+  getOne(option: OneRepoQuery<User>) {
+    return this.userRepository.getOne(option);
   }
 
   create(input: CreateUserInput): Promise<User> {

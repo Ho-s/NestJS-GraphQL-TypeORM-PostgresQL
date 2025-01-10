@@ -1,7 +1,18 @@
+import {
+  ExecutionContext,
+  InternalServerErrorException,
+  createParamDecorator,
+} from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
+
+import { parse, print } from 'graphql';
 import { Repository } from 'typeorm';
 
-import { set } from './processWhere';
-import { AddKeyValueInObjectProps, GetInfoFromQueryProps } from './types';
+import { set } from '../graphql/utils/processWhere';
+import {
+  AddKeyValueInObjectProps,
+  GetInfoFromQueryProps,
+} from '../graphql/utils/types';
 
 const DATA = 'data';
 
@@ -108,3 +119,61 @@ export function getConditionFromGqlQuery<Entity>(
     },
   );
 }
+
+const getCurrentGraphQLQuery = (ctx: GqlExecutionContext) => {
+  const { fieldName, path } = ctx.getArgByIndex(3) as {
+    fieldName: string;
+    path: { key: string };
+  };
+
+  const query = ctx.getContext().req.body.query;
+  const operationJson = print(parse(query));
+  const operationArray = operationJson.split('\n');
+
+  operationArray.shift();
+  operationArray.pop();
+
+  const firstLineFinder = operationArray.findIndex((v) =>
+    v.includes(fieldName === path.key ? fieldName : path.key + ':'),
+  );
+
+  operationArray.splice(0, firstLineFinder);
+
+  const stack = [];
+
+  let depth = 0;
+
+  for (const line of operationArray) {
+    stack.push(line);
+    if (line.includes('{')) {
+      depth++;
+    } else if (line.includes('}')) {
+      depth--;
+    }
+
+    if (depth === 0) {
+      break;
+    }
+  }
+
+  return stack.join('\n');
+};
+
+export const GraphQLQueryToCondition = <T>(hasCountType?: boolean) =>
+  createParamDecorator((_: unknown, context: ExecutionContext) => {
+    const ctx = GqlExecutionContext.create(context);
+    const request = ctx.getContext().req;
+    const query = getCurrentGraphQLQuery(ctx);
+    const repository: Repository<T> = request.repository;
+
+    if (!repository) {
+      throw new InternalServerErrorException(
+        "Repository not found in request, don't forget to use UseRepositoryInterceptor",
+      );
+    }
+
+    const queryCondition: GetInfoFromQueryProps<T> =
+      getConditionFromGqlQuery.call(repository, query, hasCountType);
+
+    return queryCondition;
+  })();
