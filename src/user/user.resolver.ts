@@ -4,8 +4,10 @@ import GraphQLJSON from 'graphql-type-json';
 
 import { CustomCache } from 'src/cache/custom-cache.decorator';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
-import { CurrentQuery } from 'src/common/decorators/query.decorator';
+import { GraphQLQueryToOption } from 'src/common/decorators/option.decorator';
+import { UseRepositoryInterceptor } from 'src/common/decorators/repository-interceptor.decorator';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
+import { GetInfoFromQueryProps } from 'src/common/graphql/utils/types';
 
 import { CurrentUser } from '../common/decorators/user.decorator';
 import { GetUserType, User } from './entities/user.entity';
@@ -18,23 +20,27 @@ export class UserResolver {
 
   @Query(() => GetUserType)
   @UseAuthGuard('admin')
+  @UseRepositoryInterceptor(User)
   @CustomCache({ logger: console.log, ttl: 1000 })
   getManyUserList(
     @Args({ name: 'input', nullable: true })
-    qs: GetManyInput<User>,
-    @CurrentQuery() gqlQuery: string,
+    condition: GetManyInput<User>,
+    @GraphQLQueryToOption<User>(true)
+    option: GetInfoFromQueryProps<User>,
   ) {
-    return this.userService.getMany(qs, gqlQuery);
+    return this.userService.getMany({ ...condition, ...option });
   }
 
   @Query(() => User)
   @UseAuthGuard('admin')
+  @UseRepositoryInterceptor(User)
   getOneUser(
     @Args({ name: 'input' })
-    qs: GetOneInput<User>,
-    @CurrentQuery() gqlQuery: string,
+    condition: GetOneInput<User>,
+    @GraphQLQueryToOption<User>()
+    option: GetInfoFromQueryProps<User>,
   ) {
-    return this.userService.getOne(qs, gqlQuery);
+    return this.userService.getOne({ ...condition, ...option });
   }
 
   @Mutation(() => User)
@@ -57,12 +63,15 @@ export class UserResolver {
 
   @Query(() => User)
   @UseAuthGuard()
-  getMe(@CurrentUser() user: User, @CurrentQuery() gqlQuery: string) {
-    return this.userService.getOne(
-      {
-        where: { id: user.id },
-      },
-      gqlQuery,
-    );
+  @UseRepositoryInterceptor(User)
+  getMe(
+    @CurrentUser() user: User,
+    @GraphQLQueryToOption<User>()
+    option: GetInfoFromQueryProps<User>,
+  ) {
+    return this.userService.getOne({
+      where: { id: user.id },
+      ...option,
+    });
   }
 }

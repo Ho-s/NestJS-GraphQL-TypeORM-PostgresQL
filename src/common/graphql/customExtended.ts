@@ -17,7 +17,6 @@ import {
   directionObj,
   valueObj,
 } from './types';
-import { getConditionFromGqlQuery } from './utils/getConditionFromGqlQuery';
 import { processWhere } from './utils/processWhere';
 
 const isObject = (value: unknown): boolean => {
@@ -26,6 +25,7 @@ const isObject = (value: unknown): boolean => {
 
 type EmptyObject<T> = { [K in keyof T]?: never };
 type EmptyObjectOf<T> = EmptyObject<T> extends T ? EmptyObject<T> : never;
+
 const isEmptyObject = <T extends object>(
   value: T,
 ): value is EmptyObjectOf<T> => {
@@ -69,22 +69,18 @@ export function filterOrder<T>(
 export class ExtendedRepository<T = unknown> extends Repository<T> {
   async getMany<T>(
     this: Repository<T>,
-    { pagination, where, order, relations }: RepoQuery<T>,
-    gqlQuery?: string,
-    _dataType?: 'count' | 'data' | 'all',
+    option: RepoQuery<T> = {},
+    dataType?: 'count' | 'data',
   ): Promise<IGetData<T>> {
+    const { pagination, where, order, relations, select } = option;
     // You can remark these lines(if order {}) if you don't want to use strict order roles
     if (order) {
       filterOrder.call(this, order);
     }
 
-    const queryCondition = gqlQuery
-      ? getConditionFromGqlQuery.call(this, gqlQuery, true)
-      : { relations: undefined, select: undefined };
-
     const condition: FindManyOptions<T> = {
-      relations: relations ?? queryCondition.relations,
-      ...(queryCondition.select && { select: queryCondition.select }),
+      relations,
+      ...(select && { select }),
       ...(where && !isEmptyObject(where) && { where: processWhere(where) }),
       ...(order && { order }),
       ...(pagination && {
@@ -92,40 +88,26 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
         take: pagination.size,
       }),
     };
-    const dataType =
-      _dataType ??
-      (!gqlQuery
-        ? 'all'
-        : gqlQuery.includes('count') && gqlQuery.includes('data')
-          ? 'all'
-          : gqlQuery.includes('count')
-            ? 'count'
-            : 'data');
 
-    const returns = {
-      data: async () => ({ data: await this.find(condition) }),
-      count: async () => ({ count: await this.count(condition) }),
-      all: async () => {
-        const [data, count] = await this.findAndCount(condition);
-        return { data, count };
-      },
-    };
+    if (dataType === 'count') {
+      return { count: await this.count(condition) };
+    }
 
-    return await returns[dataType]();
+    if (dataType === 'data') {
+      return { data: await this.find(condition) };
+    }
+
+    const [data, count] = await this.findAndCount(condition);
+    return { data, count };
   }
 
   async getOne<T>(
     this: Repository<T>,
-    { where, relations }: OneRepoQuery<T>,
-    gqlQuery?: string,
+    { where, relations, select }: OneRepoQuery<T>,
   ): Promise<T> {
-    const queryCondition = gqlQuery
-      ? getConditionFromGqlQuery.call(this, gqlQuery)
-      : { relations: undefined, select: undefined };
-
     const condition: FindOneOptions<T> = {
-      relations: relations ?? queryCondition.relations,
-      ...(queryCondition.select && { select: queryCondition.select }),
+      relations,
+      ...(select && { select }),
       ...(where && { where: processWhere(where) }),
     };
 

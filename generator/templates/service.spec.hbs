@@ -42,7 +42,7 @@ describe('{{pascalCase tableName}}Service', () => {
   })
 
   it('Calling "Get many" method', () => {
-  const qs: RepoQuery<{{pascalCase tableName}}> = {
+  const option: RepoQuery<{{pascalCase tableName}}> = {
     where: { 
 {{#if (is "increment" idType)}}
       id: utilService.getRandomNumber(0,999999)
@@ -52,12 +52,12 @@ describe('{{pascalCase tableName}}Service', () => {
     },
   }
 
-  expect(service.getMany(qs)).not.toEqual(null)
+  expect(service.getMany(option)).not.toEqual(null)
   expect(mockedRepository.getMany).toHaveBeenCalled()
   })
 
   it('Calling "Get one" method', () => {
-  const qs: OneRepoQuery<{{pascalCase tableName}}> = {
+  const option: OneRepoQuery<{{pascalCase tableName}}> = {
     where: { 
 {{#if (is "increment" idType)}}
       id: utilService.getRandomNumber(0,999999)
@@ -67,7 +67,7 @@ describe('{{pascalCase tableName}}Service', () => {
     },
   }
 
-  expect(service.getOne(qs)).not.toEqual(null)
+  expect(service.getOne(option)).not.toEqual(null)
   expect(mockedRepository.getOne).toHaveBeenCalled()
   })
 

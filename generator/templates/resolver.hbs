@@ -2,8 +2,11 @@ import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { {{pascalCase tableName}}Service } from './{{tableName}}.service'
 import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input'
-import { CurrentQuery } from 'src/common/decorators/query.decorator'
 import GraphQLJSON from 'graphql-type-json';
+
+import { GetInfoFromQueryProps } from 'src/common/graphql/utils/types';
+import { GraphQLQueryToOption } from 'src/common/decorators/option.decorator';
+import { UseRepositoryInterceptor } from 'src/common/decorators/repository-interceptor.decorator';
 
 import { Get{{pascalCase tableName}}Type, {{pascalCase tableName}} } from './entities/{{tableName}}.entity';
 import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Input } from './inputs/{{tableName}}.input';
@@ -11,22 +14,27 @@ import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Inpu
 @Resolver()
 export class {{pascalCase tableName}}Resolver {
   constructor(private readonly {{tableName}}Service: {{pascalCase tableName}}Service) {}
+  
   @Query(() => Get{{pascalCase tableName}}Type)
   @UseAuthGuard('admin')
+  @UseRepositoryInterceptor({{pascalCase tableName}})
   getMany{{pascalCase tableName}}List(
-    @Args({ name: 'input', nullable: true }) qs: GetManyInput<{{pascalCase tableName}}>,
-    @CurrentQuery() gqlQuery: string,
+    @Args({ name: 'input', nullable: true }) condition: GetManyInput<{{pascalCase tableName}}>,
+    @GraphQLQueryToOption<{{pascalCase tableName}}>(true)
+    option: GetInfoFromQueryProps<{{pascalCase tableName}}>,
   ) {
-    return this.{{tableName}}Service.getMany(qs, gqlQuery);
+    return this.{{tableName}}Service.getMany({ ...condition, ...option });
   }
     
   @Query(() => {{pascalCase tableName}})
   @UseAuthGuard('admin')
+  @UseRepositoryInterceptor({{pascalCase tableName}})
   getOne{{pascalCase tableName}}(
-    @Args({ name: 'input' }) qs: GetOneInput<{{pascalCase tableName}}>,
-    @CurrentQuery() gqlQuery: string,
+    @Args({ name: 'input' }) condition: GetOneInput<{{pascalCase tableName}}>,
+    @GraphQLQueryToOption<{{pascalCase tableName}}>()
+    option: GetInfoFromQueryProps<{{pascalCase tableName}}>,
   ) {
-    return this.{{tableName}}Service.getOne(qs, gqlQuery);
+    return this.{{tableName}}Service.getOne({ ...condition, ...option });
   }
       
   @Mutation(() => {{pascalCase tableName}})

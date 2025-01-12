@@ -61,6 +61,20 @@ You can solve them with Sending JWT token in `Http Header` with the `Authorizati
 }
 ```
 
+### GraphQL Query To Select and relations
+
+#### Dynamic Query Optimization
+
+- Automatically maps GraphQL queries to optimized SELECT and JOIN clauses in TypeORM.
+
+- Ensures that only the requested fields and necessary relations are retrieved, reducing over-fetching and improving performance.
+
+- With using interceptor (name: `UseRepositoryInterceptor`) and paramDecorator (name: `GraphQLQueryToOption`)
+
+#### How to use
+
+- You can find example code in [/src/user/user.resolver.ts](/src/user/user.resolver.ts)
+
 #### Example of some protected GraphQL
 
 - getMe (must be authenticated)
@@ -341,13 +355,6 @@ db.public.registerFunction({
   - [x] Unit Test (Use mock)
   - [x] Integration Test (Use in-memory DB)
   - [x] End To End Test (Use docker)
-
-- [ ] Add Many OAUths (Both of front and back end)
-
-  - [ ] Kakao
-  - [ ] Google
-  - [ ] Apple
-  - [ ] Naver
 
 - [x] CI
 
