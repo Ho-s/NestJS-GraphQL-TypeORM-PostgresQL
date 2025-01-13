@@ -120,7 +120,7 @@ export function getOptionFromGqlQuery<Entity>(
   );
 }
 
-const getCurrentGraphQLQuery = (ctx: GqlExecutionContext) => {
+export const getCurrentGraphQLQuery = (ctx: GqlExecutionContext) => {
   const { fieldName, path } = ctx.getArgByIndex(3) as {
     fieldName: string;
     path: { key: string };

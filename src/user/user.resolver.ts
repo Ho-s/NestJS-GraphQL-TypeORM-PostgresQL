@@ -5,6 +5,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { CustomCache } from 'src/cache/custom-cache.decorator';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { GraphQLQueryToOption } from 'src/common/decorators/option.decorator';
+import { UseQueryGuard } from 'src/common/decorators/query-guard.decorator';
 import { UseRepositoryInterceptor } from 'src/common/decorators/repository-interceptor.decorator';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
 import { GetInfoFromQueryProps } from 'src/common/graphql/utils/types';
@@ -20,6 +21,7 @@ export class UserResolver {
 
   @Query(() => GetUserType)
   @UseAuthGuard('admin')
+  @UseQueryGuard(User, { username: true })
   @UseRepositoryInterceptor(User)
   @CustomCache({ logger: console.log, ttl: 1000 })
   getManyUserList(
@@ -63,6 +65,7 @@ export class UserResolver {
 
   @Query(() => User)
   @UseAuthGuard()
+  @UseQueryGuard(User, { username: true })
   @UseRepositoryInterceptor(User)
   getMe(
     @CurrentUser() user: User,
