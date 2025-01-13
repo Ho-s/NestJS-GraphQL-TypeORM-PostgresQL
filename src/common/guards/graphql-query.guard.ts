@@ -15,6 +15,21 @@ import {
 } from '../decorators/query-guard.decorator';
 import { GetInfoFromQueryProps } from '../graphql/utils/types';
 
+const checkPermission = <T extends ClassConstructor>(
+  permission: FindOptionsSelect<InstanceType<T>>,
+  select: FindOptionsSelect<InstanceType<T>>,
+): boolean => {
+  return Object.entries(permission)
+    .filter((v) => !!v[1])
+    .every(([key, value]) => {
+      if (typeof value === 'boolean') {
+        return select[key] ? false : true;
+      }
+
+      return checkPermission(value, select[key]);
+    });
+};
+
 @Injectable()
 export class GraphqlQueryGuard<T extends ClassConstructor> {
   constructor(
@@ -23,7 +38,7 @@ export class GraphqlQueryGuard<T extends ClassConstructor> {
   ) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const permission = this.reflector.get<FindOptionsSelect<T>>(
+    const permission = this.reflector.get<FindOptionsSelect<InstanceType<T>>>(
       PERMISSION,
       context.getHandler(),
     );
@@ -34,11 +49,9 @@ export class GraphqlQueryGuard<T extends ClassConstructor> {
     const ctx = GqlExecutionContext.create(context);
     const query = getCurrentGraphQLQuery(ctx);
 
-    const { select }: GetInfoFromQueryProps<T> = getOptionFromGqlQuery.call(
-      repository,
-      query,
-    );
+    const { select }: GetInfoFromQueryProps<InstanceType<T>> =
+      getOptionFromGqlQuery.call(repository, query);
 
-    return Object.keys(select).every((key) => permission[key]);
+    return checkPermission<T>(permission, select);
   }
 }

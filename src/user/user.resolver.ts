@@ -21,8 +21,8 @@ export class UserResolver {
 
   @Query(() => GetUserType)
   @UseAuthGuard('admin')
-  @UseQueryGuard(User, { username: true })
   @UseRepositoryInterceptor(User)
+  @UseQueryGuard(User, { username: true })
   @CustomCache({ logger: console.log, ttl: 1000 })
   getManyUserList(
     @Args({ name: 'input', nullable: true })
@@ -65,7 +65,6 @@ export class UserResolver {
 
   @Query(() => User)
   @UseAuthGuard()
-  @UseQueryGuard(User, { username: true })
   @UseRepositoryInterceptor(User)
   getMe(
     @CurrentUser() user: User,
