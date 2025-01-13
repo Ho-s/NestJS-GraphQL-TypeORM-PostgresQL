@@ -20,7 +20,7 @@ export class {{pascalCase tableName}}Resolver {
   @UseRepositoryInterceptor({{pascalCase tableName}})
   getMany{{pascalCase tableName}}List(
     @Args({ name: 'input', nullable: true }) condition: GetManyInput<{{pascalCase tableName}}>,
-    @GraphQLQueryToOption<{{pascalCase tableName}}>(true)
+    @GraphQLQueryToOption<{{pascalCase tableName}}>()
     option: GetInfoFromQueryProps<{{pascalCase tableName}}>,
   ) {
     return this.{{tableName}}Service.getMany({ ...condition, ...option });
