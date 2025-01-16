@@ -102,6 +102,10 @@ async getManySomeList(){
 
 With this API, if the client request includes the field "something," a `Forbidden` error will be triggered.
 
+#### Note
+
+There might be duplicate code when using this guard alongside `other interceptors`(name: `UseRepositoryInterceptor`) in this boilerplate. In such cases, you may need to adjust the code to ensure compatibility.
+
 ## License
 
 MIT
