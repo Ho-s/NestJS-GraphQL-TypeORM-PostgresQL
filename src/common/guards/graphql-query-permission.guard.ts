@@ -31,7 +31,7 @@ const checkPermission = <T extends ClassConstructor>(
 };
 
 @Injectable()
-export class GraphqlQueryGuard<T extends ClassConstructor> {
+export class GraphqlQueryPermissionGuard<T extends ClassConstructor> {
   constructor(
     private reflector: Reflector,
     private readonly dataSource: DataSource,
