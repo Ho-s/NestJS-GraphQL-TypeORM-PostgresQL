@@ -80,6 +80,28 @@ You can solve them with Sending JWT token in `Http Header` with the `Authorizati
 
 - You can find example code in [/src/user/user.resolver.ts](/src/user/user.resolver.ts)
 
+### permission
+
+The [permission guard](/src/common/decorators/query-guard.decorator.ts) is used to block access to specific fields in client requests.
+
+#### Why it was created
+
+- In GraphQL, clients can request any field, which could expose sensitive information. This guard ensures that sensitive fields are protected.
+
+- It allows controlling access to specific fields based on the server's permissions.
+
+#### How to use
+
+```ts
+@Query(()=>Some)
+@UseQueryPermissionGuard(Some, { something: true })
+async getManySomeList(){
+  return this.someService.getMany()
+}
+```
+
+With this API, if the client request includes the field "something," a `Forbidden` error will be triggered.
+
 ## License
 
 MIT
