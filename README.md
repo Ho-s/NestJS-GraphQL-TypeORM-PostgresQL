@@ -80,7 +80,7 @@ You can solve them with Sending JWT token in `Http Header` with the `Authorizati
 
 - You can find example code in [/src/user/user.resolver.ts](/src/user/user.resolver.ts)
 
-### permission
+### Permission for specific field
 
 The [permission guard](/src/common/decorators/query-guard.decorator.ts) is used to block access to specific fields in client requests.
 
