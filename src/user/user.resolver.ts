@@ -25,7 +25,7 @@ export class UserResolver {
   getManyUserList(
     @Args({ name: 'input', nullable: true })
     condition: GetManyInput<User>,
-    @GraphQLQueryToOption<User>(true)
+    @GraphQLQueryToOption<User>()
     option: GetInfoFromQueryProps<User>,
   ) {
     return this.userService.getMany({ ...condition, ...option });

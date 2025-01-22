@@ -115,5 +115,4 @@ export interface AddKeyValueInObjectProps<Entity>
   extends GetInfoFromQueryProps<Entity> {
   stack: string[];
   expandRelation?: boolean;
-  hasCountType?: boolean;
 }

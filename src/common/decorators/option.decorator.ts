@@ -21,12 +21,11 @@ const addKeyValuesInObject = <Entity>({
   relations,
   select,
   expandRelation,
-  hasCountType,
 }: AddKeyValueInObjectProps<Entity>): GetInfoFromQueryProps<Entity> => {
   if (stack.length) {
     let stackToString = stack.join('.');
 
-    if (hasCountType) {
+    if (stack.length && stack[0] === DATA) {
       if (stack[0] !== DATA || (stack.length === 1 && stack[0] === DATA)) {
         return { relations, select };
       }
@@ -46,7 +45,6 @@ const addKeyValuesInObject = <Entity>({
 export function getOptionFromGqlQuery<Entity>(
   this: Repository<Entity>,
   query: string,
-  hasCountType?: boolean,
 ): GetInfoFromQueryProps<Entity> {
   const splitted = query.split('\n');
 
@@ -65,7 +63,7 @@ export function getOptionFromGqlQuery<Entity>(
 
       if (line.includes('{')) {
         stack.push(replacedLine);
-        const isFirstLineDataType = hasCountType && replacedLine === DATA;
+        const isFirstLineDataType = replacedLine === DATA;
 
         if (!isFirstLineDataType) {
           lastMetadata = lastMetadata.relations.find(
@@ -78,11 +76,9 @@ export function getOptionFromGqlQuery<Entity>(
           relations: acc.relations,
           select: acc.select,
           expandRelation: true,
-          hasCountType,
         });
       } else if (line.includes('}')) {
-        const hasDataTypeInStack =
-          hasCountType && stack.length && stack[0] === DATA;
+        const hasDataTypeInStack = stack.length && stack[0] === DATA;
 
         lastMetadata =
           stack.length < (hasDataTypeInStack ? 3 : 2)
@@ -110,7 +106,6 @@ export function getOptionFromGqlQuery<Entity>(
         stack: addedStack,
         relations: acc.relations,
         select: acc.select,
-        hasCountType,
       });
     },
     {
@@ -120,7 +115,7 @@ export function getOptionFromGqlQuery<Entity>(
   );
 }
 
-const getCurrentGraphQLQuery = (ctx: GqlExecutionContext) => {
+export const getCurrentGraphQLQuery = (ctx: GqlExecutionContext) => {
   const { fieldName, path } = ctx.getArgByIndex(3) as {
     fieldName: string;
     path: { key: string };
@@ -159,7 +154,7 @@ const getCurrentGraphQLQuery = (ctx: GqlExecutionContext) => {
   return stack.join('\n');
 };
 
-export const GraphQLQueryToOption = <T>(hasCountType?: boolean) =>
+export const GraphQLQueryToOption = <T>() =>
   createParamDecorator((_: unknown, context: ExecutionContext) => {
     const ctx = GqlExecutionContext.create(context);
     const request = ctx.getContext().req;
@@ -175,7 +170,6 @@ export const GraphQLQueryToOption = <T>(hasCountType?: boolean) =>
     const queryOption: GetInfoFromQueryProps<T> = getOptionFromGqlQuery.call(
       repository,
       query,
-      hasCountType,
     );
 
     return queryOption;
