@@ -1,11 +1,15 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from './auth/auth.module';
 import { CustomCacheModule } from './cache/custom-cache.module';
+import {
+  typeormConfigKey,
+  typeormConfigLoader,
+} from './common/config/ormconfig';
 import { getEnvPath } from './common/helper/env.helper';
 import { envValidation } from './common/helper/env.validation';
 import { SettingModule } from './common/shared/setting/setting.module';
@@ -19,6 +23,7 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot({
       envFilePath: getEnvPath(`${__dirname}/..`),
       validate: envValidation,
+      load: [typeormConfigLoader],
     }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -28,10 +33,10 @@ import { UserModule } from './user/user.module';
         settingService.graphqlUseFactory,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [SettingModule],
-      inject: [SettingService],
-      useFactory: (settingService: SettingService) =>
-        settingService.typeOrmUseFactory,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        configService.get(typeormConfigKey),
     }),
     UserModule,
     AuthModule,
