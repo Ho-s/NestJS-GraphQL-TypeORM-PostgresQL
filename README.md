@@ -16,6 +16,61 @@ Base NestJS, We like it
 We use [Nestjs/TypeORM](https://docs.nestjs.com/techniques/database)
 In this template, We've been trying not to use `Pure SQL` to make the most of TypeORM.
 
+### Migration setup and usage
+
+This project uses TypeORM's migration feature to manage database schema changes. Follow the steps below to generate and apply migrations.
+
+> **Note**
+>
+> 1. The custom `typeorm` command defined in `package.json` is configured for `NODE_ENV=production`.
+> 2. Migrations are intended for production use, while `typeorm synchronize` should be used for development purposes.
+> 3. You can see the detailed configuration code [here](/src/common/config/ormconfig.ts)
+> 4. As you can see from the configuration code, migration files must be located in the subdirectory of `/src/common/database/migrations/${name}`.
+
+#### 1. Generate a migration file
+
+To reflect new changes in the database, you need to first generate a migration file.
+
+```bash
+yarn migration:generate ./src/common/database/migrations/init
+```
+
+you can change the name of migration by replacing `init`
+
+#### 2. Run the Migration
+
+To apply the generated migration to the database, run the following command:
+
+```bash
+yarn migration:run
+```
+
+#### 3. Revert a Migration
+
+To roll back the last applied migration, use the following command:
+
+```bash
+yarn migration:revert
+```
+
+#### 4. Check Migration Status
+
+To view the current status of your migrations, run:
+
+```bash
+yarn migration:show
+```
+
+#### Create Migration Command
+
+You can also directly create a migration file using the following `typeorm` command:
+
+```bash
+yarn migration:create ./src/common/database/migrations/init
+```
+
+This command generates an empty migration file where you can manually add your schema changes.
+
 ## [PostgresQL Database](https://www.postgresql.org/)
 
 We use postgresQL for backend database, The default database taht will be used is named 'postgres'
