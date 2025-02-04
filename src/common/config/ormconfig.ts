@@ -28,7 +28,7 @@ const typeormConfig: DataSourceOptions = {
     join(cwd(), 'dist', 'common', 'database', 'migrations', '*{.ts,.js}'),
   ],
   migrationsRun: false,
-  logging: false, // if you want to see the query log, change it to true
+  logging: false,
 };
 
 export const typeormConfigKey = 'typeorm';
