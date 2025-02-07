@@ -7,8 +7,8 @@ import {
 } from 'src/common/factory/mockFactory';
 import { ExtendedRepository } from 'src/common/graphql/customExtended';
 import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types';
-import { UtilModule } from 'src/common/shared/services/util.module';
-import { UtilService } from 'src/common/shared/services/util.service';
+import { UtilModule } from 'src/common/util/util.module';
+import { UtilService } from 'src/common/util/util.service';
 
 import { User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
