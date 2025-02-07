@@ -28,7 +28,13 @@
     "test:e2e": "rm -rf dist && jest --config ./test/jest-e2e.json",
     "test:e2e:docker": "rm -rf dist && docker-compose -f docker-compose.e2e.yml --env-file ./.test.env up --exit-code-from app",
     "g": "plop --plopfile ./generator/plopfile.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typeorm": "export NODE_ENV=production&& ts-node ./node_modules/typeorm/cli.js -d ./src/common/config/ormconfig.ts",
+    "migration:create": "typeorm-ts-node-commonjs migration:create",
+    "migration:generate": "yarn typeorm migration:generate",
+    "migration:show": "yarn typeorm migration:show",
+    "migration:run": "yarn build && yarn typeorm migration:run",
+    "migration:revert": "yarn typeorm migration:revert"
   },
   "dependencies": {
     "@apollo/server": "^4.11.3",
