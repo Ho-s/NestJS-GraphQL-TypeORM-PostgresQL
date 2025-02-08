@@ -11,8 +11,8 @@ import { {{pascalCase tableName}} } from './entities/{{tableName}}.entity'
 import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Input } from './inputs/{{tableName}}.input'
 import { ExtendedRepository } from 'src/common/graphql/customExtended'
 import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types'
-import { UtilModule } from 'src/common/shared/services/util.module';
-import { UtilService } from 'src/common/shared/services/util.service';
+import { UtilModule } from 'src/common/util/util.module';
+import { UtilService } from 'src/common/util/util.service';
 
 describe('{{pascalCase tableName}}Service', () => {
   let service: {{pascalCase tableName}}Service
