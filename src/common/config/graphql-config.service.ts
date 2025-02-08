@@ -21,7 +21,6 @@ export class GraphqlConfigService
 
   createGqlOptions(): Promise<ApolloDriverConfig> | ApolloDriverConfig {
     return {
-      // uploads: false,
       resolvers: { JSON: GraphQLJSON },
       autoSchemaFile: join(
         cwd(),
