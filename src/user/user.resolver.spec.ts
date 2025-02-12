@@ -7,8 +7,8 @@ import {
   MockServiceFactory,
 } from 'src/common/factory/mockFactory';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
-import { UtilModule } from 'src/common/shared/services/util.module';
-import { UtilService } from 'src/common/shared/services/util.service';
+import { UtilModule } from 'src/common/util/util.module';
+import { UtilService } from 'src/common/util/util.service';
 
 import { User } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
