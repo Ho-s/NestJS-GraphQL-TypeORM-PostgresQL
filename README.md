@@ -2,6 +2,66 @@
 
 NestJS boilerplate with TypeORM, GraphQL and PostgreSQL
 
+## Table of Contents
+
+- [1. Open for Contribution](#1-open-for-contribution)
+
+- [2. Getting Started](#2-getting-started)
+
+  - [2.1. Installation](#21-installation)
+  - [2.2. Run](#22-run)
+
+- [3. Docker](#3-docker)
+
+  - [3.1. Docker Compose Installation](#31-docker-compose-installation)
+  - [3.2. Before Getting Started](#32-before-getting-started)
+  - [3.3. Run](#33-run)
+  - [3.4. Note](#34-note)
+  - [3.5. Run Only Database (Local Dev)](#35-run-only-database-local-dev)
+
+- [4. NestJS](#4-nestjs)
+
+- [5. PostgreSQL Database](#5-postgresql-database)
+
+- [6. TypeORM](#6-typeorm)
+
+  - [6.1. Migration Setup and Usage](#61-migration-setup-and-usage)
+
+- [7. GraphQL](#7-graphql)
+
+  - [7.1. Protected Queries/Mutation By Role](#71-protected-queriesmutation-by-role)
+  - [7.2. GraphQL Query To Select and Relations](#72-graphql-query-to-select-and-relations)
+  - [7.3. Field-Level Permission](#73-field-level-permission)
+
+- [8. Custom CRUD](#8-custom-crud)
+
+- [9. Code generator](#9-code-generator)
+
+- [10. Caching](#10-caching)
+
+  - [10.1. How To Use](#101-how-to-use)
+
+- [11. TDD](#11-tdd)
+
+  - [11.1. Introduction](#111-introduction)
+  - [11.2. Before Getting Started](#112-before-getting-started)
+  - [11.3. Unit Test (with mock)](#113-unit-test-with-mock)
+  - [11.4. Integration Test (with in-memory DB)](#114-integration-test-with-in-memory-db)
+  - [11.5. End To End Test (with docker)](#115-end-to-end-test-with-docker)
+
+- [12. CI](#12-ci)
+
+  - [12.1. Github Actions](#121-github-actions)
+  - [12.2. Husky v9](#122-husky-v9)
+
+- [13. SWC Compiler](#13-swc-compiler)
+
+  - [13.1. SWC + Jest error resolution](#131-swc--jest-error-resolution)
+
+- [14. Todo](#14-todo)
+
+- [15. License](#15-license)
+
 ## 1. Open for Contribution
 
 Totally open for any Pull Request, please feel free to contribute in any ways.
