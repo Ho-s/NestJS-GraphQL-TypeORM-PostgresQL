@@ -32,6 +32,7 @@ NestJS boilerplate with TypeORM, GraphQL and PostgreSQL
   - [7.1. Protected Queries/Mutation By Role](#71-protected-queriesmutation-by-role)
   - [7.2. GraphQL Query To Select and Relations](#72-graphql-query-to-select-and-relations)
   - [7.3. Field-Level Permission](#73-field-level-permission)
+  - [7.4. GraphQL Status Code](#74-graphql-status-code)
 
 - [8. Custom CRUD](#8-custom-crud)
 
@@ -290,6 +291,11 @@ With this API, if the client request includes the field "something," a `Forbidde
 
 There might be duplicate code when using this guard alongside `other interceptors`(name: `UseRepositoryInterceptor`) in this boilerplate. In such cases, you may need to adjust the code to ensure compatibility.
 
+### 7.4. GraphQL Status Code
+
+Based on the GraphQL status code standard, we write status codes accordingly.
+You can see more details [here](./graphql-status-code.md).
+
 ## 8. Custom CRUD
 
 To make most of GraphQL's advantage, We created its own api, such as GetMany or GetOne.
@@ -503,8 +509,6 @@ db.public.registerFunction({
 - [x] Divide usefactory
 - [x] SWC Compiler
 - [x] Refresh Token
-- [ ] Redis
-- [ ] ElasticSearch
 - [x] Caching
 - [ ] Graphql Subscription
 - [x] Remove lodash
