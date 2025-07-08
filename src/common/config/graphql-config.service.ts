@@ -1,5 +1,5 @@
 import { ApolloDriverConfig } from '@nestjs/apollo';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GqlOptionsFactory } from '@nestjs/graphql';
 
@@ -11,7 +11,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { join } from 'path';
 import { cwd } from 'process';
 
-import { formatError } from '../format/graphql-error.format';
+import { httpStatusPlugin } from '../exceptions/exception.plugin';
 
 @Injectable()
 export class GraphqlConfigService
@@ -29,6 +29,7 @@ export class GraphqlConfigService
       sortSchema: true,
       playground: false,
       plugins: [
+        httpStatusPlugin,
         this.configService.get('NODE_ENV') === 'production'
           ? ApolloServerPluginLandingPageProductionDefault()
           : ApolloServerPluginLandingPageLocalDefault(),
@@ -36,7 +37,6 @@ export class GraphqlConfigService
 
       context: ({ req }) => ({ req }),
       cache: 'bounded',
-      formatError,
     };
   }
 }
