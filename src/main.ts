@@ -66,6 +66,14 @@ async function bootstrap() {
     graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
   );
 
+  app.use(function (req: Request, res: Response, next: NextFunction) {
+    if (req.originalUrl && req.originalUrl.split('/').pop() === 'favicon.ico') {
+      return res.sendStatus(204);
+    }
+
+    next();
+  });
+
   app.enableCors({
     origin: '*',
     credentials: true,
