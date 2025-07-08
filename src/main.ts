@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 
 import { AppModule } from './app.module';
+import { GraphQLExceptionSilencer } from './common/exceptions/exception-silencer.filter';
 import { EnvironmentVariables } from './common/helper/env.validation';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
@@ -24,6 +25,8 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.useGlobalFilters(new GraphQLExceptionSilencer());
 
   app.use(
     '/graphql',
