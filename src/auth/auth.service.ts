@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
 
 import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
+import { CustomConflictException } from 'src/common/exceptions';
 import { EnvironmentVariables } from 'src/common/helper/env.validation';
 import { UtilService } from 'src/common/util/util.service';
 import { User } from 'src/user/entities/user.entity';
@@ -58,12 +59,12 @@ export class AuthService {
   }
 
   async signUp(input: SignUpInput): Promise<JwtWithUser> {
-    const doesExistId = await this.userService.getOne({
+    const doesExist = await this.userService.getOne({
       where: { username: input.username },
     });
 
-    if (doesExistId) {
-      throw new BadRequestException('Username already exists');
+    if (doesExist) {
+      throw new CustomConflictException({ property: 'username' });
     }
 
     const user = await this.userService.create({ ...input, role: 'user' });
