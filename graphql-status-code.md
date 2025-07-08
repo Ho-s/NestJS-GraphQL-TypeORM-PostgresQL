@@ -49,6 +49,8 @@ Used when the GraphQL request is malformed or invalid.
 - **Data**: `null`
 - **Errors**: `Array<GraphQLError>` (length = 1)
 
+ref: [built-in-error-codes](https://www.apollographql.com/docs/apollo-server/data/errors#built-in-error-codes)
+
 #### ❌ Authentication/Authorization Failure
 
 Used when the request is unauthenticated or the client lacks required permissions.
