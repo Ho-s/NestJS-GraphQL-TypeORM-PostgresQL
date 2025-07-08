@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
 import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
 
+import { CustomUnauthorizedException } from 'src/common/exceptions';
 import { EnvironmentVariables } from 'src/common/helper/env.validation';
 
 import { UserService } from '../../user/user.service';
@@ -29,7 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
       done(null, userData);
     } catch (err) {
-      throw new UnauthorizedException('Error', err.message);
+      throw new CustomUnauthorizedException({ message: err.message });
     }
   }
 }

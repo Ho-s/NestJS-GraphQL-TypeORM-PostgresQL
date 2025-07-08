@@ -1,0 +1,15 @@
+import { HttpStatus } from '@nestjs/common';
+
+export const GRAPHQL_ERROR_CODES = [
+  'GRAPHQL_PARSE_FAILED',
+  'GRAPHQL_VALIDATION_FAILED',
+  'BAD_USER_INPUT',
+  'PERSISTED_QUERY_NOT_FOUND',
+  'PERSISTED_QUERY_NOT_SUPPORTED',
+  'OPERATION_RESOLUTION_FAILURE',
+];
+
+export const PRESERVED_STATUS_CODES = [
+  HttpStatus.UNAUTHORIZED,
+  HttpStatus.FORBIDDEN,
+] as const;

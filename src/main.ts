@@ -1,14 +1,20 @@
-import { ValidationPipe } from '@nestjs/common';
+import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
+import { NextFunction } from 'express';
+import { Request, Response } from 'express';
+import { GraphQLFormattedError } from 'graphql';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 
 import { AppModule } from './app.module';
+import { GraphQLExceptionSilencer } from './common/exceptions/exception-silencer.filter';
 import { EnvironmentVariables } from './common/helper/env.validation';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
+
+const GRAPHQL_HEADER_KEY = 'application/graphql-response+json';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -24,6 +30,28 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.useGlobalFilters(new GraphQLExceptionSilencer());
+
+  app.use('/graphql', (req: Request, res: Response, next: NextFunction) => {
+    const accept = req.headers.accept || '';
+    if (!accept.includes(GRAPHQL_HEADER_KEY)) {
+      return res.status(HttpStatus.NOT_ACCEPTABLE).json({
+        data: null,
+        extensions: {
+          errorStatus: HttpStatus.NOT_ACCEPTABLE,
+          errorCode: 'NOT_ACCEPTABLE',
+        },
+        errors: [
+          {
+            message:
+              'Not Acceptable: Server supports application/graphql-response+json only.',
+          },
+        ] as ReadonlyArray<GraphQLFormattedError>,
+      });
+    }
+    next();
+  });
 
   app.use(
     '/graphql',
