@@ -1,5 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
-
 import {
   FindManyOptions,
   FindOneOptions,
@@ -7,6 +5,7 @@ import {
   Repository,
 } from 'typeorm';
 
+import { CustomBadRequestException } from '../exceptions';
 import {
   IDriection,
   IGetData,
@@ -38,29 +37,29 @@ export function filterOrder<T>(
 ) {
   Object.entries(order).forEach(([key, value]: [string, ISort]) => {
     if (!(key in this.metadata.propertiesMap)) {
-      throw new BadRequestException(
-        `Order key ${key} is not in ${this.metadata.name}`,
-      );
+      throw new CustomBadRequestException({
+        message: `Order key ${key} is not in ${this.metadata.name}`,
+      });
     }
 
     if (isObject(value)) {
       Object.entries(value).forEach(([_key, _value]) => {
         if (!directionObj[_key]) {
-          throw new BadRequestException(
-            `Order must be ${Object.keys(directionObj).join(' or ')}`,
-          );
+          throw new CustomBadRequestException({
+            message: `Order must be ${Object.keys(directionObj).join(' or ')}`,
+          });
         }
         if (!checkObject[_key].includes(_value as unknown)) {
-          throw new BadRequestException(
-            `Order ${_key} must be ${checkObject[_key].join(' or ')}`,
-          );
+          throw new CustomBadRequestException({
+            message: `Order ${_key} must be ${checkObject[_key].join(' or ')}`,
+          });
         }
       });
     } else {
       if (!valueObj[value as IDriection]) {
-        throw new BadRequestException(
-          `Order must be ${Object.keys(valueObj).join(' or ')}`,
-        );
+        throw new CustomBadRequestException({
+          message: `Order must be ${Object.keys(valueObj).join(' or ')}`,
+        });
       }
     }
   });

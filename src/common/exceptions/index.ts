@@ -9,3 +9,15 @@ export class CustomConflictException extends CustomException(
   '{{property}} already exists',
   'CONFLICT',
 ) {}
+
+export class CustomBadRequestException extends CustomException(
+  HttpStatus.BAD_REQUEST,
+  '{{message}}',
+  'BAD_REQUEST',
+) {}
+
+export class CustomUnauthorizedException extends CustomException(
+  HttpStatus.UNAUTHORIZED,
+  '{{message}}',
+  'UNAUTHORIZED',
+) {}

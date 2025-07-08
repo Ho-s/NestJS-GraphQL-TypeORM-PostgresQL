@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import {
@@ -12,6 +12,7 @@ import { FileUpload } from 'graphql-upload/Upload.js';
 import * as path from 'path';
 import { firstValueFrom } from 'rxjs';
 
+import { CustomBadRequestException } from 'src/common/exceptions';
 import { EnvironmentVariables } from 'src/common/helper/env.validation';
 
 @Injectable()
@@ -66,7 +67,9 @@ export class UploadService {
       return { key };
     } catch (error) {
       console.log(error);
-      throw new BadRequestException(`File upload failed : ${error}`);
+      throw new CustomBadRequestException({
+        message: `File upload failed : ${error}`,
+      });
     }
   }
 
@@ -84,14 +87,16 @@ export class UploadService {
     const fileList = await this.awsS3.send(check);
 
     if (!fileList.Contents || fileList.Contents.length === 0) {
-      throw new BadRequestException(`File does not exist`);
+      throw new CustomBadRequestException({ message: `File does not exist` });
     }
 
     try {
       await this.awsS3.send(command);
       return { success: true };
     } catch (error) {
-      throw new BadRequestException(`Failed to delete file : ${error}`);
+      throw new CustomBadRequestException({
+        message: `Failed to delete file : ${error}`,
+      });
     }
   }
 
