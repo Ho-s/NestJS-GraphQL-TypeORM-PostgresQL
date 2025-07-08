@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
-import { User } from '../entities/user.entity';
+import { User, UserRole, UserRoleType } from '../entities/user.entity';
 
 @InputType()
 export class CreateUserInput implements Partial<User> {
@@ -18,9 +18,9 @@ export class CreateUserInput implements Partial<User> {
   @IsNotEmpty()
   nickname: string;
 
-  @Field(() => String)
+  @Field(() => UserRole)
   @IsNotEmpty()
-  role: 'admin' | 'user';
+  role: UserRoleType;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -41,9 +41,9 @@ export class UpdateUserInput implements Partial<User> {
   @IsOptional()
   nickname?: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => UserRole, { nullable: true })
   @IsOptional()
-  role?: 'admin' | 'user';
+  role?: UserRoleType;
 
   @Field(() => String, { nullable: true })
   @IsOptional()

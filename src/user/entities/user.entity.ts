@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 import * as bcrypt from 'bcrypt';
 import { IsEmail } from 'class-validator';
@@ -13,6 +13,17 @@ import {
 } from 'typeorm';
 
 const BCRYPT_HASH_ROUNDS = 10;
+
+export const UserRole = {
+  USER: 'user',
+  ADMIN: 'admin',
+} as const;
+
+export type UserRoleType = (typeof UserRole)[keyof typeof UserRole];
+
+registerEnumType(UserRole, {
+  name: 'UserRole',
+});
 
 @ObjectType()
 @Entity()
@@ -33,9 +44,13 @@ export class User {
   @Column()
   nickname: string;
 
-  @Field(() => String)
-  @Column()
-  role: 'admin' | 'user';
+  @Field(() => UserRole)
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRoleType;
 
   @Field(() => Date)
   @CreateDateColumn({
@@ -58,13 +73,6 @@ export class User {
   async beforeInsertOrUpdate() {
     if (this.password) {
       this.password = await bcrypt.hash(this.password, BCRYPT_HASH_ROUNDS);
-    }
-  }
-
-  @BeforeInsert()
-  beforeInsert() {
-    if (!this.role) {
-      this.role = 'user';
     }
   }
 }

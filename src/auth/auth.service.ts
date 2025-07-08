@@ -8,7 +8,7 @@ import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
 import { CustomConflictException } from 'src/common/exceptions';
 import { EnvironmentVariables } from 'src/common/helper/env.validation';
 import { UtilService } from 'src/common/util/util.service';
-import { User } from 'src/user/entities/user.entity';
+import { User, UserRole } from 'src/user/entities/user.entity';
 
 import { UserService } from '../user/user.service';
 import { JwtWithUser } from './entities/auth._entity';
@@ -67,7 +67,10 @@ export class AuthService {
       throw new CustomConflictException({ property: 'username' });
     }
 
-    const user = await this.userService.create({ ...input, role: 'user' });
+    const user = await this.userService.create({
+      ...input,
+      role: UserRole.USER,
+    });
 
     return this.signIn(user);
   }

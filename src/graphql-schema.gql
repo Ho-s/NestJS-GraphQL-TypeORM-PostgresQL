@@ -6,7 +6,7 @@ input CreateUserInput {
   nickname: String!
   password: String!
   refreshToken: String
-  role: String!
+  role: UserRole!
   username: String!
 }
 
@@ -85,7 +85,7 @@ input UpdateUserInput {
   nickname: String
   password: String
   refreshToken: String
-  role: String
+  role: UserRole
   username: String
 }
 
@@ -97,7 +97,12 @@ type User {
   id: ID!
   nickname: String!
   refreshToken: String
-  role: String!
+  role: UserRole!
   updatedAt: DateTime!
   username: String!
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }

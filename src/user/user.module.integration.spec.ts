@@ -19,6 +19,7 @@ import { GetOneInput } from 'src/common/graphql/custom.input';
 import { GraphqlPassportAuthGuard } from 'src/common/guards/graphql-passport-auth.guard';
 
 import { getEnvPath } from '../common/helper/env.helper';
+import { UserRole } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 import { UserModule } from './user.module';
 
@@ -119,7 +120,7 @@ describe('UserModule', () => {
   const created = {
     username: 'someusername',
     nickname: 'somenickname',
-    role: 'user',
+    role: UserRole.USER,
   };
 
   it('create', async () => {

@@ -3,6 +3,8 @@ import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 
+import { UserRoleType } from 'src/user/entities/user.entity';
+
 import { GUARD_ROLE } from '../decorators/auth-guard.decorator';
 
 @Injectable()
@@ -12,7 +14,7 @@ export class GraphqlPassportAuthGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRoles = this.reflector.get<string[]>(
+    const requiredRoles = this.reflector.get<UserRoleType[]>(
       GUARD_ROLE,
       context.getHandler(),
     );
@@ -34,7 +36,10 @@ export class GraphqlPassportAuthGuard extends AuthGuard('jwt') {
     return req;
   }
 
-  private hasAccess(role: string, requiredRoles: string[]): boolean {
-    return requiredRoles.some((v: string) => v === role);
+  private hasAccess(
+    role: UserRoleType,
+    requiredRoles: UserRoleType[],
+  ): boolean {
+    return requiredRoles.some((v: UserRoleType) => v === role);
   }
 }
