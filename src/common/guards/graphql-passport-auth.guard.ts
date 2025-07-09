@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 
-import { UserRoleType } from 'src/user/entities/user.entity';
+import { UserRole, UserRoleType } from 'src/user/entities/user.entity';
 
 import { GUARD_ROLE } from '../decorators/auth-guard.decorator';
 
@@ -23,7 +23,7 @@ export class GraphqlPassportAuthGuard extends AuthGuard('jwt') {
     const req = ctx.getContext().req;
     const { role } = req.user;
 
-    if (role === 'admin') {
+    if (role === UserRole.ADMIN) {
       return true;
     }
 

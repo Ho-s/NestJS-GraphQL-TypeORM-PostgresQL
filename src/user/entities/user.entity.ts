@@ -14,8 +14,8 @@ import {
 const BCRYPT_HASH_ROUNDS = 10;
 
 export const UserRole = {
-  USER: 'user',
-  ADMIN: 'admin',
+  USER: 'USER',
+  ADMIN: 'ADMIN',
 } as const;
 
 export type UserRoleType = (typeof UserRole)[keyof typeof UserRole];

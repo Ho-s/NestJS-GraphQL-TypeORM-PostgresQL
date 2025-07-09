@@ -11,7 +11,7 @@ import { GetManyInput, GetOneInput } from 'src/common/graphql/custom.input';
 import { GetInfoFromQueryProps } from 'src/common/graphql/utils/types';
 
 import { CurrentUser } from '../common/decorators/user.decorator';
-import { GetUserType, User } from './entities/user.entity';
+import { GetUserType, User, UserRole } from './entities/user.entity';
 import { CreateUserInput, UpdateUserInput } from './inputs/user.input';
 import { UserService } from './user.service';
 
@@ -20,7 +20,7 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => GetUserType)
-  @UseAuthGuard('admin')
+  @UseAuthGuard(UserRole.ADMIN)
   @UseRepositoryInterceptor(User)
   @CustomCache({ logger: console.log, ttl: 1000 })
   getManyUserList(
@@ -33,7 +33,7 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  @UseAuthGuard('admin')
+  @UseAuthGuard(UserRole.ADMIN)
   @UseRepositoryInterceptor(User)
   getOneUser(
     @Args({ name: 'input' })
@@ -45,19 +45,19 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  @UseAuthGuard('admin')
+  @UseAuthGuard(UserRole.ADMIN)
   createUser(@Args('input') input: CreateUserInput) {
     return this.userService.create(input);
   }
 
   @Mutation(() => GraphQLJSON)
-  @UseAuthGuard('admin')
+  @UseAuthGuard(UserRole.ADMIN)
   updateUser(@Args('id') id: string, @Args('input') input: UpdateUserInput) {
     return this.userService.update(id, input);
   }
 
   @Mutation(() => GraphQLJSON)
-  @UseAuthGuard('admin')
+  @UseAuthGuard(UserRole.ADMIN)
   deleteUser(@Args('id') id: string) {
     return this.userService.delete(id);
   }

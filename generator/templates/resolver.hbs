@@ -7,6 +7,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { GetInfoFromQueryProps } from 'src/common/graphql/utils/types';
 import { GraphQLQueryToOption } from 'src/common/decorators/option.decorator';
 import { UseRepositoryInterceptor } from 'src/common/decorators/repository-interceptor.decorator';
+import { UserRole } from 'src/user/entities/user.entity';
 
 import { Get{{pascalCase tableName}}Type, {{pascalCase tableName}} } from './entities/{{tableName}}.entity';
 import { Create{{pascalCase tableName}}Input, Update{{pascalCase tableName}}Input } from './inputs/{{tableName}}.input';
@@ -16,7 +17,7 @@ export class {{pascalCase tableName}}Resolver {
   constructor(private readonly {{tableName}}Service: {{pascalCase tableName}}Service) {}
   
   @Query(() => Get{{pascalCase tableName}}Type)
-  @UseAuthGuard('admin')
+  @UseAuthGuard(UserRole.ADMIN)
   @UseRepositoryInterceptor({{pascalCase tableName}})
   getMany{{pascalCase tableName}}List(
     @Args({ name: 'input', nullable: true }) condition: GetManyInput<{{pascalCase tableName}}>,
@@ -27,7 +28,7 @@ export class {{pascalCase tableName}}Resolver {
   }
     
   @Query(() => {{pascalCase tableName}})
-  @UseAuthGuard('admin')
+  @UseAuthGuard(UserRole.ADMIN)
   @UseRepositoryInterceptor({{pascalCase tableName}})
   getOne{{pascalCase tableName}}(
     @Args({ name: 'input' }) condition: GetOneInput<{{pascalCase tableName}}>,
@@ -38,13 +39,13 @@ export class {{pascalCase tableName}}Resolver {
   }
       
   @Mutation(() => {{pascalCase tableName}})
-  @UseAuthGuard('admin')
+  @UseAuthGuard(UserRole.ADMIN)
   create{{pascalCase tableName}}(@Args('input') input: Create{{pascalCase tableName}}Input) {
     return this.{{tableName}}Service.create(input);
   }
       
   @Mutation(() => GraphQLJSON)
-  @UseAuthGuard('admin')
+  @UseAuthGuard(UserRole.ADMIN)
   update{{pascalCase tableName}}(@Args('id')
 {{#if (is "increment" idType)}}
     id: number,
@@ -56,7 +57,7 @@ export class {{pascalCase tableName}}Resolver {
   }
       
   @Mutation(() => GraphQLJSON)
-  @UseAuthGuard('admin')
+  @UseAuthGuard(UserRole.ADMIN)
   delete{{pascalCase tableName}}(@Args('id') 
   {{#if (is "increment" idType)}}
     id: number,
