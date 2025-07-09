@@ -38,7 +38,7 @@ async function bootstrap() {
 
   app.use(
     '/graphql',
-    graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
+    graphqlUploadExpress({ maxFileSize: 1000 * 1000 * 10, maxFiles: 10 }),
     (req: Request, res: Response, next: NextFunction) => {
       const accept = req.headers.accept || '';
       if (
