@@ -40,6 +40,10 @@ export class UploadService {
     )}.s3.amazonaws.com/${key}`;
   }
 
+  private getDecodedFilename(filename: string) {
+    return Buffer.from(filename, 'latin1').toString('utf8');
+  }
+
   async uploadFileToS3({
     folderName,
     file,
@@ -48,7 +52,7 @@ export class UploadService {
     file: FileUpload;
   }) {
     const key = `${folderName}/${new Date().toISOString()}_${path.basename(
-      file.filename,
+      this.getDecodedFilename(file.filename),
     )}`.replace(/ /g, '');
 
     const upload = new Upload({
