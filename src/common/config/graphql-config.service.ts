@@ -12,12 +12,15 @@ import { join } from 'path';
 import { cwd } from 'process';
 
 import { httpStatusPlugin } from '../exceptions/exception.plugin';
+import { EnvironmentVariables } from '../helper/env.validation';
 
 @Injectable()
 export class GraphqlConfigService
   implements GqlOptionsFactory<ApolloDriverConfig>
 {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService<EnvironmentVariables>,
+  ) {}
 
   createGqlOptions(): Promise<ApolloDriverConfig> | ApolloDriverConfig {
     return {
@@ -37,6 +40,7 @@ export class GraphqlConfigService
 
       context: ({ req }) => ({ req }),
       cache: 'bounded',
+      csrfPrevention: this.configService.get('NODE_ENV') !== 'development',
     };
   }
 }
