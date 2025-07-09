@@ -1,7 +1,6 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 import * as bcrypt from 'bcrypt';
-import { IsEmail } from 'class-validator';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -33,7 +32,6 @@ export class User {
   id: string;
 
   @Field(() => String)
-  @IsEmail()
   @Column()
   username: string;
 
