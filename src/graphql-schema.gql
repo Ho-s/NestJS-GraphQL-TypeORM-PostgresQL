@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AccessTokenPayload {
+  id: ID!
+  refreshToken: String
+  role: UserRole!
+}
+
 input CreateUserInput {
   nickname: String!
   password: String!
@@ -48,7 +54,7 @@ scalar JSON
 
 type JwtWithUser {
   jwt: String!
-  user: User!
+  user: AccessTokenPayload!
 }
 
 type Mutation {

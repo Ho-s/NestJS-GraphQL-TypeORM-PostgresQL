@@ -1,12 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
-import { User } from 'src/user/entities/user.entity';
+import { AccessTokenPayload } from './access-token.payload';
 
 @ObjectType()
 export class JwtWithUser {
   @Field(() => String)
   jwt: string;
 
-  @Field(() => User)
-  user: User;
+  @Field(() => AccessTokenPayload)
+  user: AccessTokenPayload;
 }

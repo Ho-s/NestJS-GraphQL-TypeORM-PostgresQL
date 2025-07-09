@@ -2,6 +2,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import GraphQLJSON from 'graphql-type-json';
 
+import { AccessTokenPayload } from 'src/auth/models/access-token.payload';
 import { CustomCache } from 'src/cache/custom-cache.decorator';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { GraphQLQueryToOption } from 'src/common/decorators/option.decorator';
@@ -65,7 +66,7 @@ export class UserResolver {
   @UseAuthGuard()
   @UseRepositoryInterceptor(User)
   getMe(
-    @CurrentUser() user: User,
+    @CurrentUser() user: AccessTokenPayload,
     @GraphQLQueryToOption<User>()
     option: GetInfoFromQueryProps<User>,
   ) {

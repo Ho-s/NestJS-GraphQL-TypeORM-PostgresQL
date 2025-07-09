@@ -5,13 +5,16 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
-import { CustomConflictException } from 'src/common/exceptions';
+import {
+  CustomConflictException,
+  CustomUnauthorizedException,
+} from 'src/common/exceptions';
 import { EnvironmentVariables } from 'src/common/helper/env.validation';
-import { UtilService } from 'src/common/util/util.service';
-import { User, UserRole } from 'src/user/entities/user.entity';
+import { UserRole } from 'src/user/entities/user.entity';
 
 import { UserService } from '../user/user.service';
-import { JwtWithUser } from './entities/auth._entity';
+import { AccessTokenPayload } from './models/access-token.payload';
+import { JwtWithUser } from './models/auth.model';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +22,6 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService<EnvironmentVariables>,
-    private readonly utilService: UtilService,
   ) {}
 
   private async generateRefreshToken(userId: string) {
@@ -38,12 +40,13 @@ export class AuthService {
   async verifyRefreshToken(
     userId: string,
     refreshToken: string,
-  ): Promise<User> {
+  ): Promise<boolean> {
     try {
       this.jwtService.verify(refreshToken, {
         secret: this.configService.get('JWT_REFRESH_TOKEN_PRIVATE_KEY'),
       });
-      return this.userService.getOne({ where: { id: userId, refreshToken } });
+
+      return this.userService.doesExist({ id: userId, refreshToken });
     } catch (err) {
       if (err.message === 'jwt expired') {
         this.userService.update(userId, { refreshToken: null });
@@ -51,9 +54,9 @@ export class AuthService {
     }
   }
 
-  generateAccessToken(user: User, refreshToken: string) {
+  generateAccessToken(user: AccessTokenPayload, refreshToken: string) {
     return this.jwtService.sign({
-      ...this.utilService.pick(user, ['id', 'role']),
+      ...user,
       refreshToken,
     });
   }
@@ -75,25 +78,32 @@ export class AuthService {
     return this.signIn(user);
   }
 
-  async signIn(user: User) {
+  async signIn(user: AccessTokenPayload) {
     const refreshToken = await this.generateRefreshToken(user.id);
     const jwt = this.generateAccessToken(user, refreshToken);
 
     return { jwt, user };
   }
 
-  async validateUser(input: SignInInput) {
+  async validateUser(input: SignInInput): Promise<AccessTokenPayload> {
     const { username, password } = input;
 
-    const user = await this.userService.getOne({ where: { username } });
+    const user = await this.userService.getOne({
+      where: { username },
+      select: { id: true, role: true, password: true },
+    });
+
     if (!user) {
-      return null;
+      throw new CustomUnauthorizedException();
     }
+
     const isValid: boolean = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-      return null;
+      throw new CustomUnauthorizedException();
     }
+
+    delete user.password;
 
     return user;
   }

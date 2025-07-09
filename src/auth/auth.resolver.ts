@@ -5,11 +5,11 @@ import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { RefreshGuard } from 'src/common/guards/graphql-refresh.guard';
 import { SignInGuard } from 'src/common/guards/graphql-signin.guard';
-import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 
 import { AuthService } from './auth.service';
-import { JwtWithUser } from './entities/auth._entity';
+import { AccessTokenPayload } from './models/access-token.payload';
+import { JwtWithUser } from './models/auth.model';
 
 @Resolver()
 export class AuthResolver {
@@ -20,7 +20,10 @@ export class AuthResolver {
 
   @Mutation(() => JwtWithUser)
   @UseGuards(SignInGuard)
-  signIn(@Args('input') _: SignInInput, @CurrentUser() user: User) {
+  signIn(
+    @Args('input') _: SignInInput,
+    @CurrentUser() user: AccessTokenPayload,
+  ) {
     return this.authService.signIn(user);
   }
 
@@ -31,14 +34,14 @@ export class AuthResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(RefreshGuard)
-  async signOut(@CurrentUser() user: User) {
+  async signOut(@CurrentUser() user: AccessTokenPayload) {
     await this.userService.update(user.id, { refreshToken: null });
     return true;
   }
 
   @Mutation(() => JwtWithUser)
   @UseGuards(RefreshGuard)
-  refreshAccessToken(@CurrentUser() user: User) {
+  refreshAccessToken(@CurrentUser() user: AccessTokenPayload) {
     const jwt = this.authService.generateAccessToken(user, user.refreshToken);
 
     return { jwt, user };

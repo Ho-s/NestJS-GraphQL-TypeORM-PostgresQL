@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { FindOptionsWhere } from 'typeorm';
+
 import { CustomCache } from 'src/cache/custom-cache.decorator';
 import { OneRepoQuery, RepoQuery } from 'src/common/graphql/types';
 
@@ -18,6 +20,10 @@ export class UserService {
 
   getOne(option: OneRepoQuery<User>) {
     return this.userRepository.getOne(option);
+  }
+
+  doesExist(where: FindOptionsWhere<User>) {
+    return this.userRepository.exists({ where });
   }
 
   create(input: CreateUserInput): Promise<User> {

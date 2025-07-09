@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
-import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { CustomUnauthorizedException } from 'src/common/exceptions';
 import { EnvironmentVariables } from 'src/common/helper/env.validation';
 
 import { UserService } from '../../user/user.service';
+import { AccessTokenPayload } from '../models/access-token.payload';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -21,16 +22,13 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: { id: string }, done: VerifiedCallback) {
-    try {
-      const userData = await this.userService.getOne({
-        where: { id: payload.id },
-        select: { id: true, role: true },
-      });
+  async validate(payload: AccessTokenPayload): Promise<AccessTokenPayload> {
+    const doesExist = await this.userService.doesExist({ id: payload.id });
 
-      done(null, userData);
-    } catch (err) {
-      throw new CustomUnauthorizedException({ message: err.message });
+    if (!doesExist) {
+      throw new CustomUnauthorizedException();
     }
+
+    return payload;
   }
 }
