@@ -36,34 +36,33 @@ async function bootstrap() {
 
   app.use(express.json());
 
-  app.use('/graphql', (req: Request, res: Response, next: NextFunction) => {
-    const accept = req.headers.accept || '';
-    if (
-      accept.includes(GRAPHQL_HEADER_KEY) ||
-      req.method !== 'POST' ||
-      req.body?.operationName === 'IntrospectionQuery'
-    ) {
-      return next();
-    }
-
-    res.status(HttpStatus.NOT_ACCEPTABLE).json({
-      data: null,
-      extensions: {
-        errorStatus: HttpStatus.NOT_ACCEPTABLE,
-        errorCode: 'NOT_ACCEPTABLE',
-      },
-      errors: [
-        {
-          message:
-            'Not Acceptable: Server supports application/graphql-response+json only.',
-        },
-      ] as ReadonlyArray<GraphQLFormattedError>,
-    });
-  });
-
   app.use(
     '/graphql',
     graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
+    (req: Request, res: Response, next: NextFunction) => {
+      const accept = req.headers.accept || '';
+      if (
+        accept.includes(GRAPHQL_HEADER_KEY) ||
+        req.method !== 'POST' ||
+        req.body?.operationName === 'IntrospectionQuery'
+      ) {
+        return next();
+      }
+
+      res.status(HttpStatus.NOT_ACCEPTABLE).json({
+        data: null,
+        extensions: {
+          errorStatus: HttpStatus.NOT_ACCEPTABLE,
+          errorCode: 'NOT_ACCEPTABLE',
+        },
+        errors: [
+          {
+            message:
+              'Not Acceptable: Server supports application/graphql-response+json only.',
+          },
+        ] as ReadonlyArray<GraphQLFormattedError>,
+      });
+    },
   );
 
   app.use(function (req: Request, res: Response, next: NextFunction) {
