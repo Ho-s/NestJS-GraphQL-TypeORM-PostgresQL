@@ -5,6 +5,7 @@ import * as request from 'supertest';
 
 import { AppModule } from 'src/app.module';
 import { SignInInput, SignUpInput } from 'src/auth/inputs/auth.input';
+import { UserRole } from 'src/user/entities/user.entity';
 
 const TEST = 'test';
 const userInfo = {
@@ -45,7 +46,7 @@ describe('Container Test (e2e)', () => {
         mutation ($input: ${SignUpInput.prototype.constructor.name}!) {
           ${keyName}(input: $input) {
             user{
-              ${Object.keys(userInfo).join('\n')}
+              role
             }
           }
         }
@@ -64,7 +65,7 @@ describe('Container Test (e2e)', () => {
       .set('Content-Type', 'application/json')
       .expect(HttpStatus.OK)
       .expect(({ body: { data } }) => {
-        expect(data[keyName]).toMatchObject({ user: userInfo });
+        expect(data[keyName]).toMatchObject({ user: { role: UserRole.USER } });
       });
   });
 
