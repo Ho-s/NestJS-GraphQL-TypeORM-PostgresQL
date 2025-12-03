@@ -72,7 +72,7 @@
     "rimraf": "^6.0.1",
     "rxjs": "^7.8.2",
     "typeorm": "^0.3.25",
-    "uuid": "^11.1.0"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
@@ -138,6 +138,9 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(uuid)/)"
+    ]
   }
 }
