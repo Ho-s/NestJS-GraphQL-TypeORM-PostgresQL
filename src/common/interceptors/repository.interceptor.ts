@@ -12,9 +12,9 @@ import { DataSource, EntityTarget, ObjectLiteral } from 'typeorm';
 import { REPOSITORY_INTERCEPTOR } from '../decorators/repository-interceptor.decorator';
 
 @Injectable()
-export class QueryIntercepter<T extends ObjectLiteral>
-  implements NestInterceptor
-{
+export class QueryIntercepter<
+  T extends ObjectLiteral,
+> implements NestInterceptor {
   constructor(private readonly dataSource: DataSource) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
