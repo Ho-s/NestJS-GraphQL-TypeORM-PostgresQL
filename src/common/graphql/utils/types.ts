@@ -111,8 +111,9 @@ export interface GetInfoFromQueryProps<Entity> {
   select: FindOptionsSelect<Entity>;
 }
 
-export interface AddKeyValueInObjectProps<Entity>
-  extends GetInfoFromQueryProps<Entity> {
+export interface AddKeyValueInObjectProps<
+  Entity,
+> extends GetInfoFromQueryProps<Entity> {
   stack: string[];
   expandRelation?: boolean;
 }

@@ -2,8 +2,16 @@
   "plugins": ["@trivago/prettier-plugin-sort-imports"],
   "singleQuote": true,
   "trailingComma": "all",
-  "importOrder": ["^@nestjs/(.*)$",  "<THIRD_PARTY_MODULES>", "^src/(.*)$", "^[./]"],
+  "importOrder": [
+    "^@nestjs/(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^src/(.*)$",
+    "^[./]"
+  ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
-  "importOrderParserPlugins" : ["typescript", "[\"decorators-legacy\", {\"decoratorsBeforeExport\": true}]"]
+  "importOrderParserPlugins": [
+    "typescript",
+    "[\"decorators-legacy\", {\"decoratorsBeforeExport\": true}]"
+  ]
 }

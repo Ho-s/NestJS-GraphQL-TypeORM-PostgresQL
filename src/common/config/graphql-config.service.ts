@@ -15,9 +15,7 @@ import { httpStatusPlugin } from '../exceptions/exception.plugin';
 import { EnvironmentVariables } from '../helper/env.validation';
 
 @Injectable()
-export class GraphqlConfigService
-  implements GqlOptionsFactory<ApolloDriverConfig>
-{
+export class GraphqlConfigService implements GqlOptionsFactory<ApolloDriverConfig> {
   constructor(
     private readonly configService: ConfigService<EnvironmentVariables>,
   ) {}
