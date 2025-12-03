@@ -125,7 +125,8 @@
       "^.+\\.(t|j)s$": [
         "ts-jest",
         "@swc/jest"
-      ]
+      ],
+      "^.+\\.mjs$": "@swc/jest"
     },
     "moduleDirectories": [
       "node_modules",
@@ -141,7 +142,7 @@
     "coverageDirectory": "coverage",
     "testEnvironment": "node",
     "transformIgnorePatterns": [
-      "node_modules/(?!(uuid)/)"
+      "node_modules/(?!(uuid|graphql-upload)/)"
     ]
   }
 }
