@@ -39,6 +39,7 @@ export class GraphqlConfigService implements GqlOptionsFactory<ApolloDriverConfi
       context: ({ req }) => ({ req }),
       cache: 'bounded',
       csrfPrevention: this.configService.get('NODE_ENV') !== 'development',
+      introspection: this.configService.get('NODE_ENV') === 'development',
     };
   }
 }

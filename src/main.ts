@@ -41,11 +41,7 @@ async function bootstrap() {
     graphqlUploadExpress({ maxFileSize: 1000 * 1000 * 10, maxFiles: 10 }),
     (req: Request, res: Response, next: NextFunction) => {
       const accept = req.headers.accept || '';
-      if (
-        accept.includes(GRAPHQL_HEADER_KEY) ||
-        req.method !== 'POST' ||
-        req.body?.operationName === 'IntrospectionQuery'
-      ) {
+      if (accept.includes(GRAPHQL_HEADER_KEY) || req.method !== 'POST') {
         return next();
       }
 
