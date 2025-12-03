@@ -8,7 +8,7 @@ import {
   S3,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { FileUpload } from 'graphql-upload';
+import type { FileUpload } from 'graphql-upload/processRequest.mjs';
 import * as path from 'path';
 import { firstValueFrom } from 'rxjs';
 

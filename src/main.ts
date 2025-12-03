@@ -7,7 +7,7 @@ import { NextFunction } from 'express';
 import { Request, Response } from 'express';
 import express from 'express';
 import { GraphQLFormattedError } from 'graphql';
-import { graphqlUploadExpress } from 'graphql-upload';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 
 import { AppModule } from './app.module';
 import { GraphQLExceptionSilencer } from './common/exceptions/exception-silencer.filter';
