@@ -55,7 +55,6 @@ export class CustomCacheInterceptor implements NestInterceptor {
 
   private getArgs(context: ExecutionContext): unknown[] {
     const ctx = GqlExecutionContext.create(context);
-    const req = ctx.getContext().req;
-    return req.body;
+    return Object.values(ctx.getArgs());
   }
 }
