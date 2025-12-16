@@ -44,7 +44,7 @@ export class CustomCacheService {
       const methodOverride = async (...args: unknown[]) => {
         const result = async () => await methodRef.apply(instance, args);
 
-        return this.setCache({ customKey, options, result, args });
+        return this.getOrSetCache(customKey, args, options, result);
       };
 
       Object.defineProperty(instance, methodName, {
@@ -53,32 +53,44 @@ export class CustomCacheService {
     };
   }
 
-  async setCache({
-    options,
-    args,
-    result: _result,
-    customKey,
-  }: {
-    options: CustomCacheOptions;
-    args: unknown[];
-    result: () => Promise<unknown>;
-    customKey: string;
-  }) {
+  async getCache(key: string, logger?: CustomCacheOptions['logger']) {
+    const cached = await this.cacheManager.get(key);
+    if (cached !== undefined) {
+      logger?.('Cache Hit', { cacheKey: key });
+    }
+    return cached;
+  }
+
+  async setCache(
+    key: string,
+    data: unknown,
+    ttl: number = Infinity,
+    logger?: CustomCacheOptions['logger'],
+  ) {
+    await this.cacheManager.set(key, data, ttl);
+    logger?.('Cached', { cacheKey: key });
+  }
+
+  buildCacheKey(customKey: string, args: unknown[]) {
+    return customKey + JSON.stringify(args);
+  }
+
+  async getOrSetCache(
+    customKey: string,
+    args: unknown[],
+    options: CustomCacheOptions,
+    resultFn: () => Promise<unknown>,
+  ) {
     const { key: cacheKey = customKey, ttl = Infinity, logger } = options;
+    const argsAddedKey = this.buildCacheKey(cacheKey, args);
 
-    const argsAddedKey = cacheKey + JSON.stringify(args);
-
-    const cachedValue = await this.cacheManager.get(argsAddedKey);
-    if (Boolean(cachedValue)) {
-      logger?.('Cache Hit', { cacheKey });
-
+    const cachedValue = await this.getCache(argsAddedKey, logger);
+    if (cachedValue !== undefined) {
       return cachedValue;
     }
 
-    const result = await _result();
-
-    await this.cacheManager.set(argsAddedKey, result, ttl);
-    logger?.('Cached', { cacheKey });
+    const result = await resultFn();
+    await this.setCache(argsAddedKey, result, ttl, logger);
 
     return result;
   }
