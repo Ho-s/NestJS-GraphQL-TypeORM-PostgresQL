@@ -44,7 +44,7 @@ export class CustomCacheService {
       const methodOverride = async (...args: unknown[]) => {
         const result = async () => await methodRef.apply(instance, args);
 
-        return this.getOrSetCache({ customKey, options, result, args });
+        return this.getOrSetCache(customKey, args, options, result);
       };
 
       Object.defineProperty(instance, methodName, {
@@ -75,17 +75,12 @@ export class CustomCacheService {
     return customKey + JSON.stringify(args);
   }
 
-  async getOrSetCache({
-    options,
-    args,
-    result: _result,
-    customKey,
-  }: {
-    options: CustomCacheOptions;
-    args: unknown[];
-    result: () => Promise<unknown>;
-    customKey: string;
-  }) {
+  async getOrSetCache(
+    customKey: string,
+    args: unknown[],
+    options: CustomCacheOptions,
+    resultFn: () => Promise<unknown>,
+  ) {
     const { key: cacheKey = customKey, ttl = Infinity, logger } = options;
     const argsAddedKey = this.buildCacheKey(cacheKey, args);
 
@@ -94,7 +89,7 @@ export class CustomCacheService {
       return cachedValue;
     }
 
-    const result = await _result();
+    const result = await resultFn();
     await this.setCache(argsAddedKey, result, ttl, logger);
 
     return result;
