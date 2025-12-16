@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
-import { Observable, lastValueFrom } from 'rxjs';
+import { Observable, from, of, switchMap, tap } from 'rxjs';
 
 import { CUSTOM_CACHE, CustomCacheOptions } from './custom-cache.decorator';
 import { CustomCacheService } from './custom-cache.service';
@@ -19,10 +19,7 @@ export class CustomCacheInterceptor implements NestInterceptor {
     private readonly reflector: Reflector,
   ) {}
 
-  async intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Promise<Observable<any>> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const handler = context.getHandler();
     const options = this.reflector.get<CustomCacheOptions>(
       CUSTOM_CACHE,
@@ -33,19 +30,27 @@ export class CustomCacheInterceptor implements NestInterceptor {
       return next.handle();
     }
 
-    const args = this.getArgs(context);
-
+    const { key, ttl, logger } = options;
     const customKey = `${context.getClass().name}.${handler.name}`;
-    const result = async () => await lastValueFrom(next.handle());
-
-    await this.customCacheService.setCache({
-      options,
+    const args = this.getArgs(context);
+    const cacheKey = this.customCacheService.buildCacheKey(
+      key ?? customKey,
       args,
-      result,
-      customKey,
-    });
+    );
 
-    return next.handle();
+    return from(this.customCacheService.getCache(cacheKey, logger)).pipe(
+      switchMap((cached) =>
+        cached !== undefined
+          ? of(cached)
+          : next
+              .handle()
+              .pipe(
+                tap((data) =>
+                  this.customCacheService.setCache(cacheKey, data, ttl, logger),
+                ),
+              ),
+      ),
+    );
   }
 
   private getArgs(context: ExecutionContext): unknown[] {
