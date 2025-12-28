@@ -31,9 +31,8 @@ export const createException = () => {
       constructor(arg?: ExceptionParams<K>) {
         super(statusCode, defaultMessage, code);
 
-        if (arg) {
-          this.message = composeExceptionMessage(defaultMessage, arg) as K;
-        }
+        const composed = composeExceptionMessage(defaultMessage, arg ?? {});
+        this.message = (composed || code) as K;
       }
     };
   };
