@@ -4,6 +4,8 @@ import { GraphQLError } from 'graphql';
 
 import { PRESERVED_STATUS_CODES } from './exception.constant';
 import {
+  getHttpExceptionCode,
+  getHttpExceptionMessage,
   isBaseException,
   isGraphqlOriginalError,
   isHttpException,
@@ -23,6 +25,14 @@ const determineErrorCondition = (error: GraphQLError) => {
     return {
       errorStatus: error.originalError.statusCode,
       errorCode: error.originalError.code,
+    };
+  }
+
+  if (isHttpException(error.originalError)) {
+    const status = error.originalError.getStatus();
+    return {
+      errorStatus: status,
+      errorCode: getHttpExceptionCode(status),
     };
   }
 
@@ -75,6 +85,14 @@ const handleInternalServerError = (
   }
 };
 
+const determineErrorMessage = (error: GraphQLError): string => {
+  if (isHttpException(error.originalError)) {
+    return getHttpExceptionMessage(error.originalError);
+  }
+
+  return error.message;
+};
+
 const formatError = (
   error: GraphQLError,
   options: {
@@ -95,7 +113,7 @@ const formatError = (
   options.setHttpStatus(httpStatus);
 
   return {
-    message: error.message,
+    message: determineErrorMessage(error),
     locations: error.locations,
     path: error.path,
     extensions: {

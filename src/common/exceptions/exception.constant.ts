@@ -10,6 +10,7 @@ export const GRAPHQL_ERROR_CODES = [
 ];
 
 export const PRESERVED_STATUS_CODES = [
+  HttpStatus.BAD_REQUEST,
   HttpStatus.UNAUTHORIZED,
   HttpStatus.FORBIDDEN,
 ] as const;
