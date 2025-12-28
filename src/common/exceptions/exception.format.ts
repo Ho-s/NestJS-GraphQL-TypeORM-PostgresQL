@@ -4,6 +4,7 @@ import { GraphQLError } from 'graphql';
 
 import { PRESERVED_STATUS_CODES } from './exception.constant';
 import {
+  getHttpExceptionCode,
   isBaseException,
   isGraphqlOriginalError,
   isHttpException,
@@ -23,6 +24,14 @@ const determineErrorCondition = (error: GraphQLError) => {
     return {
       errorStatus: error.originalError.statusCode,
       errorCode: error.originalError.code,
+    };
+  }
+
+  if (isHttpException(error.originalError)) {
+    const status = error.originalError.getStatus();
+    return {
+      errorStatus: status,
+      errorCode: getHttpExceptionCode(status),
     };
   }
 

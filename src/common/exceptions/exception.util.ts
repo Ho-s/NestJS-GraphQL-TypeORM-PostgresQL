@@ -1,4 +1,4 @@
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 import { GraphQLErrorExtensions } from 'graphql';
 
@@ -22,4 +22,8 @@ export const isBaseException = (
 
 export const isHttpException = (error: unknown): error is HttpException => {
   return error instanceof HttpException;
+};
+
+export const getHttpExceptionCode = (status: number): string => {
+  return HttpStatus[status] || 'HTTP_ERROR';
 };
