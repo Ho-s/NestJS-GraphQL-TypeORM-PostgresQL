@@ -9,6 +9,7 @@ import { getEnvPath } from '../helper/env.helper';
 
 config({
   path: getEnvPath(cwd()),
+  quiet: true,
 });
 
 export const setTypeormConfig = (
