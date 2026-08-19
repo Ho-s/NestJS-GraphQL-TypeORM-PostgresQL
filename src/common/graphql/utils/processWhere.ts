@@ -25,8 +25,23 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && !isArray(value) && value !== null;
 };
 
+const isMergeable = (value: unknown): value is Record<string, unknown> => {
+  return isPlainObject(value) && !(value instanceof FindOperator);
+};
+
 const merge = <T, K>(prev: T, next: K): T & K => {
-  return { ...prev, ...next };
+  const merged = { ...prev } as Record<string, unknown>;
+
+  Object.entries(next).forEach(([key, value]) => {
+    const current = merged[key];
+
+    merged[key] =
+      isMergeable(current) && isMergeable(value)
+        ? merge(current, value)
+        : value;
+  });
+
+  return merged as T & K;
 };
 
 export function set<T, K>(object: T, path: string, value: K): T & K {
@@ -45,37 +60,76 @@ export function set<T, K>(object: T, path: string, value: K): T & K {
   return object as T & K;
 }
 
+const isNullish = (value: unknown): value is null | undefined => {
+  return value === null || value === undefined;
+};
+
+const operatorMap = new Map<string, (value: any) => unknown>([
+  ['$eq', (value) => (isNullish(value) ? IsNull() : value)],
+  ['$ne', (value) => (isNullish(value) ? Not(IsNull()) : Not(value))],
+  ['$lt', (value) => LessThan(value)],
+  ['$lte', (value) => LessThanOrEqual(value)],
+  ['$gt', (value) => MoreThan(value)],
+  ['$gte', (value) => MoreThanOrEqual(value)],
+  ['$in', (value) => In(value)],
+  ['$nIn', (value) => Not(In(value))],
+  ['$contains', (value) => Like(`%${value}%`)],
+  ['$nContains', (value) => Not(Like(`%${value}%`))],
+  ['$iContains', (value) => ILike(`%${value}%`)],
+  ['$nIContains', (value) => Not(ILike(`%${value}%`))],
+  ['$null', () => IsNull()],
+  ['$nNull', () => Not(IsNull())],
+  ['$between', (value) => Between(value[0], value[1])],
+]);
+
+const nullSafeOperators = new Set(['$eq', '$ne', '$null', '$nNull']);
+const arrayOperators = new Set(['$in', '$nIn']);
+const pairOperators = new Set(['$between']);
+
+function assertOperand(prevKey: string, key: string, value: unknown) {
+  if (isNullish(value) && !nullSafeOperators.has(key)) {
+    throw new BadRequestException(
+      `Operator ${key} for ${prevKey} needs a value`,
+    );
+  }
+
+  if (!arrayOperators.has(key) && !pairOperators.has(key)) {
+    return;
+  }
+
+  if (!isArray(value) || value.some(isNullish)) {
+    throw new BadRequestException(
+      `Operator ${key} for ${prevKey} needs an array without null`,
+    );
+  }
+
+  if (pairOperators.has(key) && value.length !== 2) {
+    throw new BadRequestException(
+      `Operator ${key} for ${prevKey} needs exactly two values`,
+    );
+  }
+}
+
 function processOperator<T>(prevKey: string, nextObject: OperatorType<T>) {
   const key = Object.keys(nextObject)[0];
-  const value = nextObject[key];
 
-  const operatorMap = new Map<string, Record<string, unknown>>([
-    ['$eq', { [prevKey]: value }],
-    ['$ne', { [prevKey]: Not(value) }],
-    ['$lt', { [prevKey]: LessThan(value) }],
-    ['$lte', { [prevKey]: LessThanOrEqual(value) }],
-    ['$gt', { [prevKey]: MoreThan(value) }],
-    ['$gte', { [prevKey]: MoreThanOrEqual(value) }],
-    ['$in', { [prevKey]: In(value) }],
-    ['$nIn', { [prevKey]: Not(In(value)) }],
-    ['$contains', { [prevKey]: Like(`%${value}%`) }],
-    ['$nContains', { [prevKey]: Not(Like(`%${value}%`)) }],
-    ['$iContains', { [prevKey]: ILike(`%${value}%`) }],
-    ['$nIContains', { [prevKey]: Not(ILike(`%${value}%`)) }],
-    ['$null', { [prevKey]: IsNull() }],
-    ['$nNull', { [prevKey]: Not(IsNull()) }],
-    ['$between', { [prevKey]: Between(value[0], value[1]) }],
-  ]);
-
-  if (key.includes('$') && !operatorMap.has(key)) {
-    throw new BadRequestException(`Invalid operator ${key} for ${prevKey}`);
+  if (key === undefined) {
+    throw new BadRequestException(`Empty condition for ${prevKey}`);
   }
 
-  if (operatorMap.has(key)) {
-    return operatorMap.get(key);
+  const build = operatorMap.get(key);
+
+  if (!build) {
+    if (key.includes('$')) {
+      throw new BadRequestException(`Invalid operator ${key} for ${prevKey}`);
+    }
+
+    return { [prevKey]: goDeep(nextObject as IWhere<T>, [], {} as IWhere<T>) };
   }
 
-  return { [prevKey]: nextObject };
+  assertOperand(prevKey, key, nextObject[key]);
+
+  return { [prevKey]: build(nextObject[key]) };
 }
 
 function goDeep<T>(
@@ -98,7 +152,12 @@ function goDeep<T>(
   }
 
   const thisKey = Object.keys(filters)[0];
-  let nextObject = filters[Object.keys(filters)[0]];
+
+  if (thisKey === undefined) {
+    throw new BadRequestException('Where condition must not be empty');
+  }
+
+  let nextObject = filters[thisKey];
 
   // Check if next item is typeorm find operator
   if (nextObject instanceof FindOperator) {
@@ -107,11 +166,6 @@ function goDeep<T>(
 
   // Check if this item is on bottom
   if (!isPlainObject(nextObject)) {
-    // In case use null as value
-    if (nextObject === null) {
-      return { [thisKey]: IsNull() };
-    }
-
     nextObject = { $eq: nextObject };
   }
   const valueOfNextObjet = Object.values(nextObject)[0];
