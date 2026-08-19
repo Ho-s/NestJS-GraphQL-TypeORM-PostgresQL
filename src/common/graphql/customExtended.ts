@@ -2,6 +2,7 @@ import {
   FindManyOptions,
   FindOneOptions,
   FindOptionsOrder,
+  ObjectLiteral,
   Repository,
 } from 'typeorm';
 
@@ -65,8 +66,10 @@ export function filterOrder<T>(
   });
 }
 
-export class ExtendedRepository<T = unknown> extends Repository<T> {
-  async getMany<T>(
+export class ExtendedRepository<
+  T extends ObjectLiteral = ObjectLiteral,
+> extends Repository<T> {
+  async getMany(
     this: Repository<T>,
     option: RepoQuery<T> = {},
     dataType?: 'count' | 'data',
@@ -100,7 +103,7 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
     return { data, count };
   }
 
-  async getOne<T>(
+  async getOne(
     this: Repository<T>,
     { where, relations, select }: OneRepoQuery<T>,
   ): Promise<T> {
