@@ -43,6 +43,13 @@ describe('{{pascalCase tableName}}Module', () => {
     });
 
     db.public.registerFunction({
+      name: 'quote_ident',
+      args: [DataType.text],
+      returns: DataType.text,
+      implementation: (identifier: string) => `"${identifier}"`,
+    });
+
+    db.public.registerFunction({
       name: 'version',
       implementation: () => '{{tableName}}',
     });

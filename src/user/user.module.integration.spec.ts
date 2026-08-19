@@ -48,6 +48,13 @@ describe('UserModule', () => {
       implementation: () => 'test',
     });
 
+    db.public.registerFunction({
+      name: 'quote_ident',
+      args: [DataType.text],
+      returns: DataType.text,
+      implementation: (identifier: string) => `"${identifier}"`,
+    });
+
     // To implement custom function
     db.public.registerFunction({
       name: 'version',
