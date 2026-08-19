@@ -41,6 +41,10 @@ export class AuthService {
     userId: string,
     refreshToken: string,
   ): Promise<boolean> {
+    if (!userId) {
+      return false;
+    }
+
     try {
       this.jwtService.verify(refreshToken, {
         secret: this.configService.get('JWT_REFRESH_TOKEN_PRIVATE_KEY'),

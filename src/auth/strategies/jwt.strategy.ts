@@ -23,6 +23,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: AccessTokenPayload): Promise<AccessTokenPayload> {
+    if (!payload.id) {
+      throw new CustomUnauthorizedException();
+    }
+
     const doesExist = await this.userService.doesExist({ id: payload.id });
 
     if (!doesExist) {
