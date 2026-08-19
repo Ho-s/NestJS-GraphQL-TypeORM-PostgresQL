@@ -6,7 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { S3 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import * as request from 'supertest';
+import request from 'supertest';
 
 import { getEnvPath } from 'src/common/helper/env.helper';
 

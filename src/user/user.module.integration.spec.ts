@@ -9,7 +9,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { join } from 'path';
 // import { IBackup } from 'pg-mem';
 import { DataType, newDb } from 'pg-mem';
-import * as request from 'supertest';
+import request from 'supertest';
 import { DataSource } from 'typeorm';
 import { v4 } from 'uuid';
 

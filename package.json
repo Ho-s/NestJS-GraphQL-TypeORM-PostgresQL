@@ -118,10 +118,7 @@
     "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": [
-        "ts-jest",
-        "@swc/jest"
-      ],
+      "^.+\\.(t|j)s$": "@swc/jest",
       "^.+\\.mjs$": "@swc/jest"
     },
     "moduleDirectories": [
