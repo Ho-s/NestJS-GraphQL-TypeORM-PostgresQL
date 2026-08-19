@@ -27,10 +27,17 @@ input GetManyInput {
   """
   order: JSON
   pagination: IPagination
+
+  """
+  {key: value} for equality, or {key: {operator: value}}. Operators: $eq, $ne, $lt, $lte, $gt, $gte, $in, $nIn, $between, $contains, $nContains, $iContains, $nIContains, $null, $nNull. Sibling keys are joined with AND, a top level array is joined with OR. null means IS NULL. See process-where.md
+  """
   where: JSON
 }
 
 input GetOneInput {
+  """
+  {key: value} for equality, or {key: {operator: value}}. Operators: $eq, $ne, $lt, $lte, $gt, $gte, $in, $nIn, $between, $contains, $nContains, $iContains, $nIContains, $null, $nNull. Sibling keys are joined with AND, a top level array is joined with OR. null means IS NULL. See process-where.md
+  """
   where: JSON!
 }
 

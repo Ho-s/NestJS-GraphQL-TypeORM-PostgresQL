@@ -6,6 +6,9 @@ import { FindOptionsOrder } from 'typeorm';
 
 import { IWhere } from './utils/types';
 
+const WHERE_DESCRIPTION =
+  '{key: value} for equality, or {key: {operator: value}}. Operators: $eq, $ne, $lt, $lte, $gt, $gte, $in, $nIn, $between, $contains, $nContains, $iContains, $nIContains, $null, $nNull. Sibling keys are joined with AND, a top level array is joined with OR. null means IS NULL. See process-where.md';
+
 @InputType()
 export class IPagination {
   @Field(() => Int, { description: 'Started from 0' })
@@ -19,14 +22,17 @@ export class IPagination {
 
 @InputType()
 export class GetOneInput<T> {
-  @Field(() => GraphQLJSON)
+  @Field(() => GraphQLJSON, { description: WHERE_DESCRIPTION })
   @IsNotEmpty()
   where: IWhere<T>;
 }
 
 @InputType()
 export class GetManyInput<T> {
-  @Field(() => GraphQLJSON, { nullable: true })
+  @Field(() => GraphQLJSON, {
+    nullable: true,
+    description: WHERE_DESCRIPTION,
+  })
   @IsOptional()
   where?: IWhere<T>;
 
