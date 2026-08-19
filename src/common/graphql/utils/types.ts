@@ -95,16 +95,14 @@ export type OperatorType<T> =
 type ExtendedFindOptionsWhere<Entity> = {
   [P in keyof Entity]?: P extends 'toString'
     ? unknown
-    :
-        | FindOptionsWhereProperty<NonNullable<Entity[P]>>
-        | OperatorType<Entity>
-        | Entity[P]
-        | ExtendedFindOptionsWhere<Entity>;
+    : | FindOptionsWhereProperty<NonNullable<Entity[P]>>
+      | OperatorType<Entity>
+      | Entity[P]
+      | ExtendedFindOptionsWhere<Entity>;
 };
 
 export type IWhere<T> =
-  | ExtendedFindOptionsWhere<T>
-  | ExtendedFindOptionsWhere<T>[];
+  ExtendedFindOptionsWhere<T> | ExtendedFindOptionsWhere<T>[];
 
 export interface GetInfoFromQueryProps<Entity> {
   relations: FindOptionsRelations<Entity>;

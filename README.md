@@ -201,7 +201,7 @@ This command generates an empty migration file where you can manually add your s
 
 ## 7. [GraphQL](https://graphql.org/)
 
-##### packages: graphql, apollo-server-express and @nestjs/graphql, [graphqlUpload](https://www.npmjs.com/package/graphql-upload) ...
+##### packages: graphql, @apollo/server and @nestjs/graphql, [graphqlUpload](https://www.npmjs.com/package/graphql-upload) ...
 
 We use GraphQL in a Code First approach (our code will create the GraphQL Schemas).
 
