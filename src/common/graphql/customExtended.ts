@@ -104,10 +104,16 @@ export class ExtendedRepository<T = unknown> extends Repository<T> {
     this: Repository<T>,
     { where, relations, select }: OneRepoQuery<T>,
   ): Promise<T> {
+    if (!where || isEmptyObject(where)) {
+      throw new CustomBadRequestException({
+        message: 'Where condition is required to get one row',
+      });
+    }
+
     const condition: FindOneOptions<T> = {
       relations,
       ...(select && { select }),
-      ...(where && { where: processWhere(where) }),
+      where: processWhere(where),
     };
 
     return await this.findOne(condition);
