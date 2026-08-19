@@ -6,6 +6,16 @@
         }
     }
 
+### Equal(explicit)
+
+    where: {
+        user: {
+            id: {
+                $eq: 3
+            }
+        }
+    }
+
 ### Contains(case-sensitive)
 
     where: {
@@ -71,12 +81,12 @@
     where: {
         user: {
             id: {
-                $notNull: true
+                $nNull: true
             }
         }
     }
 
-### Greate than
+### Greater than
 
     where: {
         user: {
@@ -106,16 +116,40 @@
         }
     }
 
+### Contains(case-insensitive)
+
+    where: {
+        user: {
+            nickname: {
+                $iContains: "man"
+            }
+        }
+    }
+
 ### Joins the where in an "or" expression
 
     where: [
-        user: {
-            id: 3
-        }
-        place: {
-            id: 3
+        {
+            user: {
+                id: 3
+            }
+        },
+        {
+            place: {
+                id: 3
+            }
         }
     ]
+
+### Not Contains(case-insensitive)
+
+    where: {
+        user: {
+            nickname: {
+                $nIContains: "man"
+            }
+        }
+    }
 
 ### In
 
@@ -145,3 +179,20 @@
             }
         }
     }
+
+### Matching null
+
+A bare `null` and `$eq: null` both match SQL NULL, and `$ne: null` matches a row
+where the column is set.
+
+    where: {
+        user: {
+            deletedAt: null
+        }
+    }
+
+### Rejected values
+
+`$in`, `$nIn` and `$between` need an array with no null in it, and `$between`
+needs exactly two values. Every other operator except `$eq`, `$ne`, `$null` and
+`$nNull` is rejected with a 400 when given null.
