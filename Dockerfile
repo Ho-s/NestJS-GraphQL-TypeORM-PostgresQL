@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:24.22.1-alpine AS builder
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY . .
 
 RUN yarn build
 
-FROM node:20-alpine AS runner
+FROM node:24.22.1-alpine AS runner
 
 WORKDIR /app
 COPY --from=builder --chown=node:node /app/dist ./dist
